@@ -11,10 +11,10 @@ Lovable starts only after the staging backend is deployed, health/readiness pass
 Current staging backend placeholder:
 
 ```text
-STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT
+STAGING_BACKEND_URL=https://workforce-management-production.up.railway.app
 ```
 
-Replace the placeholder only with the real staging backend URL from deployment.
+This staging URL is verified for health and database readiness. Lovable must still wait for synthetic accounts, role/core-workflow smoke tests, and frontend CORS configuration.
 
 ## Source Documents
 

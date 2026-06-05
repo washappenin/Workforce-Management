@@ -26,7 +26,7 @@ describe("CP19 frontend handoff package", () => {
     const handoff = readText("docs", "FRONTEND_HANDOFF.md");
 
     expect(handoff).toContain("CP19 FRONTEND HANDOFF PACKAGE READY");
-    expect(handoff).toContain("STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT");
+    expect(handoff).toContain("STAGING_BACKEND_URL=https://workforce-management-production.up.railway.app");
     expect(handoff).toContain("Authorization: Bearer <token>");
     expect(handoff).toContain("## 34. Smoke Test Checklist Reference");
     expect(handoff).not.toMatch(/empty template|template only|not ready for lovable/i);

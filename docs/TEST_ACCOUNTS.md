@@ -5,7 +5,7 @@ Synthetic staging accounts must be created before Lovable generation begins. Do 
 ## Staging Backend URL
 
 ```text
-STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT
+STAGING_BACKEND_URL=https://workforce-management-production.up.railway.app
 ```
 
 ## Account Status
@@ -63,7 +63,7 @@ Keep this section free of passwords.
 
 | Field | Value |
 | ----- | ----- |
-| Staging backend URL | `TBD_AFTER_DEPLOYMENT` |
+| Staging backend URL | `https://workforce-management-production.up.railway.app` |
 | Staging company name | `TBD_STAGING_COMPANY` |
 | Super admin email | `TBD_SUPER_ADMIN_EMAIL` |
 | Company admin email | `TBD_COMPANY_ADMIN_EMAIL` |

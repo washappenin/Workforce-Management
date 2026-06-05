@@ -79,7 +79,7 @@ Use this checklist after a local build, staging deploy, migration deploy, or pro
 
 ## CP19 Lovable Readiness Checks
 
-- Staging URL is confirmed, or `STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT` is explicitly recorded as the current placeholder.
+- Staging URL is confirmed as `https://workforce-management-production.up.railway.app`.
 - `GET /health` passes against the staging backend.
 - `GET /ready` passes against the staging backend.
 - Login works for `SUPER_ADMIN`.
@@ -113,17 +113,17 @@ Use this checklist after a local build, staging deploy, migration deploy, or pro
 
 | Field | Result |
 | ----- | ------ |
-| Date tested | `NOT_TESTED` - real staging URL not provided. |
-| Staging URL | `STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT` |
-| Health result | Pending `curl -i <STAGING_BACKEND_URL>/health`. |
-| Ready result | Pending `curl -i <STAGING_BACKEND_URL>/ready`. |
-| Internal route result | Pending `curl -i <STAGING_BACKEND_URL>/api/system/auth-check`; staging behavior must be protected or production-like 404. |
+| Date tested | June 5, 2026 |
+| Staging URL | `https://workforce-management-production.up.railway.app` |
+| Health result | `PASS` - HTTP `200`, `data.status = "ok"`, environment `staging`, no sensitive data observed. |
+| Ready result | `PASS` - HTTP `200`, `data.status = "ready"`, database configured and `connected`, no sensitive data observed. |
+| Internal route result | `PASS` for documented staging behavior - unauthenticated `GET /api/system/auth-check` returned HTTP `401 UNAUTHENTICATED`; route is not public. |
 | Migration deploy status | Pending confirmation from staging deployment: `npm run prisma:migrate:deploy` or configured equivalent. |
 | Auth result | Pending login, `GET /api/auth/me`, and logout for all five roles. |
 | Role boundary result | Pending employee/admin, company-admin/super-admin, HR/super-admin, manager/admin, super-admin, and cross-company checks. |
 | Core workflow result | Pending completion of the workflow checks above. |
 | CORS status | Pending real Lovable/frontend origin. `CORS_ORIGIN` or `CORS_ORIGINS` must be updated once available. |
 | Synthetic account status | Pending creation/confirmation in `docs/TEST_ACCOUNTS.md`; passwords must stay in secure password manager / staging secret. |
-| Remaining issues | Real staging URL, deployed environment, synthetic accounts, CORS frontend origin, remote smoke tests. |
+| Remaining issues | Migration deploy confirmation, synthetic accounts, auth/role/core-workflow smoke tests, and Lovable frontend CORS origin. |
 
-Lovable generation is not cleared until this result section is updated with passing staging health, readiness, auth, role-boundary, and core workflow results.
+Lovable generation is not cleared until this result section is updated with passing auth, role-boundary, and core workflow results, plus synthetic accounts and the frontend CORS origin.

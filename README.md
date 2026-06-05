@@ -231,7 +231,7 @@ Run `npm run prisma:migrate` for reviewed staging/production migration deploys o
 - `docs/FRONTEND_ROUTE_MAP.md` defines frontend screen routes, allowed roles, backend dependencies, loading states, empty states, and common errors.
 - `docs/SCREEN_API_MATRIX.md` maps screens to implemented backend endpoints, request-body summaries, auth requirements, response summaries, and error notes.
 - `docs/TEST_ACCOUNTS.md` records synthetic staging account placeholders without storing passwords.
-- The staging backend URL remains `STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT` until deployment supplies the real value.
+- The staging backend URL is `https://workforce-management-production.up.railway.app`.
 - CP19 does not add backend product features, frontend code, Lovable-generated screens, mobile code, live Stripe, webhooks, AI recommendations, or advanced analytics.
 
 ## Source of Truth
@@ -241,7 +241,7 @@ Run `npm run prisma:migrate` for reviewed staging/production migration deploys o
 - `docs/API_CONTRACT.md` is the CP19 backend API source of truth for Lovable.
 - `docs/ROLE_PERMISSION_MATRIX.md` is the CP19 authorization source of truth.
 - `docs/FRONTEND_HANDOFF.md`, `docs/FRONTEND_ROUTE_MAP.md`, `docs/SCREEN_API_MATRIX.md`, `docs/LOVABLE_PROMPT.md`, and `docs/TEST_ACCOUNTS.md` form the Lovable handoff package.
-- Lovable generation must wait until the backend is deployed to staging, the real staging URL replaces `STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT`, and synthetic staging accounts are created.
+- Staging health/readiness are verified. Lovable generation must still wait until synthetic staging accounts, role/core-workflow smoke tests, and the Lovable frontend CORS origin are confirmed.
 
 ## Checkpoint Workflow
 

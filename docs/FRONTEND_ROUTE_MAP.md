@@ -5,7 +5,7 @@ CP19 frontend route structure for Lovable. The backend API is the source of trut
 ## Staging Backend URL
 
 ```text
-STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT
+STAGING_BACKEND_URL=https://workforce-management-production.up.railway.app
 ```
 
 ## Common State Rules

@@ -1,7 +1,7 @@
 # FRONTEND HANDOFF
 
-> **Status: CP19 FRONTEND HANDOFF PACKAGE READY WITH STAGING PLACEHOLDER.**
-> The backend API, role matrix, route map, screen/API matrix, Lovable prompt, smoke checklist, and test-account placeholders are prepared for Lovable. The real staging backend URL is not available yet and must be recorded as soon as staging is deployed.
+> **Status: CP19 FRONTEND HANDOFF PACKAGE READY WITH VERIFIED STAGING URL.**
+> The backend API, role matrix, route map, screen/API matrix, Lovable prompt, smoke checklist, and test-account placeholders are prepared for Lovable. Staging health/readiness are verified; synthetic accounts and role/core-workflow smoke tests remain pending.
 
 ## 1. App Overview
 
@@ -12,15 +12,15 @@ The backend is the source of truth. Lovable must not invent endpoints, roles, sc
 ## 2. Staging Backend URL
 
 ```text
-STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT
+STAGING_BACKEND_URL=https://workforce-management-production.up.railway.app
 ```
 
-Use this placeholder until the backend is deployed to staging. Replace it only with the real staging URL provided by the project owner.
+Verified on June 5, 2026: `/health` returned `200` in `staging`, and `/ready` returned `200` with database status `connected`.
 
 ## 3. API Base URL
 
 - Local backend URL: `http://localhost:4000`
-- Staging backend URL: `TBD_AFTER_DEPLOYMENT`
+- Staging backend URL: `https://workforce-management-production.up.railway.app`
 - API versioning: no version prefix exists yet.
 - Format: JSON requests and JSON responses.
 - Source contract: `docs/API_CONTRACT.md`
@@ -244,7 +244,7 @@ Render field-level messages when backend details are present. Otherwise render t
 - No production face vendor, liveness, consent workflow, or biometric deletion workflow.
 - No SMS/email/push delivery, WebSockets, cron reminders, payroll, overtime, report exports, AI recommendations, or advanced analytics.
 - Route-specific rate limits remain future hardening; global rate limiting is active.
-- Staging URL and staging synthetic account emails remain placeholders until deployment.
+- Staging synthetic account emails remain placeholders until accounts are created.
 
 ## 32. Lovable Build Rules
 

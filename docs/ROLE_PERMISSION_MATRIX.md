@@ -1,6 +1,6 @@
 # ROLE PERMISSION MATRIX
 
-Binding source of truth for authorization. The frontend (Lovable) derives route guards and permission-denied states from this document. CP19 freezes this matrix for frontend handoff with `STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT` until staging deployment supplies the real URL.
+Binding source of truth for authorization. The frontend (Lovable) derives route guards and permission-denied states from this document. CP19 freezes this matrix for frontend handoff using staging URL `https://workforce-management-production.up.railway.app`.
 
 ## Roles
 

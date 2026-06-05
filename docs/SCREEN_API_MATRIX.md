@@ -4,7 +4,7 @@ CP19 screen-to-endpoint matrix for Lovable. Every frontend screen must use the i
 
 ## Global API Rules
 
-- Base URL: `STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT`
+- Base URL: `https://workforce-management-production.up.railway.app`
 - Protected requests require `Authorization: Bearer <token>`.
 - Success responses use `{ "data": ..., "meta": ... }`.
 - Errors use `{ "error": { "code": string, "message": string, "requestId": string, "details"?: unknown } }`.

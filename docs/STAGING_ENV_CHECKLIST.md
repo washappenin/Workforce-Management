@@ -5,10 +5,10 @@ Use this checklist in the hosting provider dashboard or secret manager before st
 ## Staging URL Status
 
 ```text
-STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT
+STAGING_BACKEND_URL=https://workforce-management-production.up.railway.app
 ```
 
-Replace the placeholder only after the backend is deployed and `/health` plus `/ready` pass.
+Verified on June 5, 2026: `/health` and `/ready` pass against this Railway staging URL.
 
 ## Required Staging Variables
 
@@ -73,6 +73,6 @@ Leave these unset unless a future checkpoint or approved provider implementation
 After staging is live:
 
 1. Record the real backend staging URL in the deployment notes.
-2. Replace handoff usage of `STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT` with the real URL where appropriate.
+2. Keep handoff usage aligned with `https://workforce-management-production.up.railway.app`.
 3. Update `docs/TEST_ACCOUNTS.md` with synthetic staging account emails and company name only.
 4. Keep passwords and secrets in the approved password manager or staging secret store.

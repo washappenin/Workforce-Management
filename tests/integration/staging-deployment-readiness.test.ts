@@ -53,7 +53,7 @@ describe("staging deployment readiness", () => {
       expect(checklist).toContain(variableName);
     }
 
-    expect(checklist).toContain("STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT");
+    expect(checklist).toContain("STAGING_BACKEND_URL=https://workforce-management-production.up.railway.app");
     expect(checklist).toContain("Do not commit real staging secrets");
     expect(checklist).not.toMatch(/sk_live|pk_live|AKIA|BEGIN PRIVATE KEY|prod[_-]?secret/i);
   });

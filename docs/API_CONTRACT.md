@@ -6,7 +6,7 @@
 
 ## Conventions
 
-- **Base URL:** Local default `http://localhost:4000`; staging placeholder `STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT`.
+- **Base URL:** Local default `http://localhost:4000`; staging `https://workforce-management-production.up.railway.app`.
 - **Format:** JSON requests and responses.
 - **Auth header:** `Authorization: Bearer <access_token>` on protected routes.
 - **Company scope:** Derived from the authenticated user context. Client-supplied `companyId` in params, body, or query is verified against the token-derived company and cannot override it.
@@ -1865,6 +1865,6 @@ CP17 adds hardening and tests rather than product endpoints.
 - `GET /health` and `GET /ready` are public deploy checks.
 - `/api/system/*` is internal verification only and returns `404` in production.
 - CORS requires explicit frontend origins in staging/production.
-- The staging URL remains `STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT` until deployment supplies the real value.
+- The verified staging URL is `https://workforce-management-production.up.railway.app`.
 
 No breaking API changes should be introduced after CP19 without updating `API_CONTRACT.md`, `SCREEN_API_MATRIX.md`, `FRONTEND_ROUTE_MAP.md`, and regression tests.

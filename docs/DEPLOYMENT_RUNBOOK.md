@@ -214,7 +214,7 @@ Minimum smoke:
 
 Lovable readiness smoke:
 
-- Confirm real staging URL replaces `STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT` in handoff usage.
+- Confirm handoff usage references `https://workforce-management-production.up.railway.app`.
 - Confirm synthetic staging test accounts exist for all five roles.
 - Confirm the frontend/Lovable origin is configured in `CORS_ORIGIN` or `CORS_ORIGINS`.
 - Confirm `docs/SMOKE_TEST_CHECKLIST.md` CP19 checks pass before Lovable generation.
@@ -245,5 +245,5 @@ Lovable readiness smoke:
 
 ## Staging URL
 
-- Backend staging URL: `STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT` until assigned during staging deployment and recorded in `FRONTEND_HANDOFF.md`.
+- Backend staging URL: `https://workforce-management-production.up.railway.app` (health/readiness verified June 5, 2026).
 - Lovable frontend origin: to be assigned after frontend generation and added to `CORS_ORIGIN` or `CORS_ORIGINS`.

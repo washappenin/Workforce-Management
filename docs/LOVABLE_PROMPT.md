@@ -18,10 +18,10 @@ Use the backend API as the source of truth. Use these source documents:
 Backend base URL:
 
 ```text
-STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT
+STAGING_BACKEND_URL=https://workforce-management-production.up.railway.app
 ```
 
-Replace the placeholder only with the real staging backend URL supplied by the project owner after backend deployment. Do not invent a staging URL.
+Use this verified staging backend URL. Do not substitute or invent another backend URL.
 
 Hard rules:
 

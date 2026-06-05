@@ -2,7 +2,7 @@
 
 ## Status
 
-Checkpoints CP0 through CP19 are complete. The backend is prepared for staging deployment and Lovable handoff. The real staging backend URL is not available yet, so frontend documents use `STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT`.
+Checkpoints CP0 through CP19 are complete. The backend is deployed to Railway staging at `https://workforce-management-production.up.railway.app`. Health and database readiness are verified; synthetic accounts and full staging workflow smoke tests remain pending.
 
 ## Completed Checkpoints
 
@@ -68,7 +68,7 @@ Checkpoints CP0 through CP19 are complete. The backend is prepared for staging d
 - No SMS/email/push delivery, WebSockets, or cron reminder scheduler.
 - No advanced analytics, AI recommendations, report exports, payroll, overtime, or mobile app.
 - Route-specific rate limits remain future hardening; global rate limiting is active.
-- Staging URL and production-like role test accounts must be created during deployment before Lovable starts.
+- Production-like role test accounts and full staging workflow smoke tests must be completed before Lovable starts.
 
 ## Production/Staging Readiness
 
@@ -86,20 +86,20 @@ The backend is ready for staging deployment preparation:
 
 | Field | Status |
 | ----- | ------ |
-| Staging URL | `STAGING_BACKEND_URL=TBD_AFTER_DEPLOYMENT` |
-| Staging deployment status | Not verified; real deployed backend URL was not provided. |
+| Staging URL | `https://workforce-management-production.up.railway.app` |
+| Staging deployment status | `LIVE` - Railway public domain reachable with environment `staging`. |
 | Migration deploy status | Pending confirmation that `npm run prisma:migrate:deploy` or hosting equivalent ran against staging. |
-| Health check status | Pending `curl -i <STAGING_BACKEND_URL>/health`. |
-| Readiness check status | Pending `curl -i <STAGING_BACKEND_URL>/ready`. |
-| Internal route status | Pending remote verification; `/api/system/*` must be protected in staging or 404 in production-like lockout. |
-| Smoke test status | Pending `docs/SMOKE_TEST_CHECKLIST.md` staging smoke result. |
+| Health check status | `PASS` - HTTP `200`, environment `staging`. |
+| Readiness check status | `PASS` - HTTP `200`, database configured and connected. |
+| Internal route status | `PASS` for staging behavior - unauthenticated `/api/system/auth-check` returned HTTP `401`; route is protected. |
+| Smoke test status | Partial pass: infrastructure checks pass; auth, role-boundary, and core workflow checks pending. |
 | Synthetic account status | Pending creation/confirmation for all five roles in `docs/TEST_ACCOUNTS.md`. |
-| Lovable readiness status | Not cleared. Lovable must wait for real staging URL, passing smoke tests, synthetic accounts, and CORS frontend origin. |
+| Lovable readiness status | Not cleared. Lovable must wait for synthetic accounts, remaining smoke tests, migration confirmation, and CORS frontend origin. |
 
 ## Next Step
 
-Deploy the backend to staging, configure secret-managed environment variables, run migration deploy, create synthetic staging role accounts, run smoke tests from `SMOKE_TEST_CHECKLIST.md`, and record the staging URL.
+Confirm migration deploy, create synthetic staging role accounts, and run the remaining smoke tests from `SMOKE_TEST_CHECKLIST.md`.
 
 ## Next Step After Staging
 
-Generate the Lovable frontend with `docs/LOVABLE_PROMPT.md` after replacing the staging URL placeholder and recording synthetic staging account emails in `docs/TEST_ACCOUNTS.md`.
+Generate the Lovable frontend with `docs/LOVABLE_PROMPT.md` after recording synthetic staging account emails, completing role/core-workflow smoke tests, and configuring the Lovable frontend CORS origin.
