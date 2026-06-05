@@ -2,6 +2,8 @@
 
 Use this checklist after a local build, staging deploy, migration deploy, or production deploy. Do not use production personal data or production credentials for smoke testing.
 
+Runnable Bash checks are available in `scripts/staging-smoke/`. Configure the gitignored `scripts/staging-smoke/smoke.env` from `smoke.env.example`, then run the infrastructure, authentication/boundary, or explicitly enabled core-workflow script documented in `scripts/staging-smoke/README.md`.
+
 ## Public Checks
 
 - `GET /health` returns `200` with `data.status = "ok"`.

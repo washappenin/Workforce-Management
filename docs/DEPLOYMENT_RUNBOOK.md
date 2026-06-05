@@ -164,6 +164,26 @@ Migration rules:
 - Production super-admin creation must be manual, controlled, and audited through the approved operational path.
 - Basic/Premium seed plans are safe examples for local development, not production billing configuration.
 
+## First Staging Super Admin
+
+If staging has no real `SUPER_ADMIN`, use the controlled one-time command from the Railway service console. Do not use the development seed.
+
+Temporarily configure these Railway service variables:
+
+- `BOOTSTRAP_SUPER_ADMIN_EMAIL`: synthetic staging super-admin email.
+- `BOOTSTRAP_SUPER_ADMIN_PASSWORD`: unique secret-managed password of at least 16 characters.
+- `CONFIRM_BOOTSTRAP_SUPER_ADMIN=CREATE_STAGING_SUPER_ADMIN`.
+
+Run:
+
+```bash
+npm run staging:bootstrap-super-admin
+```
+
+The command only runs with `NODE_ENV=staging`. It creates or safely rotates one non-company-scoped super-admin, assigns `SUPER_ADMIN`, revokes existing active sessions when rotating credentials, and writes an audit record. It refuses company-scoped or ambiguous duplicate-email users.
+
+Immediately remove `BOOTSTRAP_SUPER_ADMIN_PASSWORD` and `CONFIRM_BOOTSTRAP_SUPER_ADMIN` from Railway after the command succeeds. Keep the email and password only in the approved password manager. Then verify login through the deployed API before continuing with synthetic account creation.
+
 ## Health Checks
 
 - `GET /health`: public liveness check; lightweight and does not query the database.

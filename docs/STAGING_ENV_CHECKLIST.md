@@ -32,6 +32,18 @@ Verified on June 5, 2026: `/health` and `/ready` pass against this Railway stagi
 | `FACE_PROVIDER` | `mock` | CP8 staging uses the mock provider unless a real provider is explicitly implemented later. |
 | `STORAGE_PROVIDER` | `local` or provider-specific staging value | Placeholder only; no production file-storage workflow is implemented. |
 
+## Temporary First-Super-Admin Variables
+
+Only when staging has no real super-admin, temporarily configure:
+
+| Variable | Required Value / Source | Notes |
+| -------- | ----------------------- | ----- |
+| `BOOTSTRAP_SUPER_ADMIN_EMAIL` | Synthetic staging email | Keep in the approved password manager. |
+| `BOOTSTRAP_SUPER_ADMIN_PASSWORD` | Secret-managed value of at least 16 characters | Remove immediately after bootstrap succeeds. |
+| `CONFIRM_BOOTSTRAP_SUPER_ADMIN` | `CREATE_STAGING_SUPER_ADMIN` | Remove immediately after bootstrap succeeds. |
+
+Run `npm run staging:bootstrap-super-admin` from the Railway service console, then remove the password and confirmation variables. Never use `npm run seed` for this operation.
+
 ## Optional / Future Integration Placeholders
 
 Leave these unset unless a future checkpoint or approved provider implementation makes them real. They are placeholders only and are not required for CP15 manual billing.

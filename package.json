@@ -16,7 +16,8 @@
     "prisma:migrate": "node scripts/prisma.cjs migrate deploy",
     "prisma:migrate:deploy": "node scripts/prisma.cjs migrate deploy",
     "prisma:seed": "tsx prisma/seed.ts",
-    "seed": "npm run prisma:seed"
+    "seed": "npm run prisma:seed",
+    "staging:bootstrap-super-admin": "node scripts/bootstrap-staging-super-admin.cjs"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

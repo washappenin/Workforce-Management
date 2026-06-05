@@ -35,17 +35,18 @@ Staging test accounts are not created yet. After staging deployment, create the 
 1. Deploy the backend to staging.
 2. Configure variables from `docs/STAGING_ENV_CHECKLIST.md`.
 3. Run `npm run prisma:migrate:deploy` against the staging database.
-4. Create the synthetic staging company.
-5. Create departments and designations needed for employee profiles.
-6. Create all five synthetic users listed above.
-7. Create or verify at least one active geofence for the staging company.
-8. Create or verify one active shift and assign it to the employee profile.
-9. Create or verify one leave type and one leave entitlement for the employee profile.
-10. Create or verify one active review cycle.
-11. Create or verify one Basic or Premium subscription plan.
-12. Create or verify one company subscription for the staging company.
-13. Store credentials only in the secure password manager or staging secret store.
-14. Update this file with real staging emails and company name only after the accounts exist.
+4. If no staging super-admin exists, create it using the controlled `npm run staging:bootstrap-super-admin` process in `docs/DEPLOYMENT_RUNBOOK.md`.
+5. Create the synthetic staging company.
+6. Create departments and designations needed for employee profiles.
+7. Create all five synthetic users listed above.
+8. Create or verify at least one active geofence for the staging company.
+9. Create or verify one active shift and assign it to the employee profile.
+10. Create or verify one leave type and one leave entitlement for the employee profile.
+11. Create or verify one active review cycle.
+12. Create or verify one Basic or Premium subscription plan.
+13. Create or verify one company subscription for the staging company.
+14. Store credentials only in the secure password manager or staging secret store.
+15. Update this file with real staging emails and company name only after the accounts exist.
 
 ## Per-Role Smoke Checks
 
