@@ -42,9 +42,9 @@ This workspace contains the backend foundation for the AI-powered workforce mana
 - Admin/super-admin route hardening, production-disabled internal verification routes, sensitive response checks, and audit metadata hardening are implemented under CP16.
 - Audit log coverage verification, centralized audit metadata sanitization, expanded log redaction, privacy/security regression tests, and security audit documentation are implemented under CP17.
 - Production-readiness preparation, deployment scripts/docs, strict deployed-environment validation, smoke checklist, backend completion summary, and frontend/Lovable handoff preparation are implemented under CP18.
-- Final frontend handoff package for Lovable, including prompt, route map, screen/API matrix, test-account placeholders, and handoff verification tests, is implemented under CP19.
-- No audit-log read API, Lovable frontend code, mobile app, live payment processing, webhooks, AI recommendations, advanced analytics, real staging URL, or production credentials are implemented or stored in this repository.
-- The next safe step after CP19 is staging backend deployment, synthetic staging account creation, and Lovable frontend generation against the real staging backend URL.
+- Final frontend handoff package for Lovable, including prompt, route map, screen/API matrix, synthetic test-account records, and handoff verification tests, is implemented under CP19.
+- No audit-log read API, Lovable frontend code, mobile app, live payment processing, webhooks, AI recommendations, advanced analytics, or production credentials are implemented or stored in this repository.
+- The next safe step after CP19 is Lovable frontend generation against the verified staging backend URL, followed by CORS configuration for the generated frontend origin.
 
 ## Local Commands
 
@@ -241,7 +241,7 @@ Run `npm run prisma:migrate` for reviewed staging/production migration deploys o
 - `docs/API_CONTRACT.md` is the CP19 backend API source of truth for Lovable.
 - `docs/ROLE_PERMISSION_MATRIX.md` is the CP19 authorization source of truth.
 - `docs/FRONTEND_HANDOFF.md`, `docs/FRONTEND_ROUTE_MAP.md`, `docs/SCREEN_API_MATRIX.md`, `docs/LOVABLE_PROMPT.md`, and `docs/TEST_ACCOUNTS.md` form the Lovable handoff package.
-- Staging health/readiness are verified. Lovable generation must still wait until synthetic staging accounts, role/core-workflow smoke tests, and the Lovable frontend CORS origin are confirmed.
+- Staging migration deploy, health/readiness, synthetic accounts, and role/core-workflow smoke tests are verified. Lovable generation can proceed; first frontend connection testing must wait until the Lovable frontend CORS origin is configured.
 
 ## Checkpoint Workflow
 

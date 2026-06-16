@@ -82,14 +82,15 @@ describe("staging deployment readiness", () => {
     expect(smoke).toContain("/api/system/*` returns `404`");
   });
 
-  it("keeps synthetic test accounts as placeholders only", () => {
+  it("records synthetic test accounts without storing passwords", () => {
     const testAccounts = readText("docs", "TEST_ACCOUNTS.md");
 
     for (const role of ["SUPER_ADMIN", "COMPANY_ADMIN", "HR_ADMIN", "MANAGER", "EMPLOYEE"]) {
       expect(testAccounts).toContain(role);
     }
 
-    expect(testAccounts).toContain("TBD_STAGING_COMPANY");
+    expect(testAccounts).toContain("Staging Smoke 20260607223636-16252");
+    expect(testAccounts).toContain("employee-20260607223636-16252@example.test");
     expect(testAccounts).toContain("Secure password manager / staging secret");
     expect(testAccounts).not.toMatch(/password\s*[:=]\s*\S+/i);
     expect(testAccounts).not.toMatch(/Password123|P@ssw0rd|sk_live|pk_live|prod[_-]?secret|BEGIN PRIVATE KEY/i);

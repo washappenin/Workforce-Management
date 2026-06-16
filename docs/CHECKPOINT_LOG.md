@@ -746,21 +746,21 @@ Each checkpoint below documents: Goal, Scope, Out of Scope, Files Expected, Data
 - **Test Results:** Focused `npm.cmd test -- tests/integration/frontend-handoff.test.ts --runInBand` first failed because `SCREEN_API_MATRIX.md` did not explicitly reference `POST /api/geofences/validate-location`; the matrix was corrected and the focused CP19 test rerun passed: 1 suite, 6 tests. `npm.cmd run prisma:validate` passed. `npm.cmd run prisma:generate` passed and generated Prisma Client. `npm.cmd run typecheck` passed. `npm.cmd run build` passed. Final full `npm.cmd test` passed: 22 suites, 176 tests.
 - **Security Review:** CP19 documentation keeps backend authorization, RBAC, manager direct-report checks, company scoping, CORS, token usage, privacy, logging, audit, and admin hardening as source-of-truth backend controls. Lovable rules prohibit self-registration, fake APIs, local-only data flows, biometric storage, GPS persistence beyond immediate requests, frontend auth bypasses, hidden-UI-as-security assumptions, and unimplemented Stripe/webhook/audit-log/payroll/AI/advanced-analytics screens. Test-account docs contain placeholders only and no passwords.
 - **Documentation Review:** Created `LOVABLE_PROMPT.md`, `TEST_ACCOUNTS.md`, `FRONTEND_ROUTE_MAP.md`, `SCREEN_API_MATRIX.md`, and `tests/integration/frontend-handoff.test.ts`. Updated `FRONTEND_HANDOFF.md`, `LOVABLE_FRONTEND_PLAN.md`, `API_CONTRACT.md`, `ROLE_PERMISSION_MATRIX.md`, `SMOKE_TEST_CHECKLIST.md`, `BACKEND_COMPLETION_SUMMARY.md`, `DEPLOYMENT_RUNBOOK.md`, `README.md`, and this checkpoint log.
-- **Frontend Handoff Impact:** Backend handoff is ready for Lovable with a staging URL placeholder. Lovable must wait until staging deployment supplies the real backend URL, synthetic role accounts are created, and CORS is configured for the frontend origin. The final prompt, route map, screen/API matrix, API contract, role matrix, and handoff doc now tell Lovable not to invent endpoints, roles, workflows, or self-registration.
-- **Final Signoff:** `PASSED`. Backend checkpoints CP0-CP19 are complete. Next step is staging backend deployment, synthetic staging role account creation, CORS configuration for the Lovable/frontend origin, and Lovable generation using `docs/LOVABLE_PROMPT.md`.
+- **Frontend Handoff Impact:** Backend handoff is ready for Lovable with a verified staging URL and synthetic role accounts. First Lovable connection testing must wait until CORS is configured for the generated frontend origin. The final prompt, route map, screen/API matrix, API contract, role matrix, and handoff doc tell Lovable not to invent endpoints, roles, workflows, or self-registration.
+- **Final Signoff:** `PASSED`. Backend checkpoints CP0-CP19 are complete. Next step is CORS configuration for the Lovable/frontend origin and Lovable generation using `docs/LOVABLE_PROMPT.md`.
 
 ## Post-CP19 Staging Verification -- Operational Note
 
 - **Staging deployed:** `YES` - Railway public staging service is live.
 - **Staging URL:** `https://workforce-management-production.up.railway.app`
-- **Health check status:** `PASS` on June 5, 2026 - HTTP `200`, environment `staging`.
-- **Readiness check status:** `PASS` on June 5, 2026 - HTTP `200`, database configured and connected.
+- **Health check status:** `PASS` on June 7, 2026 - HTTP `200`, environment `staging`.
+- **Readiness check status:** `PASS` on June 7, 2026 - HTTP `200`, database configured and connected.
 - **Internal route status:** `PASS` for documented staging behavior - unauthenticated `/api/system/auth-check` returned HTTP `401`, confirming it is protected.
-- **Migration deploy status:** Pending confirmation that `npm run prisma:migrate:deploy` or hosting equivalent ran against staging.
-- **Smoke checklist status:** Partial pass. Infrastructure checks pass; auth, role-boundary, and core workflow checks remain pending in `docs/SMOKE_TEST_CHECKLIST.md`.
-- **Synthetic role accounts status:** Pending creation/confirmation for `SUPER_ADMIN`, `COMPANY_ADMIN`, `HR_ADMIN`, `MANAGER`, and `EMPLOYEE`; no passwords in docs.
-- **Lovable handoff status:** Not cleared for Lovable generation until remaining smoke tests, synthetic accounts, migration confirmation, and frontend CORS origin are confirmed.
-- **Remaining blockers:** Staging migration confirmation, synthetic role accounts, auth/role/core-workflow smoke-test results, and Lovable frontend CORS origin.
+- **Migration deploy status:** `PASS` - Railway logs on June 7, 2026 at 18:32 EDT show `npm run prisma:migrate:deploy` ran against the staging PostgreSQL database before `node dist/server.js` started.
+- **Smoke checklist status:** `PASS` for local release, infrastructure, five-role auth/boundary/logout, and core workflow smoke checks in `docs/SMOKE_TEST_CHECKLIST.md`.
+- **Synthetic role accounts status:** `PASS` for `SUPER_ADMIN`, `COMPANY_ADMIN`, `HR_ADMIN`, `MANAGER`, and `EMPLOYEE`; no passwords in docs.
+- **Lovable handoff status:** Backend deployment, smoke/account, and migration readiness are cleared. First Lovable connection testing still requires frontend CORS origin configuration.
+- **Remaining blockers:** Lovable frontend CORS origin.
 
 ---
 

@@ -1,7 +1,7 @@
 # FRONTEND HANDOFF
 
 > **Status: CP19 FRONTEND HANDOFF PACKAGE READY WITH VERIFIED STAGING URL.**
-> The backend API, role matrix, route map, screen/API matrix, Lovable prompt, smoke checklist, and test-account placeholders are prepared for Lovable. Staging health/readiness are verified; synthetic accounts and role/core-workflow smoke tests remain pending.
+> The backend API, role matrix, route map, screen/API matrix, Lovable prompt, smoke checklist, and synthetic test-account records are prepared for Lovable. Staging health/readiness, five-role auth/boundary checks, and core workflow smoke tests are verified. First Lovable connection testing still requires the final frontend/Lovable CORS origin.
 
 ## 1. App Overview
 
@@ -15,7 +15,7 @@ The backend is the source of truth. Lovable must not invent endpoints, roles, sc
 STAGING_BACKEND_URL=https://workforce-management-production.up.railway.app
 ```
 
-Verified on June 5, 2026: `/health` returned `200` in `staging`, and `/ready` returned `200` with database status `connected`.
+Verified on June 7, 2026: `/health` returned `200` in `staging`, `/ready` returned `200` with database status `connected`, five-role auth/boundary/logout smoke checks passed, and the core workflow smoke test passed.
 
 ## 3. API Base URL
 

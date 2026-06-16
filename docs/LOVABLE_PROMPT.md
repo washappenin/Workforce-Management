@@ -6,6 +6,19 @@ Use this prompt when generating the frontend in Lovable after the backend has be
 
 Build a role-based web frontend for the AI-powered workforce management platform.
 
+Visual direction:
+
+- Build the actual authenticated workforce application, not a landing page or marketing site.
+- The product should feel simple, regal, and composed: a quiet executive operations console with royal restraint, not a flashy SaaS template.
+- Use a refined palette: warm ivory or porcelain surfaces, near-black ink text, muted champagne/gold accents, restrained burgundy or deep green status accents, and neutral gray borders. Avoid a one-color theme.
+- Use typography that feels formal and calm. Prefer a clean readable sans-serif for product UI, with a restrained serif or high-quality display treatment only for the product name or major page titles if it improves the royal tone.
+- Keep layouts dense enough for daily HR/admin work: clear side navigation, compact headers, tables, filters, forms, detail drawers, confirmation dialogs, and role-specific dashboards.
+- Use subtle borders, small shadows, generous whitespace, and crisp alignment. Cards should be functional containers only, with modest radius and no nested card stacks.
+- Buttons should be simple and confident: solid primary actions, quiet secondary actions, icon buttons where appropriate, and clear disabled/loading states.
+- Avoid vibe-coded visual tells: no giant gradient hero sections, no floating glass panels, no neon purple/blue gradients, no decorative blobs/orbs, no oversized rounded pills everywhere, no generic abstract SVG art, no confetti, no emoji-heavy UI, no fake charts, and no placeholder marketing copy.
+- Make empty, loading, error, denied, and success states polished but understated. Use precise operational language instead of hype.
+- Every screen must look like it belongs to the same royal-but-minimal design system.
+
 Use the backend API as the source of truth. Use these source documents:
 
 - `docs/API_CONTRACT.md`

@@ -6,15 +6,15 @@ This document governs how Lovable should generate the frontend for the AI-powere
 
 ## Staging Gate
 
-Lovable starts only after the staging backend is deployed, health/readiness pass, CORS is configured for the frontend origin, and synthetic role test accounts are available.
+Lovable starts only after the staging backend is deployed, health/readiness pass, synthetic role test accounts are available, and CORS is configured for the frontend origin used by the generated app.
 
-Current staging backend placeholder:
+Current staging backend:
 
 ```text
 STAGING_BACKEND_URL=https://workforce-management-production.up.railway.app
 ```
 
-This staging URL is verified for health and database readiness. Lovable must still wait for synthetic accounts, role/core-workflow smoke tests, and frontend CORS configuration.
+This staging URL is verified for health, database readiness, five-role auth/boundary/logout checks, and the full core workflow smoke test. First Lovable connection testing must still wait for frontend CORS configuration after the generated frontend origin is known.
 
 ## Source Documents
 

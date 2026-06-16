@@ -2,7 +2,7 @@
 
 ## Status
 
-Checkpoints CP0 through CP19 are complete. The backend is deployed to Railway staging at `https://workforce-management-production.up.railway.app`. Health and database readiness are verified; synthetic accounts and full staging workflow smoke tests remain pending.
+Checkpoints CP0 through CP19 are complete. The backend is deployed to Railway staging at `https://workforce-management-production.up.railway.app`. Migration deploy, health, database readiness, synthetic role accounts, and full staging workflow smoke tests are verified. The only remaining operational follow-up is final Lovable/frontend CORS origin configuration.
 
 ## Completed Checkpoints
 
@@ -68,11 +68,11 @@ Checkpoints CP0 through CP19 are complete. The backend is deployed to Railway st
 - No SMS/email/push delivery, WebSockets, or cron reminder scheduler.
 - No advanced analytics, AI recommendations, report exports, payroll, overtime, or mobile app.
 - Route-specific rate limits remain future hardening; global rate limiting is active.
-- Production-like role test accounts and full staging workflow smoke tests must be completed before Lovable starts.
+- Final Lovable connection testing still requires the frontend/Lovable origin to be configured in CORS.
 
 ## Production/Staging Readiness
 
-The backend is ready for staging deployment preparation:
+The backend is ready for Lovable frontend generation:
 
 - Build and start scripts exist.
 - Prisma validate, generate, and migration deploy scripts exist.
@@ -80,7 +80,7 @@ The backend is ready for staging deployment preparation:
 - CORS is strict in staging/production and requires explicit origins.
 - Health and readiness checks are documented.
 - Migration, seed, rollback, logging, and smoke-test guidance is documented.
-- Lovable prompt, frontend route map, screen/API matrix, and test-account placeholders are documented.
+- Lovable prompt, frontend route map, screen/API matrix, and synthetic test-account records are documented.
 
 ## Staging Verification Status
 
@@ -88,18 +88,18 @@ The backend is ready for staging deployment preparation:
 | ----- | ------ |
 | Staging URL | `https://workforce-management-production.up.railway.app` |
 | Staging deployment status | `LIVE` - Railway public domain reachable with environment `staging`. |
-| Migration deploy status | Pending confirmation that `npm run prisma:migrate:deploy` or hosting equivalent ran against staging. |
+| Migration deploy status | `PASS` - Railway logs on June 7, 2026 at 18:32 EDT show `npm run prisma:migrate:deploy` ran against the staging PostgreSQL database before the app started. |
 | Health check status | `PASS` - HTTP `200`, environment `staging`. |
 | Readiness check status | `PASS` - HTTP `200`, database configured and connected. |
 | Internal route status | `PASS` for staging behavior - unauthenticated `/api/system/auth-check` returned HTTP `401`; route is protected. |
-| Smoke test status | Partial pass: infrastructure checks pass; auth, role-boundary, and core workflow checks pending. |
-| Synthetic account status | Pending creation/confirmation for all five roles in `docs/TEST_ACCOUNTS.md`. |
-| Lovable readiness status | Not cleared. Lovable must wait for synthetic accounts, remaining smoke tests, migration confirmation, and CORS frontend origin. |
+| Smoke test status | `PASS` - local release, infrastructure, five-role auth/boundary/logout, and core workflow smoke checks passed on June 7, 2026. |
+| Synthetic account status | `PASS` - five synthetic role accounts are created and recorded in `docs/TEST_ACCOUNTS.md`; passwords are not stored in docs. |
+| Lovable readiness status | Backend deployment, smoke, account, and migration readiness are cleared. First Lovable connection testing still requires the final frontend/Lovable CORS origin. |
 
 ## Next Step
 
-Confirm migration deploy, create synthetic staging role accounts, and run the remaining smoke tests from `SMOKE_TEST_CHECKLIST.md`.
+Begin Lovable frontend generation using `docs/LOVABLE_PROMPT.md`, then configure the generated Lovable/frontend origin in Railway CORS.
 
 ## Next Step After Staging
 
-Generate the Lovable frontend with `docs/LOVABLE_PROMPT.md` after recording synthetic staging account emails, completing role/core-workflow smoke tests, and configuring the Lovable frontend CORS origin.
+Run first Lovable connection tests after the generated frontend origin is known and configured in `CORS_ORIGIN` or `CORS_ORIGINS`.

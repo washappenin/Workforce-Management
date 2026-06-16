@@ -10,24 +10,24 @@ STAGING_BACKEND_URL=https://workforce-management-production.up.railway.app
 
 ## Account Status
 
-Staging test accounts are not created yet. After staging deployment, create the accounts below, store credentials in the approved secure password manager or staging secret store, then record only email, role, company, purpose, and password source here.
+Staging test accounts were created and smoke-verified on June 7, 2026. Store credentials only in the approved secure password manager or staging secret store; this file records emails, role context, company context, purpose, and storage location only.
 
 | Role | Email | Company | Employee Profile Needed | Purpose | Password Source |
 | ---- | ----- | ------- | ----------------------- | ------- | --------------- |
-| `SUPER_ADMIN` | `TBD_SUPER_ADMIN_EMAIL` | Platform | No | Platform admin navigation, company management, plans, subscriptions, manual payment records, platform reports, and company rollups. | Secure password manager / staging secret |
-| `COMPANY_ADMIN` | `TBD_COMPANY_ADMIN_EMAIL` | `TBD_STAGING_COMPANY` | Yes, for employee self-service checks | Company administration, employees, departments, designations, geofences, shifts, leave, OKRs, reviews, notifications, reports, and billing self-view. | Secure password manager / staging secret |
-| `HR_ADMIN` | `TBD_HR_ADMIN_EMAIL` | `TBD_STAGING_COMPANY` | Yes, for employee self-service checks | HR admin navigation, employee operations, attendance logs, leave setup, review cycles, reports, notifications, and billing self-view. | Secure password manager / staging secret |
-| `MANAGER` | `TBD_MANAGER_EMAIL` | `TBD_STAGING_COMPANY` | Yes | Direct-report attendance reports, leave review, OKR assignment/approval, performance reviews, and team reports. | Secure password manager / staging secret |
-| `EMPLOYEE` | `TBD_EMPLOYEE_EMAIL` | `TBD_STAGING_COMPANY` | Yes | Employee dashboard, face verification, clock-in/out, attendance history, shifts, leave, OKRs, reviews, and notifications. | Secure password manager / staging secret |
+| `SUPER_ADMIN` | `admin@example.com` | Platform | No | Platform admin navigation, company management, plans, subscriptions, manual payment records, platform reports, and company rollups. | Secure password manager / staging secret |
+| `COMPANY_ADMIN` | `company-admin-20260607223636-16252@example.test` | `Staging Smoke 20260607223636-16252` | Yes, for employee self-service checks | Company administration, employees, departments, designations, geofences, shifts, leave, OKRs, reviews, notifications, reports, and billing self-view. | Secure password manager / staging secret |
+| `HR_ADMIN` | `hr-admin-20260607223636-16252@example.test` | `Staging Smoke 20260607223636-16252` | Yes, for employee self-service checks | HR admin navigation, employee operations, attendance logs, leave setup, review cycles, reports, notifications, and billing self-view. | Secure password manager / staging secret |
+| `MANAGER` | `manager-20260607223636-16252@example.test` | `Staging Smoke 20260607223636-16252` | Yes | Direct-report attendance reports, leave review, OKR assignment/approval, performance reviews, and team reports. | Secure password manager / staging secret |
+| `EMPLOYEE` | `employee-20260607223636-16252@example.test` | `Staging Smoke 20260607223636-16252` | Yes | Employee dashboard, face verification, clock-in/out, attendance history, shifts, leave, OKRs, reviews, and notifications. | Secure password manager / staging secret |
 
 ## Synthetic Company And Relationship Checklist
 
-- Create one staging company named with an obvious non-production label, for example `TBD_STAGING_COMPANY`.
-- Create at least one department and one designation.
-- Create active employee profiles for `COMPANY_ADMIN`, `HR_ADMIN`, `MANAGER`, and `EMPLOYEE` if those users should access employee self-service screens.
+- Created one staging company named `Staging Smoke 20260607223636-16252`.
+- Created one additional cross-company boundary test company named `Staging Smoke Other 20260607223636-16252`.
+- Created active employee profiles for `COMPANY_ADMIN`, `HR_ADMIN`, `MANAGER`, and `EMPLOYEE`.
 - Set the `EMPLOYEE` test profile's `managerId` to the `MANAGER` test profile.
-- Confirm the manager can see only direct-report team data.
-- Confirm non-super-admin users cannot override `companyId`.
+- Confirmed role boundaries and non-super-admin cross-company denial through `scripts/staging-smoke/02-auth-and-boundaries.sh`.
+- Confirmed core employee self-service workflows through `scripts/staging-smoke/03-core-workflow.sh`.
 - Do not use real staff names, real phone numbers, real IDs, or real customer data.
 
 ## Required Setup Before Lovable Work
@@ -65,14 +65,16 @@ Keep this section free of passwords.
 | Field | Value |
 | ----- | ----- |
 | Staging backend URL | `https://workforce-management-production.up.railway.app` |
-| Staging company name | `TBD_STAGING_COMPANY` |
-| Super admin email | `TBD_SUPER_ADMIN_EMAIL` |
-| Company admin email | `TBD_COMPANY_ADMIN_EMAIL` |
-| HR admin email | `TBD_HR_ADMIN_EMAIL` |
-| Manager email | `TBD_MANAGER_EMAIL` |
-| Employee email | `TBD_EMPLOYEE_EMAIL` |
+| Staging company name | `Staging Smoke 20260607223636-16252` |
+| Staging company ID | `cmq4d380z0002x9c6kcgkh4ng` |
+| Cross-company boundary test company ID | `cmq4d38om0005x9c6kkqtwtbm` |
+| Super admin email | `admin@example.com` |
+| Company admin email | `company-admin-20260607223636-16252@example.test` |
+| HR admin email | `hr-admin-20260607223636-16252@example.test` |
+| Manager email | `manager-20260607223636-16252@example.test` |
+| Employee email | `employee-20260607223636-16252@example.test` |
 | Password storage location | Secure password manager / staging secret |
-| Account creation date | `TBD_ACCOUNT_CREATION_DATE` |
+| Account creation date | June 7, 2026 |
 
 ## Rules
 

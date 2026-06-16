@@ -91,7 +91,7 @@ Runnable Bash checks are available in `scripts/staging-smoke/`. Configure the gi
 - Login works for `EMPLOYEE`.
 - `GET /api/auth/me` works for each role.
 - CORS is configured for the frontend/Lovable origin.
-- Synthetic staging test accounts are available or documented in `docs/TEST_ACCOUNTS.md` as pending setup.
+- Synthetic staging test accounts are available and documented in `docs/TEST_ACCOUNTS.md`.
 - Synthetic staging account passwords are stored only in the approved password manager or staging secret store.
 - `docs/API_CONTRACT.md` is complete for implemented endpoints.
 - `docs/FRONTEND_HANDOFF.md` is complete.
@@ -115,17 +115,18 @@ Runnable Bash checks are available in `scripts/staging-smoke/`. Configure the gi
 
 | Field | Result |
 | ----- | ------ |
-| Date tested | June 5, 2026 |
+| Date tested | June 7, 2026 |
 | Staging URL | `https://workforce-management-production.up.railway.app` |
+| Local release result | `PASS` - `prisma:validate`, `prisma:generate`, `typecheck`, `build`, and Jest passed locally; 23 test suites / 181 tests passed. |
 | Health result | `PASS` - HTTP `200`, `data.status = "ok"`, environment `staging`, no sensitive data observed. |
 | Ready result | `PASS` - HTTP `200`, `data.status = "ready"`, database configured and `connected`, no sensitive data observed. |
 | Internal route result | `PASS` for documented staging behavior - unauthenticated `GET /api/system/auth-check` returned HTTP `401 UNAUTHENTICATED`; route is not public. |
-| Migration deploy status | Pending confirmation from staging deployment: `npm run prisma:migrate:deploy` or configured equivalent. |
-| Auth result | Pending login, `GET /api/auth/me`, and logout for all five roles. |
-| Role boundary result | Pending employee/admin, company-admin/super-admin, HR/super-admin, manager/admin, super-admin, and cross-company checks. |
-| Core workflow result | Pending completion of the workflow checks above. |
-| CORS status | Pending real Lovable/frontend origin. `CORS_ORIGIN` or `CORS_ORIGINS` must be updated once available. |
-| Synthetic account status | Pending creation/confirmation in `docs/TEST_ACCOUNTS.md`; passwords must stay in secure password manager / staging secret. |
-| Remaining issues | Migration deploy confirmation, synthetic accounts, auth/role/core-workflow smoke tests, and Lovable frontend CORS origin. |
+| Migration deploy status | `PASS` - Railway logs on June 7, 2026 at 18:32 EDT show `npm run prisma:migrate:deploy` ran against the staging PostgreSQL database before `node dist/server.js` started. |
+| Auth result | `PASS` - login, `GET /api/auth/me`, logout, and post-logout `401` revocation passed for all five synthetic roles. |
+| Role boundary result | `PASS` - employee/admin, company-admin/super-admin, HR/super-admin, manager/admin, super-admin dashboard access, and cross-company checks passed. |
+| Core workflow result | `PASS` - synthetic company, role accounts, geofence, face verification, attendance, shift, leave, OKR, performance review, notification, reports, subscription, billing self-view, privacy, and logout checks passed. |
+| CORS status | Pending real Lovable/frontend origin. `FRONTEND_ORIGIN` was empty, so CORS verification was skipped; `CORS_ORIGIN` or `CORS_ORIGINS` must be updated once available. |
+| Synthetic account status | `PASS` - synthetic staging accounts are recorded in `docs/TEST_ACCOUNTS.md`; passwords stay in the secure password manager / staging secret store only. |
+| Remaining issues | Lovable frontend CORS origin. |
 
-Lovable generation is not cleared until this result section is updated with passing auth, role-boundary, and core workflow results, plus synthetic accounts and the frontend CORS origin.
+Backend smoke readiness is cleared. First Lovable connection testing still requires the final frontend/Lovable origin to be configured in CORS.

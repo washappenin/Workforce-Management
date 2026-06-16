@@ -39,6 +39,8 @@ describe("CP19 frontend handoff package", () => {
     expect(prompt).toContain("Do not create self-registration");
     expect(prompt).toContain("Authorization: Bearer");
     expect(prompt).toContain("Use the backend API as the source of truth");
+    expect(prompt).toContain("simple, regal, and composed");
+    expect(prompt).toContain("Avoid vibe-coded visual tells");
   });
 
   it("maps all required role areas in the frontend route map", () => {
@@ -94,7 +96,8 @@ describe("CP19 frontend handoff package", () => {
   it("keeps TEST_ACCOUNTS.md free of obvious stored password values", () => {
     const testAccounts = readText("docs", "TEST_ACCOUNTS.md");
 
-    expect(testAccounts).toContain("TBD_SUPER_ADMIN_EMAIL");
+    expect(testAccounts).toContain("admin@example.com");
+    expect(testAccounts).toContain("company-admin-20260607223636-16252@example.test");
     expect(testAccounts).toContain("Secure password manager / staging secret");
     expect(testAccounts).not.toMatch(/password\s*[:=]\s*\S+/i);
     expect(testAccounts).not.toMatch(/Password123|P@ssw0rd|sk_live|pk_live|prod[_-]?secret|BEGIN PRIVATE KEY/i);
