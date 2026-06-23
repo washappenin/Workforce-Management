@@ -2,7 +2,9 @@
 
 ## Purpose
 
-This document governs how Lovable should generate the frontend for the AI-powered workforce management platform after the backend handoff package is complete.
+This document governs how Lovable should generate the web/reference frontend for the AI-powered workforce management platform after the backend handoff package is complete.
+
+The production-critical client target is now a Flutter mobile app for iOS and Android. Lovable remains useful as a visual reference, secondary admin/web console, or rapid validation surface, but employee and manager daily-use workflows must be designed and implemented mobile-first in Flutter.
 
 ## Staging Gate
 
@@ -27,6 +29,7 @@ Lovable must use these documents as the source of truth:
 - `docs/SCREEN_API_MATRIX.md`
 - `docs/TEST_ACCOUNTS.md`
 - `docs/LOVABLE_PROMPT.md`
+- `docs/FRONTEND_CHECKPOINT_LOG.md`
 
 ## Required Rules
 
@@ -58,8 +61,8 @@ Lovable must use these documents as the source of truth:
 ## Role Areas
 
 - Public: login only.
-- Employee: dashboard, attendance, face verification, shifts, leave, OKRs, reviews, notifications.
-- Manager: team dashboards, team attendance, leave approvals, OKRs, reviews, reports, notifications.
+- Employee: dashboard, attendance, face verification, shifts, leave, OKRs, reviews, notifications. This is mobile-first in Flutter.
+- Manager: team dashboards, team attendance, leave approvals, OKRs, reviews, reports, notifications. This is mobile-first in Flutter.
 - HR/Admin: company operations, employees, departments, designations, geofences, face enrollment, attendance logs, shifts, leave config, OKRs, reviews, notifications, reports, subscription/payment self-view.
 - Super Admin: companies, plans, company subscriptions, manual payment records, platform reports, company rollups.
 
