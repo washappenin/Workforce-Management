@@ -202,15 +202,15 @@ class _LeaveRequestSheetState extends ConsumerState<_LeaveRequestSheet> {
   final _startDate = TextEditingController();
   final _endDate = TextEditingController();
   final _reason = TextEditingController();
-  String? _leaveTypeId;
+  String? _entitlementId;
   bool _saving = false;
 
   @override
   void initState() {
     super.initState();
-    _leaveTypeId = widget.summary.entitlements.isEmpty
+    _entitlementId = widget.summary.entitlements.isEmpty
         ? null
-        : widget.summary.entitlements.first.leaveTypeId;
+        : widget.summary.entitlements.first.id;
   }
 
   @override
@@ -240,21 +240,23 @@ class _LeaveRequestSheetState extends ConsumerState<_LeaveRequestSheet> {
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 key: const ValueKey('employee.leave.type'),
-                initialValue: _leaveTypeId,
+                initialValue: _entitlementId,
+                isExpanded: true,
                 decoration: const InputDecoration(labelText: 'Leave type'),
                 items: [
                   for (final entitlement in widget.summary.entitlements)
                     DropdownMenuItem(
-                      value: entitlement.leaveTypeId,
+                      value: entitlement.id,
                       child: Text(
                         '${entitlement.name} (${dayCount(entitlement.remainingDays)} left)',
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                 ],
                 validator: (value) => value == null || value.isEmpty
                     ? 'Select a leave type'
                     : null,
-                onChanged: (value) => setState(() => _leaveTypeId = value),
+                onChanged: (value) => setState(() => _entitlementId = value),
               ),
               const SizedBox(height: 12),
               TextFormField(
@@ -321,8 +323,11 @@ class _LeaveRequestSheetState extends ConsumerState<_LeaveRequestSheet> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     try {
+      final entitlement = widget.summary.entitlements.firstWhere(
+        (item) => item.id == _entitlementId,
+      );
       await ref.read(employeeRepositoryProvider).submitLeaveRequest(
-            leaveTypeId: _leaveTypeId!,
+            leaveTypeId: entitlement.leaveTypeId,
             startDate: _startDate.text.trim(),
             endDate: _endDate.text.trim(),
             reason: _reason.text,

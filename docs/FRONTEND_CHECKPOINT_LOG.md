@@ -180,7 +180,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | - | ---------- | ------ | ----------- |
 | FE0 | Flutter client governance and API contract alignment | `PASSED` | `mobile/` imported, Android/iOS scaffolds generated, dependencies resolved, analyzer/test pass, Android debug APK produced, and endpoint audit matches contract. |
 | FE1 | Flutter auth, shell, navigation, and global states | `READY_FOR_QA` | Android emulator verified for `SUPER_ADMIN` and `EMPLOYEE`; `smoke.env` credentials and API login verified for all roles; pending full emulator navigation QA for `COMPANY_ADMIN`, `HR_ADMIN`, and `MANAGER`. |
-| FE2 | Employee self-service workflows | `READY_FOR_QA` | Flutter source now includes employee dashboard, attendance history, shifts, leave, OKRs, reviews, notifications, and FE3-gated clock route placeholders; analyzer/test/debug APK build pass, pending emulator staging QA. |
+| FE2 | Employee self-service workflows | `PASSED` | Android staging QA passed for employee dashboard, attendance history, shifts, leave submit, OKR progress, OKR employee approval, reviews, notifications read-all, and FE3-gated clock route placeholders. |
 | FE3 | Face verification and GPS attendance | `NOT_STARTED` | Clock-in must sequence camera -> face verify -> GPS -> clock-in. |
 | FE4 | Admin organization setup workflows | `PASSED` | Android staging QA passed for admin setup: departments, designations, employee create/edit/status/manager assignment, employee detail, and face enrollment metadata. |
 | FE5 | Admin operations workflows | `NOT_STARTED` | Geofences, shifts, leave config, OKRs, reviews, broadcasts, attendance, and billing self-view need UI. |
@@ -375,6 +375,20 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
   - endpoint audit with `rg "/api/" mobile/lib mobile/integration_test`
   - `flutter build apk --debug`
 - FE2 moved to `READY_FOR_QA`; it is not `PASSED` until employee emulator staging QA completes.
+
+**2026-06-24 Android staging integration QA update:**
+
+- Added a guarded Flutter integration test at `mobile/integration_test/fe2_employee_staging_test.dart`.
+- Prepared minimal staging QA data through documented backend endpoints: one current-year leave entitlement, one employee OKR, and one unread notification for the staging employee account.
+- The first staging QA pass exposed a real phone-width leave form bug: duplicate leave entitlements with the same leave type crashed the dropdown. Fixed the form to use entitlement IDs as dropdown values while still submitting the backend-required `leaveTypeId`.
+- The same pass exposed a long-label phone overflow in the leave dropdown. Fixed the dropdown with `isExpanded` and ellipsized labels.
+- Ran `flutter test integration_test\fe2_employee_staging_test.dart -d emulator-5554 --dart-define=QA_RUN_STAGING_FE2=true` with employee staging credentials loaded locally from `scripts/staging-smoke/smoke.env`.
+- Final integration test passed against staging: employee login, dashboard, attendance history, shifts, leave request submission, OKR progress update, OKR employee approval, reviews route, notifications route, and notification read-all.
+- Verification also passed:
+  - `dart format lib test integration_test`
+  - `flutter analyze`
+  - `flutter test`
+- FE2 status moved to `PASSED`.
 
 ---
 
