@@ -44,6 +44,7 @@ class _EmployeesScreenState extends ConsumerState<EmployeesScreen> {
       title: 'Employees',
       subtitle: 'Staff records, roles, managers, and status.',
       action: IconButton.filled(
+        key: const ValueKey('admin.newEmployee'),
         tooltip: 'New employee',
         onPressed: () => _showEmployeeCreateSheet(context),
         icon: const Icon(Icons.person_add_alt_1),
@@ -207,18 +208,21 @@ class EmployeeDetailScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               ElevatedButton.icon(
+                key: const ValueKey('admin.employeeDetail.editProfile'),
                 onPressed: () => _showEmployeeEditSheet(context, item),
                 icon: const Icon(Icons.edit_outlined),
                 label: const Text('Edit profile'),
               ),
               const SizedBox(height: 10),
               OutlinedButton.icon(
+                key: const ValueKey('admin.employeeDetail.changeStatus'),
                 onPressed: () => _showEmployeeStatusSheet(context, item),
                 icon: const Icon(Icons.published_with_changes_outlined),
                 label: const Text('Change status'),
               ),
               const SizedBox(height: 10),
               OutlinedButton.icon(
+                key: const ValueKey('admin.employeeDetail.assignManager'),
                 onPressed: () => _showManagerSheet(context, item),
                 icon: const Icon(Icons.supervisor_account_outlined),
                 label: const Text('Assign manager'),
@@ -522,6 +526,7 @@ class _EmployeeFormSheetState extends ConsumerState<_EmployeeFormSheet> {
               ],
               const SizedBox(height: 18),
               ElevatedButton(
+                key: const ValueKey('admin.employeeForm.save'),
                 onPressed: _saving ? null : _save,
                 child: Text(_saving ? 'Saving...' : 'Save employee'),
               ),
@@ -613,6 +618,7 @@ class _EmployeeStatusSheetState extends ConsumerState<_EmployeeStatusSheet> {
           Text('Change status', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
+            key: const ValueKey('admin.employeeStatus.dropdown'),
             initialValue: _status,
             decoration: const InputDecoration(labelText: 'Employee status'),
             items: [
@@ -624,6 +630,7 @@ class _EmployeeStatusSheetState extends ConsumerState<_EmployeeStatusSheet> {
           ),
           const SizedBox(height: 18),
           ElevatedButton(
+            key: const ValueKey('admin.employeeStatus.save'),
             onPressed: _saving ? null : _save,
             child: Text(_saving ? 'Saving...' : 'Save status'),
           ),
@@ -698,6 +705,7 @@ class _ManagerSheetState extends ConsumerState<_ManagerSheet> {
                   .where((item) => item.id != widget.employee.id)
                   .toList(growable: false);
               return DropdownButtonFormField<String?>(
+                key: const ValueKey('admin.employeeManager.dropdown'),
                 initialValue: _managerId,
                 decoration: const InputDecoration(labelText: 'Manager'),
                 items: [
@@ -717,6 +725,7 @@ class _ManagerSheetState extends ConsumerState<_ManagerSheet> {
           ),
           const SizedBox(height: 18),
           ElevatedButton(
+            key: const ValueKey('admin.employeeManager.save'),
             onPressed: _saving ? null : _save,
             child: Text(_saving ? 'Saving...' : 'Save manager'),
           ),

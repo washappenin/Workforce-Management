@@ -182,7 +182,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | FE1 | Flutter auth, shell, navigation, and global states | `READY_FOR_QA` | Android emulator verified for `SUPER_ADMIN` and `EMPLOYEE`; `smoke.env` credentials and API login verified for all roles; pending full emulator navigation QA for `COMPANY_ADMIN`, `HR_ADMIN`, and `MANAGER`. |
 | FE2 | Employee self-service workflows | `PARTIAL` | Dashboard exists, but attendance, shifts, leave, OKRs, reviews, and notification routes need full pages. |
 | FE3 | Face verification and GPS attendance | `NOT_STARTED` | Clock-in must sequence camera -> face verify -> GPS -> clock-in. |
-| FE4 | Admin organization setup workflows | `READY_FOR_QA` | Flutter source complete and partially verified on Android against staging; department/designation UI create, employee rendering/detail, and face enrollment UI passed; employee create UI needs one clean retest. |
+| FE4 | Admin organization setup workflows | `PASSED` | Android staging QA passed for admin setup: departments, designations, employee create/edit/status/manager assignment, employee detail, and face enrollment metadata. |
 | FE5 | Admin operations workflows | `NOT_STARTED` | Geofences, shifts, leave config, OKRs, reviews, broadcasts, attendance, and billing self-view need UI. |
 | FE6 | Manager team workflows | `NOT_STARTED` | Team attendance, leave approvals, OKRs, reviews, reports, and notifications need UI. |
 | FE7 | Super-admin platform workflows | `NOT_STARTED` | Companies, plans, subscriptions, payments, platform reports, and company rollups need UI. |
@@ -424,6 +424,18 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 - Verified the face enrollment screen opens from employee detail and renders the mock-provider enrollment status without exposing raw biometric data.
 - Verified the backend workflow through API using the same staging company-admin credentials: employee creation, manager assignment, employee status update, face enrollment upsert, and face enrollment status update.
 - QA caveat: Employee creation through the Flutter UI was attempted, but the manual ADB session expired before submit completed. Do not mark FE4 `PASSED` until employee create/edit/status/manager actions receive a clean emulator/device UI retest.
+
+**2026-06-24 Android staging integration QA update:**
+
+- Added a guarded Flutter integration test at `mobile/integration_test/fe4_admin_staging_test.dart`.
+- Added stable `ValueKey`s to FE4 employee controls so emulator QA can target the real mobile UI reliably.
+- Ran `flutter test integration_test\fe4_admin_staging_test.dart -d emulator-5554 --dart-define=QA_RUN_STAGING_FE4=true` with company-admin staging credentials loaded locally from `scripts/staging-smoke/smoke.env`.
+- The integration test passed against staging: company-admin login, employee create, employee edit, employee status change to `ON_LEAVE`, and manager assignment.
+- API detail spot-check confirmed the latest test employee had status `ON_LEAVE` and manager `Staging Manager`.
+- Verification also passed:
+  - `flutter analyze`
+  - `flutter test`
+- FE4 status moved to `PASSED`.
 
 **Required workflows:**
 
