@@ -25,9 +25,17 @@ List<NavDestinationSpec> destinationsFor(AppRole role) {
         NavDestinationSpec(
             label: 'Home', icon: Icons.dashboard_outlined, route: '/employee'),
         NavDestinationSpec(
-            label: 'Inbox',
-            icon: Icons.notifications_outlined,
-            route: '/employee/notifications'),
+            label: 'Time',
+            icon: Icons.history_outlined,
+            route: '/employee/attendance/history'),
+        NavDestinationSpec(
+            label: 'Leave',
+            icon: Icons.beach_access_outlined,
+            route: '/employee/leave'),
+        NavDestinationSpec(
+            label: 'OKRs',
+            icon: Icons.track_changes_outlined,
+            route: '/employee/okrs'),
         NavDestinationSpec(
             label: 'Account', icon: Icons.person_outline, route: '/account'),
       ];
@@ -92,8 +100,16 @@ class AppShell extends ConsumerWidget {
     final unreadAsync = ref.watch(unreadCountProvider);
 
     final location = GoRouterState.of(context).uri.path;
-    int index = destinations.indexWhere((d) => location.startsWith(d.route));
-    if (index < 0) index = 0;
+    var index = 0;
+    var longestMatch = -1;
+    for (var i = 0; i < destinations.length; i += 1) {
+      final route = destinations[i].route;
+      final matches = location == route || location.startsWith('$route/');
+      if (matches && route.length > longestMatch) {
+        index = i;
+        longestMatch = route.length;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(

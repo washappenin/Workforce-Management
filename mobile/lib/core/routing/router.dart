@@ -8,6 +8,13 @@ import '../../features/admin/designations_screen.dart';
 import '../../features/admin/employees_screen.dart';
 import '../../features/admin/face_enrollment_screen.dart';
 import '../../features/auth/login_screen.dart';
+import '../../features/employee/attendance_history_screen.dart';
+import '../../features/employee/employee_dashboard_screen.dart';
+import '../../features/employee/leave_screen.dart';
+import '../../features/employee/okrs_screen.dart';
+import '../../features/employee/reviews_screen.dart';
+import '../../features/employee/shifts_screen.dart';
+import '../../features/notifications/notifications_screen.dart';
 import '../../features/placeholders/role_dashboards.dart';
 import '../../features/shell/app_shell.dart';
 import '../../shared/widgets/states.dart';
@@ -88,11 +95,50 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: '/employee',
-            builder: (_, __) => const EmployeeHome(),
+            builder: (_, __) => const EmployeeDashboardScreen(),
             routes: [
               GoRoute(
+                path: 'dashboard',
+                builder: (_, __) => const EmployeeDashboardScreen(),
+              ),
+              GoRoute(
+                path: 'attendance/history',
+                builder: (_, __) => const AttendanceHistoryScreen(),
+              ),
+              GoRoute(
+                path: 'attendance/clock-in',
+                builder: (_, __) =>
+                    const EmployeeFe3GateScreen(title: 'Clock in'),
+              ),
+              GoRoute(
+                path: 'attendance/clock-out',
+                builder: (_, __) =>
+                    const EmployeeFe3GateScreen(title: 'Clock out'),
+              ),
+              GoRoute(
+                path: 'face-verification',
+                builder: (_, __) =>
+                    const EmployeeFe3GateScreen(title: 'Face verification'),
+              ),
+              GoRoute(
+                path: 'shifts',
+                builder: (_, __) => const ShiftsScreen(),
+              ),
+              GoRoute(
+                path: 'leave',
+                builder: (_, __) => const LeaveScreen(),
+              ),
+              GoRoute(
+                path: 'okrs',
+                builder: (_, __) => const OkrsScreen(),
+              ),
+              GoRoute(
+                path: 'reviews',
+                builder: (_, __) => const ReviewsScreen(),
+              ),
+              GoRoute(
                 path: 'notifications',
-                builder: (_, __) => const NotificationsPlaceholder(),
+                builder: (_, __) => const NotificationsScreen(),
               ),
             ],
           ),
@@ -102,7 +148,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: 'notifications',
-                builder: (_, __) => const NotificationsPlaceholder(),
+                builder: (_, __) => const NotificationsScreen(),
               ),
             ],
           ),

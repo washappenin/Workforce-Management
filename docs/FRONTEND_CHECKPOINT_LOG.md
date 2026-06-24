@@ -180,7 +180,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | - | ---------- | ------ | ----------- |
 | FE0 | Flutter client governance and API contract alignment | `PASSED` | `mobile/` imported, Android/iOS scaffolds generated, dependencies resolved, analyzer/test pass, Android debug APK produced, and endpoint audit matches contract. |
 | FE1 | Flutter auth, shell, navigation, and global states | `READY_FOR_QA` | Android emulator verified for `SUPER_ADMIN` and `EMPLOYEE`; `smoke.env` credentials and API login verified for all roles; pending full emulator navigation QA for `COMPANY_ADMIN`, `HR_ADMIN`, and `MANAGER`. |
-| FE2 | Employee self-service workflows | `PARTIAL` | Dashboard exists, but attendance, shifts, leave, OKRs, reviews, and notification routes need full pages. |
+| FE2 | Employee self-service workflows | `READY_FOR_QA` | Flutter source now includes employee dashboard, attendance history, shifts, leave, OKRs, reviews, notifications, and FE3-gated clock route placeholders; analyzer/test/debug APK build pass, pending emulator staging QA. |
 | FE3 | Face verification and GPS attendance | `NOT_STARTED` | Clock-in must sequence camera -> face verify -> GPS -> clock-in. |
 | FE4 | Admin organization setup workflows | `PASSED` | Android staging QA passed for admin setup: departments, designations, employee create/edit/status/manager assignment, employee detail, and face enrollment metadata. |
 | FE5 | Admin operations workflows | `NOT_STARTED` | Geofences, shifts, leave config, OKRs, reviews, broadcasts, attendance, and billing self-view need UI. |
@@ -336,6 +336,45 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 
 - Employee can view profile summary, dashboard, attendance, shifts, leave, OKRs, reviews, and notifications without frontend route `404`s.
 - Employee can submit leave, update OKR progress, employee-approve OKR, and mark notifications read.
+
+**2026-06-24 implementation update:**
+
+- Added the Flutter employee feature module under `mobile/lib/features/employee/`.
+- Added employee routes:
+  - `/employee`
+  - `/employee/dashboard`
+  - `/employee/attendance/history`
+  - `/employee/shifts`
+  - `/employee/leave`
+  - `/employee/okrs`
+  - `/employee/reviews`
+  - `/employee/notifications`
+- Added non-404 FE3 gate screens for:
+  - `/employee/attendance/clock-in`
+  - `/employee/attendance/clock-out`
+  - `/employee/face-verification`
+- Implemented documented FE2 endpoints only:
+  - `GET /api/employees/me`
+  - `GET /api/reports/me/dashboard`
+  - `GET /api/attendance/me`
+  - `GET /api/shifts/me`
+  - `GET /api/leave/me`
+  - `POST /api/leave/request`
+  - `GET /api/okrs/me`
+  - `GET /api/okrs/:okrId`
+  - `POST /api/okrs/:okrId/progress`
+  - `PATCH /api/okrs/:okrId/employee-approve`
+  - `GET /api/reviews/me`
+  - `GET /api/reviews/:reviewId`
+  - notification list/read/read-all endpoints
+- Fixed the employee bottom-navigation route matching so nested employee routes select the most specific tab.
+- Verification passed:
+  - `dart format lib test integration_test`
+  - `flutter analyze`
+  - `flutter test`
+  - endpoint audit with `rg "/api/" mobile/lib mobile/integration_test`
+  - `flutter build apk --debug`
+- FE2 moved to `READY_FOR_QA`; it is not `PASSED` until employee emulator staging QA completes.
 
 ---
 
@@ -595,8 +634,8 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 1. FE0 Flutter foundation: project structure, typed API client, route map, secure token storage, and endpoint audit.
 2. FE1 Flutter auth shell: login, session hydration, logout, role navigation, notification badge, and global states.
 3. FE4 admin organization setup: employees, departments, designations, manager assignment, face enrollment.
-4. FE3 employee attendance: face verification, GPS, clock-in/out.
-5. FE2 employee self-service pages.
+4. FE2 employee self-service pages.
+5. FE3 employee attendance: face verification, GPS, clock-in/out.
 6. FE5 admin operations.
 7. FE6 manager workflows.
 8. FE7 super-admin workflows.
