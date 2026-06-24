@@ -182,7 +182,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | FE1 | Flutter auth, shell, navigation, and global states | `READY_FOR_QA` | Android emulator verified for `SUPER_ADMIN` and `EMPLOYEE`; pending `COMPANY_ADMIN`, `HR_ADMIN`, and `MANAGER` staging role QA. |
 | FE2 | Employee self-service workflows | `PARTIAL` | Dashboard exists, but attendance, shifts, leave, OKRs, reviews, and notification routes need full pages. |
 | FE3 | Face verification and GPS attendance | `NOT_STARTED` | Clock-in must sequence camera -> face verify -> GPS -> clock-in. |
-| FE4 | Admin organization setup workflows | `NOT_STARTED` | Departments, designations, employees, manager assignment, status changes, and face enrollment need UI. |
+| FE4 | Admin organization setup workflows | `READY_FOR_QA` | Flutter source complete for departments, designations, employees, manager assignment, status changes, and face enrollment; pending `COMPANY_ADMIN` or `HR_ADMIN` staging QA. |
 | FE5 | Admin operations workflows | `NOT_STARTED` | Geofences, shifts, leave config, OKRs, reviews, broadcasts, attendance, and billing self-view need UI. |
 | FE6 | Manager team workflows | `NOT_STARTED` | Team attendance, leave approvals, OKRs, reviews, reports, and notifications need UI. |
 | FE7 | Super-admin platform workflows | `NOT_STARTED` | Companies, plans, subscriptions, payments, platform reports, and company rollups need UI. |
@@ -379,6 +379,32 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 - Added `docs/FRONTEND_FE4_PROMPT.md` as the next implementation packet.
 - FE4 should start before FE2/FE3 because departments, designations, employees, managers, and face enrollment metadata are prerequisite data for realistic employee and manager workflows.
 - FE4 cannot be marked `PASSED` until `COMPANY_ADMIN` or `HR_ADMIN` staging credentials are available for emulator/device QA.
+
+**2026-06-23 implementation update:**
+
+- Added Flutter admin feature files under `mobile/lib/features/admin/`.
+- Replaced the admin placeholder route with a real admin setup hub.
+- Added routes:
+  - `/admin/departments`
+  - `/admin/departments/:departmentId`
+  - `/admin/designations`
+  - `/admin/designations/:designationId`
+  - `/admin/employees`
+  - `/admin/employees/:employeeId`
+  - `/admin/employees/:employeeId/face`
+- Added admin bottom navigation for departments, designations, employees, and account.
+- Implemented documented FE4 endpoints only:
+  - department list/create/detail/update/status
+  - designation list/create/detail/update/status
+  - employee list/create/detail/update/status/manager assignment
+  - face enrollment status/upsert/status update
+- Verification passed:
+  - `dart format lib test`
+  - `flutter analyze`
+  - `flutter test`
+  - endpoint audit with `rg "/api/" mobile/lib`
+  - `flutter build apk --debug`
+- FE4 status moved to `READY_FOR_QA`. It is not `PASSED` because `COMPANY_ADMIN` or `HR_ADMIN` staging credentials are still required for emulator/device workflow QA.
 
 **Required workflows:**
 

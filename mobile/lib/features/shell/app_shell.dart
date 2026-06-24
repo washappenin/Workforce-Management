@@ -46,7 +46,17 @@ List<NavDestinationSpec> destinationsFor(AppRole role) {
     case AppRole.hrAdmin:
       return const [
         NavDestinationSpec(
-            label: 'Admin', icon: Icons.shield_outlined, route: '/admin'),
+            label: 'Depts',
+            icon: Icons.account_tree_outlined,
+            route: '/admin/departments'),
+        NavDestinationSpec(
+            label: 'Titles',
+            icon: Icons.badge_outlined,
+            route: '/admin/designations'),
+        NavDestinationSpec(
+            label: 'People',
+            icon: Icons.people_outline,
+            route: '/admin/employees'),
         NavDestinationSpec(
             label: 'Account', icon: Icons.person_outline, route: '/account'),
       ];

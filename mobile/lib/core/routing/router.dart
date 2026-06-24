@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/admin/admin_hub_screen.dart';
+import '../../features/admin/departments_screen.dart';
+import '../../features/admin/designations_screen.dart';
+import '../../features/admin/employees_screen.dart';
+import '../../features/admin/face_enrollment_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/placeholders/role_dashboards.dart';
 import '../../features/shell/app_shell.dart';
@@ -101,7 +106,48 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          GoRoute(path: '/admin', builder: (_, __) => const AdminHome()),
+          GoRoute(
+            path: '/admin',
+            builder: (_, __) => const AdminHubScreen(),
+            routes: [
+              GoRoute(
+                path: 'departments',
+                builder: (_, __) => const DepartmentsScreen(),
+              ),
+              GoRoute(
+                path: 'departments/:departmentId',
+                builder: (_, state) => DepartmentDetailScreen(
+                  departmentId: state.pathParameters['departmentId']!,
+                ),
+              ),
+              GoRoute(
+                path: 'designations',
+                builder: (_, __) => const DesignationsScreen(),
+              ),
+              GoRoute(
+                path: 'designations/:designationId',
+                builder: (_, state) => DesignationDetailScreen(
+                  designationId: state.pathParameters['designationId']!,
+                ),
+              ),
+              GoRoute(
+                path: 'employees',
+                builder: (_, __) => const EmployeesScreen(),
+              ),
+              GoRoute(
+                path: 'employees/:employeeId',
+                builder: (_, state) => EmployeeDetailScreen(
+                  employeeId: state.pathParameters['employeeId']!,
+                ),
+              ),
+              GoRoute(
+                path: 'employees/:employeeId/face',
+                builder: (_, state) => FaceEnrollmentScreen(
+                  employeeId: state.pathParameters['employeeId']!,
+                ),
+              ),
+            ],
+          ),
           GoRoute(
             path: '/super-admin',
             builder: (_, __) => const SuperAdminHome(),
