@@ -22,7 +22,7 @@ The backend is already complete through CP19. Frontend work must consume the exi
 - **Primary client target:** Flutter mobile app for iOS and Android.
 - **Secondary/reference client:** Lovable web at `https://exact-render-route.lovable.app`.
 - **Backend base URL:** `https://workforce-management-production.up.railway.app`
-- **Observed complete/partial work:** login route, auth shell, role-aware dashboard foundation, royal-minimal visual direction. Flutter FE0 source is now imported under `mobile/`, dependencies resolve, and static analysis passes. FE1 auth shell compiles but still needs device/simulator login QA before final pass.
+- **Observed complete/partial work:** login route, auth shell, role-aware dashboard foundation, royal-minimal visual direction. Flutter FE0 source is now imported under `mobile/`, dependencies resolve, static analysis passes, Android emulator smoke QA passes for `SUPER_ADMIN` and `EMPLOYEE`, and FE1 still needs remaining role coverage before final pass.
 - **Observed missing work:** most employee/admin/manager/super-admin workflow pages, create/edit flows, detail screens, correct report tabs, admin setup flows, and face/GPS attendance sequence.
 - **Known issue pattern:** frontend route `404`s are usually missing Lovable page routes; backend `404`s are usually wrong endpoint paths such as generic report URLs not present in `API_CONTRACT.md`.
 
@@ -179,7 +179,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | # | Checkpoint | Status | Primary Gap |
 | - | ---------- | ------ | ----------- |
 | FE0 | Flutter client governance and API contract alignment | `PASSED` | `mobile/` imported, Android/iOS scaffolds generated, dependencies resolved, analyzer/test pass, Android debug APK produced, and endpoint audit matches contract. |
-| FE1 | Flutter auth, shell, navigation, and global states | `READY_FOR_QA` | Source/analyzer/test/build verified; pending simulator/device staging login and role redirect QA. |
+| FE1 | Flutter auth, shell, navigation, and global states | `READY_FOR_QA` | Android emulator verified for `SUPER_ADMIN` and `EMPLOYEE`; pending `COMPANY_ADMIN`, `HR_ADMIN`, and `MANAGER` staging role QA. |
 | FE2 | Employee self-service workflows | `PARTIAL` | Dashboard exists, but attendance, shifts, leave, OKRs, reviews, and notification routes need full pages. |
 | FE3 | Face verification and GPS attendance | `NOT_STARTED` | Clock-in must sequence camera -> face verify -> GPS -> clock-in. |
 | FE4 | Admin organization setup workflows | `NOT_STARTED` | Departments, designations, employees, manager assignment, status changes, and face enrollment need UI. |
@@ -289,6 +289,18 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 - FE1 source compiles and passes smoke tests inside the complete Flutter project.
 - Android debug APK output exists, but FE1 remains `READY_FOR_QA` because no Android/iOS simulator or physical device was available for staging login validation.
 
+**2026-06-23 Android emulator QA update:**
+
+- Pushed the FE0/FE1 Flutter checkpoint commit to `origin/main`.
+- Launched Android emulator `emulator-5554` (`Android 15`, API 35).
+- Ran `flutter run -d emulator-5554 --debug --no-resident` successfully.
+- Verified `SUPER_ADMIN` staging login redirects into the authenticated super-admin shell.
+- Verified `SUPER_ADMIN` token hydration survives app force-stop and relaunch.
+- Verified `SUPER_ADMIN` account screen renders email, role, and active status.
+- Verified `SUPER_ADMIN` sign out returns to the login screen.
+- Verified `EMPLOYEE` staging login redirects into the authenticated employee shell with employee navigation.
+- FE1 remains `READY_FOR_QA`, not `PASSED`, until `COMPANY_ADMIN`, `HR_ADMIN`, and `MANAGER` staging credentials are available and tested on the emulator or a device.
+
 ---
 
 ## FE2: Employee Self-Service Workflows
@@ -361,6 +373,12 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 ## FE4: Admin Organization Setup Workflows
 
 **Goal:** Build the company setup screens needed before employee workflows become meaningful.
+
+**2026-06-23 planning update:**
+
+- Added `docs/FRONTEND_FE4_PROMPT.md` as the next implementation packet.
+- FE4 should start before FE2/FE3 because departments, designations, employees, managers, and face enrollment metadata are prerequisite data for realistic employee and manager workflows.
+- FE4 cannot be marked `PASSED` until `COMPANY_ADMIN` or `HR_ADMIN` staging credentials are available for emulator/device QA.
 
 **Required workflows:**
 
