@@ -179,10 +179,10 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | # | Checkpoint | Status | Primary Gap |
 | - | ---------- | ------ | ----------- |
 | FE0 | Flutter client governance and API contract alignment | `PASSED` | `mobile/` imported, Android/iOS scaffolds generated, dependencies resolved, analyzer/test pass, Android debug APK produced, and endpoint audit matches contract. |
-| FE1 | Flutter auth, shell, navigation, and global states | `READY_FOR_QA` | Android emulator verified for `SUPER_ADMIN` and `EMPLOYEE`; pending `COMPANY_ADMIN`, `HR_ADMIN`, and `MANAGER` staging role QA. |
+| FE1 | Flutter auth, shell, navigation, and global states | `READY_FOR_QA` | Android emulator verified for `SUPER_ADMIN` and `EMPLOYEE`; `smoke.env` credentials and API login verified for all roles; pending full emulator navigation QA for `COMPANY_ADMIN`, `HR_ADMIN`, and `MANAGER`. |
 | FE2 | Employee self-service workflows | `PARTIAL` | Dashboard exists, but attendance, shifts, leave, OKRs, reviews, and notification routes need full pages. |
 | FE3 | Face verification and GPS attendance | `NOT_STARTED` | Clock-in must sequence camera -> face verify -> GPS -> clock-in. |
-| FE4 | Admin organization setup workflows | `READY_FOR_QA` | Flutter source complete for departments, designations, employees, manager assignment, status changes, and face enrollment; pending `COMPANY_ADMIN` or `HR_ADMIN` staging QA. |
+| FE4 | Admin organization setup workflows | `READY_FOR_QA` | Flutter source complete and partially verified on Android against staging; department/designation UI create, employee rendering/detail, and face enrollment UI passed; employee create UI needs one clean retest. |
 | FE5 | Admin operations workflows | `NOT_STARTED` | Geofences, shifts, leave config, OKRs, reviews, broadcasts, attendance, and billing self-view need UI. |
 | FE6 | Manager team workflows | `NOT_STARTED` | Team attendance, leave approvals, OKRs, reviews, reports, and notifications need UI. |
 | FE7 | Super-admin platform workflows | `NOT_STARTED` | Companies, plans, subscriptions, payments, platform reports, and company rollups need UI. |
@@ -301,6 +301,12 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 - Verified `EMPLOYEE` staging login redirects into the authenticated employee shell with employee navigation.
 - FE1 remains `READY_FOR_QA`, not `PASSED`, until `COMPANY_ADMIN`, `HR_ADMIN`, and `MANAGER` staging credentials are available and tested on the emulator or a device.
 
+**2026-06-23 staging credential update:**
+
+- Confirmed `scripts/staging-smoke/smoke.env` now contains populated email/password values for `SUPER_ADMIN`, `COMPANY_ADMIN`, `HR_ADMIN`, `MANAGER`, and `EMPLOYEE`.
+- Verified API login succeeds for all five staging roles without printing secrets or tokens.
+- FE1 still needs full emulator navigation QA for `COMPANY_ADMIN`, `HR_ADMIN`, and `MANAGER` before it can move from `READY_FOR_QA` to `PASSED`.
+
 ---
 
 ## FE2: Employee Self-Service Workflows
@@ -405,6 +411,19 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
   - endpoint audit with `rg "/api/" mobile/lib`
   - `flutter build apk --debug`
 - FE4 status moved to `READY_FOR_QA`. It is not `PASSED` because `COMPANY_ADMIN` or `HR_ADMIN` staging credentials are still required for emulator/device workflow QA.
+
+**2026-06-23 Android staging QA update:**
+
+- Confirmed `scripts/staging-smoke/smoke.env` contains populated admin/HR/manager/employee/super-admin credentials, and API login succeeds for every role.
+- Launched the Android emulator and signed in as `COMPANY_ADMIN`.
+- Verified the admin setup hub renders with departments, designations, employees, and account navigation.
+- Verified department empty state and created a department through the Flutter UI.
+- Verified designation empty state and created a designation through the Flutter UI.
+- Verified the employee list renders staging employees and an API-created employee with department/designation data.
+- Verified employee detail renders profile, status, department, designation, manager, and admin action buttons.
+- Verified the face enrollment screen opens from employee detail and renders the mock-provider enrollment status without exposing raw biometric data.
+- Verified the backend workflow through API using the same staging company-admin credentials: employee creation, manager assignment, employee status update, face enrollment upsert, and face enrollment status update.
+- QA caveat: Employee creation through the Flutter UI was attempted, but the manual ADB session expired before submit completed. Do not mark FE4 `PASSED` until employee create/edit/status/manager actions receive a clean emulator/device UI retest.
 
 **Required workflows:**
 
