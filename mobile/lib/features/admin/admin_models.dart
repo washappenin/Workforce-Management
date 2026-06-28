@@ -205,9 +205,128 @@ class FaceEnrollment {
   }
 }
 
+class AdminGeofence {
+  const AdminGeofence({
+    required this.id,
+    required this.companyId,
+    required this.name,
+    required this.latitude,
+    required this.longitude,
+    required this.radiusMeters,
+    required this.status,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final String id;
+  final String companyId;
+  final String name;
+  final double latitude;
+  final double longitude;
+  final int radiusMeters;
+  final String status;
+  final String? createdAt;
+  final String? updatedAt;
+
+  bool get isActive => status == 'ACTIVE';
+
+  factory AdminGeofence.fromJson(Map<String, Object?> json) {
+    return AdminGeofence(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      name: stringValue(json['name'], fallback: 'Geofence'),
+      latitude: doubleValue(json['latitude']),
+      longitude: doubleValue(json['longitude']),
+      radiusMeters: intValue(json['radiusMeters']),
+      status: stringValue(json['status'], fallback: 'INACTIVE'),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+    );
+  }
+}
+
+class AdminAttendanceSession {
+  const AdminAttendanceSession({
+    required this.id,
+    required this.companyId,
+    required this.employeeId,
+    required this.status,
+    required this.clockInAt,
+    this.clockOutAt,
+    this.clockInGeofenceId,
+    this.clockOutGeofenceId,
+    this.clockInFaceVerified = false,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final String id;
+  final String companyId;
+  final String employeeId;
+  final String status;
+  final String clockInAt;
+  final String? clockOutAt;
+  final String? clockInGeofenceId;
+  final String? clockOutGeofenceId;
+  final bool clockInFaceVerified;
+  final String? createdAt;
+  final String? updatedAt;
+
+  bool get isOpen => status == 'OPEN';
+
+  factory AdminAttendanceSession.fromJson(Map<String, Object?> json) {
+    return AdminAttendanceSession(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      employeeId: stringValue(json['employeeId']),
+      status: stringValue(json['status'], fallback: 'UNKNOWN'),
+      clockInAt: stringValue(json['clockInAt']),
+      clockOutAt: optionalString(json['clockOutAt']),
+      clockInGeofenceId: optionalString(json['clockInGeofenceId']),
+      clockOutGeofenceId: optionalString(json['clockOutGeofenceId']),
+      clockInFaceVerified: boolValue(json['clockInFaceVerified']),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+    );
+  }
+}
+
 Map<String, Object?>? _object(Object? value) {
   if (value is Map) return Map<String, Object?>.from(value);
   return null;
+}
+
+String stringValue(Object? value, {String fallback = ''}) {
+  final parsed = optionalString(value);
+  return parsed == null || parsed.isEmpty ? fallback : parsed;
+}
+
+String? optionalString(Object? value) {
+  if (value == null) return null;
+  final text = value.toString();
+  return text.trim().isEmpty ? null : text;
+}
+
+int intValue(Object? value, {int fallback = 0}) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  if (value is String) return int.tryParse(value) ?? fallback;
+  return fallback;
+}
+
+double doubleValue(Object? value, {double fallback = 0}) {
+  if (value is num) return value.toDouble();
+  if (value is String) return double.tryParse(value) ?? fallback;
+  return fallback;
+}
+
+bool boolValue(Object? value, {bool fallback = false}) {
+  if (value is bool) return value;
+  if (value is String) {
+    if (value.toLowerCase() == 'true') return true;
+    if (value.toLowerCase() == 'false') return false;
+  }
+  return fallback;
 }
 
 String roleLabel(String role) {

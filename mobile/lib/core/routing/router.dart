@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/admin/admin_hub_screen.dart';
+import '../../features/admin/admin_attendance_screen.dart';
 import '../../features/admin/departments_screen.dart';
 import '../../features/admin/designations_screen.dart';
 import '../../features/admin/employees_screen.dart';
 import '../../features/admin/face_enrollment_screen.dart';
+import '../../features/admin/geofences_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/employee/attendance_clock_screen.dart';
 import '../../features/employee/attendance_history_screen.dart';
@@ -189,6 +191,20 @@ final routerProvider = Provider<GoRouter>((ref) {
                 builder: (_, state) => FaceEnrollmentScreen(
                   employeeId: state.pathParameters['employeeId']!,
                 ),
+              ),
+              GoRoute(
+                path: 'geofences',
+                builder: (_, __) => const GeofencesScreen(),
+              ),
+              GoRoute(
+                path: 'geofences/:geofenceId',
+                builder: (_, state) => GeofenceDetailScreen(
+                  geofenceId: state.pathParameters['geofenceId']!,
+                ),
+              ),
+              GoRoute(
+                path: 'attendance',
+                builder: (_, __) => const AdminAttendanceScreen(),
               ),
             ],
           ),

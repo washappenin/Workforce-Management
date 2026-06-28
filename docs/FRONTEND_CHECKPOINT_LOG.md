@@ -183,7 +183,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | FE2 | Employee self-service workflows | `PASSED` | Android staging QA passed for employee dashboard, attendance history, shifts, leave submit, OKR progress, OKR employee approval, reviews, notifications read-all, and FE3-gated clock route placeholders. |
 | FE3 | Face verification and GPS attendance | `PASSED` | Android staging QA passed for mock face verification, GPS/geofence precheck, clock-in, dashboard status, clock-out, and final closed attendance state. |
 | FE4 | Admin organization setup workflows | `PASSED` | Android staging QA passed for admin setup: departments, designations, employee create/edit/status/manager assignment, employee detail, and face enrollment metadata. |
-| FE5 | Admin operations workflows | `NOT_STARTED` | Geofences, shifts, leave config, OKRs, reviews, broadcasts, attendance, and billing self-view need UI. |
+| FE5 | Admin operations workflows | `PARTIAL` | FE5A geofences and attendance logs passed Android staging QA; shifts, leave config/approvals, OKRs, reviews, broadcasts, and billing self-view remain. |
 | FE6 | Manager team workflows | `NOT_STARTED` | Team attendance, leave approvals, OKRs, reviews, reports, and notifications need UI. |
 | FE7 | Super-admin platform workflows | `NOT_STARTED` | Companies, plans, subscriptions, payments, platform reports, and company rollups need UI. |
 | FE8 | Reports and dashboard data rendering | `PARTIAL` | Dashboards must render real summary data and report tabs must call exact implemented endpoints. |
@@ -552,6 +552,40 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 **Pass condition:**
 
 - Admin can configure the organization, operate daily HR workflows, and view billing self-service without touching scripts or Railway.
+
+**2026-06-28 FE5A Android staging integration QA update:**
+
+- Implemented admin geofence management:
+  - list geofences
+  - create geofence
+  - detail view
+  - edit name/latitude/longitude/radius
+  - activate/deactivate/archive status actions
+- Implemented admin attendance logs:
+  - company-scoped attendance session list
+  - status filter for all/open/closed/cancelled
+  - face-verification and clock-in/out geofence indicators
+  - no raw GPS coordinates rendered in attendance logs
+- Added admin routes:
+  - `/admin/geofences`
+  - `/admin/geofences/:geofenceId`
+  - `/admin/attendance`
+- Updated the admin mobile shell with operations tabs for `Geo` and `Time`; setup pages remain reachable from the admin hub.
+- Wired only documented FE5A endpoints:
+  - `GET /api/admin/geofences`
+  - `POST /api/admin/geofences`
+  - `GET /api/admin/geofences/:geofenceId`
+  - `PATCH /api/admin/geofences/:geofenceId`
+  - `PATCH /api/admin/geofences/:geofenceId/status`
+  - `GET /api/admin/attendance`
+- Added guarded staging integration test `mobile/integration_test/fe5a_admin_ops_staging_test.dart`.
+- Ran `flutter test integration_test\fe5a_admin_ops_staging_test.dart -d emulator-5554 --dart-define=QA_RUN_STAGING_FE5A=true` with company-admin staging credentials loaded locally from ignored `scripts/staging-smoke/smoke.env`.
+- Final integration test passed against staging: company-admin login, geofence create, geofence edit, geofence deactivate, attendance route load, and attendance empty-or-session state.
+- Verification also passed:
+  - `dart format lib test integration_test`
+  - `flutter analyze`
+  - `flutter test`
+  - `flutter build apk --debug`
 
 ---
 

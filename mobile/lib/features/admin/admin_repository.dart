@@ -42,6 +42,21 @@ final faceEnrollmentProvider = FutureProvider.autoDispose
   return ref.watch(adminRepositoryProvider).getFaceStatus(employeeId);
 });
 
+final geofencesProvider =
+    FutureProvider.autoDispose<List<AdminGeofence>>((ref) {
+  return ref.watch(adminRepositoryProvider).listGeofences();
+});
+
+final geofenceProvider =
+    FutureProvider.autoDispose.family<AdminGeofence, String>((ref, id) {
+  return ref.watch(adminRepositoryProvider).getGeofence(id);
+});
+
+final adminAttendanceProvider = FutureProvider.autoDispose
+    .family<List<AdminAttendanceSession>, String?>((ref, status) {
+  return ref.watch(adminRepositoryProvider).listAttendance(status: status);
+});
+
 class AdminRepository {
   const AdminRepository(this._api);
 
@@ -333,6 +348,107 @@ class AdminRepository {
       body: {'status': status},
     );
     return FaceEnrollment.fromJson(_object(data, 'faceEnrollment'));
+  }
+
+  Future<List<AdminGeofence>> listGeofences({String? companyId}) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/geofences',
+      query: _scopeQuery(companyId),
+    );
+    return _list(data, 'geofences')
+        .map(AdminGeofence.fromJson)
+        .toList(growable: false);
+  }
+
+  Future<AdminGeofence> getGeofence(
+    String geofenceId, {
+    String? companyId,
+  }) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/geofences/$geofenceId',
+      query: _scopeQuery(companyId),
+    );
+    return AdminGeofence.fromJson(_object(data, 'geofence'));
+  }
+
+  Future<AdminGeofence> createGeofence({
+    required String name,
+    required double latitude,
+    required double longitude,
+    required int radiusMeters,
+    String status = 'ACTIVE',
+    String? companyId,
+  }) async {
+    final body = <String, Object?>{
+      'name': name.trim(),
+      'latitude': latitude,
+      'longitude': longitude,
+      'radiusMeters': radiusMeters,
+      'status': status,
+    };
+    if (_hasScope(companyId)) body['companyId'] = companyId;
+    final data = await _api.post<Map<String, Object?>>(
+      '/api/admin/geofences',
+      body: body,
+    );
+    return AdminGeofence.fromJson(_object(data, 'geofence'));
+  }
+
+  Future<AdminGeofence> updateGeofence(
+    String geofenceId, {
+    required String name,
+    required double latitude,
+    required double longitude,
+    required int radiusMeters,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/admin/geofences/$geofenceId',
+      query: _scopeQuery(companyId),
+      body: {
+        'name': name.trim(),
+        'latitude': latitude,
+        'longitude': longitude,
+        'radiusMeters': radiusMeters,
+      },
+    );
+    return AdminGeofence.fromJson(_object(data, 'geofence'));
+  }
+
+  Future<AdminGeofence> updateGeofenceStatus(
+    String geofenceId, {
+    required String status,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/admin/geofences/$geofenceId/status',
+      query: _scopeQuery(companyId),
+      body: {'status': status},
+    );
+    return AdminGeofence.fromJson(_object(data, 'geofence'));
+  }
+
+  Future<List<AdminAttendanceSession>> listAttendance({
+    String? employeeId,
+    String? from,
+    String? to,
+    String? status,
+    String? companyId,
+  }) async {
+    final query = <String, Object?>{
+      if (_hasScope(companyId)) 'companyId': companyId,
+      if (_hasText(employeeId)) 'employeeId': employeeId!.trim(),
+      if (_hasText(from)) 'from': from,
+      if (_hasText(to)) 'to': to,
+      if (_hasText(status)) 'status': status,
+    };
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/attendance',
+      query: query.isEmpty ? null : query,
+    );
+    return _list(data, 'attendanceSessions')
+        .map(AdminAttendanceSession.fromJson)
+        .toList(growable: false);
   }
 }
 

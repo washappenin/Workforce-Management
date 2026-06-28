@@ -34,6 +34,20 @@ class AdminHubScreen extends StatelessWidget {
             subtitle: 'Provision staff, roles, managers, and profile status.',
             route: '/admin/employees',
           ),
+          SizedBox(height: 12),
+          _AdminHubTile(
+            icon: Icons.location_on_outlined,
+            title: 'Geofences',
+            subtitle: 'Maintain circular worksites for attendance checks.',
+            route: '/admin/geofences',
+          ),
+          SizedBox(height: 12),
+          _AdminHubTile(
+            icon: Icons.assignment_turned_in_outlined,
+            title: 'Attendance',
+            subtitle: 'Review company clock sessions and verification status.',
+            route: '/admin/attendance',
+          ),
         ],
       ),
     );
