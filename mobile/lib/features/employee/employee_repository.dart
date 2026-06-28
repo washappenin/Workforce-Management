@@ -73,6 +73,57 @@ class EmployeeRepository {
         .toList(growable: false);
   }
 
+  Future<FaceVerificationResult> verifyFace({
+    String provider = 'mock',
+    String verificationReference = 'mock-pass',
+    String? employeeId,
+  }) async {
+    final body = <String, Object?>{
+      'provider': provider,
+      'verificationReference': verificationReference,
+    };
+    if (_hasText(employeeId)) body['employeeId'] = employeeId;
+    final data = await _api.post<Map<String, Object?>>(
+      '/api/face/verify',
+      body: body,
+    );
+    return FaceVerificationResult.fromJson(data);
+  }
+
+  Future<GeofenceValidationResult> validateLocation(
+    DeviceLocation location,
+  ) async {
+    final data = await _api.post<Map<String, Object?>>(
+      '/api/geofences/validate-location',
+      body: _geofenceLocationBody(location),
+    );
+    return GeofenceValidationResult.fromJson(data);
+  }
+
+  Future<AttendanceActionResult> clockIn({
+    required DeviceLocation location,
+    required String faceVerificationReference,
+  }) async {
+    final data = await _api.post<Map<String, Object?>>(
+      '/api/attendance/clock-in',
+      body: {
+        ..._locationBody(location),
+        'faceVerificationReference': faceVerificationReference,
+      },
+    );
+    return AttendanceActionResult.fromJson(data);
+  }
+
+  Future<AttendanceActionResult> clockOut({
+    required DeviceLocation location,
+  }) async {
+    final data = await _api.post<Map<String, Object?>>(
+      '/api/attendance/clock-out',
+      body: _locationBody(location),
+    );
+    return AttendanceActionResult.fromJson(data);
+  }
+
   Future<List<ShiftAssignment>> listMyShifts() async {
     final data = await _api.get<Map<String, Object?>>('/api/shifts/me');
     return _list(data, 'assignments')
@@ -172,3 +223,19 @@ Map<String, Object?> _object(Map<String, Object?> data, String key) {
 }
 
 bool _hasText(String? value) => value != null && value.trim().isNotEmpty;
+
+Map<String, Object?> _locationBody(DeviceLocation location) {
+  return {
+    'latitude': location.latitude,
+    'longitude': location.longitude,
+    if (location.accuracyMeters != null)
+      'accuracyMeters': location.accuracyMeters,
+  };
+}
+
+Map<String, Object?> _geofenceLocationBody(DeviceLocation location) {
+  return {
+    'latitude': location.latitude,
+    'longitude': location.longitude,
+  };
+}

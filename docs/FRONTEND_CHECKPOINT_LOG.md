@@ -181,7 +181,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | FE0 | Flutter client governance and API contract alignment | `PASSED` | `mobile/` imported, Android/iOS scaffolds generated, dependencies resolved, analyzer/test pass, Android debug APK produced, and endpoint audit matches contract. |
 | FE1 | Flutter auth, shell, navigation, and global states | `READY_FOR_QA` | Android emulator verified for `SUPER_ADMIN` and `EMPLOYEE`; `smoke.env` credentials and API login verified for all roles; pending full emulator navigation QA for `COMPANY_ADMIN`, `HR_ADMIN`, and `MANAGER`. |
 | FE2 | Employee self-service workflows | `PASSED` | Android staging QA passed for employee dashboard, attendance history, shifts, leave submit, OKR progress, OKR employee approval, reviews, notifications read-all, and FE3-gated clock route placeholders. |
-| FE3 | Face verification and GPS attendance | `NOT_STARTED` | Clock-in must sequence camera -> face verify -> GPS -> clock-in. |
+| FE3 | Face verification and GPS attendance | `PASSED` | Android staging QA passed for mock face verification, GPS/geofence precheck, clock-in, dashboard status, clock-out, and final closed attendance state. |
 | FE4 | Admin organization setup workflows | `PASSED` | Android staging QA passed for admin setup: departments, designations, employee create/edit/status/manager assignment, employee detail, and face enrollment metadata. |
 | FE5 | Admin operations workflows | `NOT_STARTED` | Geofences, shifts, leave config, OKRs, reviews, broadcasts, attendance, and billing self-view need UI. |
 | FE6 | Manager team workflows | `NOT_STARTED` | Team attendance, leave approvals, OKRs, reviews, reports, and notifications need UI. |
@@ -426,6 +426,28 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 
 - Employee can successfully face-verify and clock in/out in staging.
 - Frontend never fakes face success or stores biometric/GPS data beyond the immediate request.
+
+**2026-06-28 Android staging integration QA update:**
+
+- Implemented Flutter FE3 screens for face verification, clock in, and clock out.
+- Added native Android/iOS camera and location permission declarations.
+- Added staging-safe QA coordinate overrides so emulator tests can validate geofenced attendance without a real GPS device.
+- Wired only documented backend calls:
+  - `POST /api/face/verify`
+  - `POST /api/geofences/validate-location`
+  - `POST /api/attendance/clock-in`
+  - `POST /api/attendance/clock-out`
+- Fixed the geofence precheck payload to send only `latitude` and `longitude`; attendance writes still send `accuracyMeters`.
+- Removed runtime Google Fonts fetching so emulator/offline runs do not fail on `fonts.gstatic.com` DNS.
+- Improved phone UX by keeping clock-in/out primary actions and result/error cards above the sequence details.
+- Added guarded staging integration test `mobile/integration_test/fe3_attendance_staging_test.dart`.
+- Ran `flutter test integration_test\fe3_attendance_staging_test.dart -d emulator-5554 --dart-define=QA_RUN_STAGING_FE3=true` with employee staging credentials and geofence coordinates loaded locally from ignored `scripts/staging-smoke/smoke.env`.
+- Final integration test passed against staging: employee login, clock-in route, mock face verification, geofence precheck, attendance clock-in, dashboard return, clock-out route, geofence precheck, attendance clock-out.
+- Post-test API check confirmed the staging employee ended in `CLOCKED_OUT`.
+- Verification also passed:
+  - `dart format lib test integration_test`
+  - `flutter analyze`
+  - `flutter test`
 
 ---
 

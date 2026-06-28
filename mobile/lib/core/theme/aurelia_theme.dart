@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Aurelia royal-minimal palette.
 /// Deep ink + parchment surfaces + restrained royal blue accent.
@@ -17,27 +16,42 @@ class AureliaColors {
 }
 
 class AureliaTheme {
+  static const _serif = 'serif';
+  static const _sans = 'sans';
+
   static ThemeData light() {
     final base = ThemeData.light(useMaterial3: true);
-    final textTheme = GoogleFonts.interTextTheme(base.textTheme).copyWith(
-      displayLarge: GoogleFonts.playfairDisplay(
+    final textTheme = base.textTheme.copyWith(
+      displayLarge: const TextStyle(
+        fontFamily: _serif,
         fontSize: 36,
         fontWeight: FontWeight.w600,
         color: AureliaColors.ink,
       ),
-      headlineMedium: GoogleFonts.playfairDisplay(
+      headlineMedium: const TextStyle(
+        fontFamily: _serif,
         fontSize: 24,
         fontWeight: FontWeight.w600,
         color: AureliaColors.ink,
       ),
-      titleLarge: GoogleFonts.inter(
+      titleLarge: const TextStyle(
+        fontFamily: _sans,
         fontSize: 18,
         fontWeight: FontWeight.w600,
         color: AureliaColors.ink,
       ),
-      bodyLarge: GoogleFonts.inter(fontSize: 15, color: AureliaColors.ink),
-      bodyMedium: GoogleFonts.inter(fontSize: 14, color: AureliaColors.inkSoft),
-      labelLarge: GoogleFonts.inter(
+      bodyLarge: const TextStyle(
+        fontFamily: _sans,
+        fontSize: 15,
+        color: AureliaColors.ink,
+      ),
+      bodyMedium: const TextStyle(
+        fontFamily: _sans,
+        fontSize: 14,
+        color: AureliaColors.inkSoft,
+      ),
+      labelLarge: const TextStyle(
+        fontFamily: _sans,
         fontSize: 14,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.2,
@@ -55,12 +69,13 @@ class AureliaTheme {
         error: AureliaColors.danger,
       ),
       textTheme: textTheme,
-      appBarTheme: AppBarTheme(
+      appBarTheme: const AppBarTheme(
         backgroundColor: AureliaColors.parchment,
         foregroundColor: AureliaColors.ink,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: GoogleFonts.playfairDisplay(
+        titleTextStyle: TextStyle(
+          fontFamily: _serif,
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: AureliaColors.ink,
@@ -101,7 +116,8 @@ class AureliaTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          textStyle: GoogleFonts.inter(
+          textStyle: const TextStyle(
+            fontFamily: _sans,
             fontSize: 15,
             fontWeight: FontWeight.w600,
             letterSpacing: 0.3,
@@ -116,8 +132,12 @@ class AureliaTheme {
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AureliaColors.surface,
         indicatorColor: AureliaColors.royal.withValues(alpha: 0.08),
-        labelTextStyle: WidgetStatePropertyAll(
-          GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500),
+        labelTextStyle: const WidgetStatePropertyAll(
+          TextStyle(
+            fontFamily: _sans,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

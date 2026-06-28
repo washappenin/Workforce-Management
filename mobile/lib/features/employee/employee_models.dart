@@ -318,6 +318,116 @@ class AttendanceSession {
   }
 }
 
+class DeviceLocation {
+  const DeviceLocation({
+    required this.latitude,
+    required this.longitude,
+    this.accuracyMeters,
+  });
+
+  final double latitude;
+  final double longitude;
+  final double? accuracyMeters;
+}
+
+class FaceVerificationResult {
+  const FaceVerificationResult({
+    required this.verified,
+    this.reason,
+    this.employeeId,
+    this.provider,
+    this.verificationReference,
+    this.expiresAt,
+  });
+
+  final bool verified;
+  final String? reason;
+  final String? employeeId;
+  final String? provider;
+  final String? verificationReference;
+  final String? expiresAt;
+
+  factory FaceVerificationResult.fromJson(Map<String, Object?> json) {
+    return FaceVerificationResult(
+      verified: json['verified'] == true,
+      reason: optionalString(json['reason']),
+      employeeId: optionalString(json['employeeId']),
+      provider: optionalString(json['provider']),
+      verificationReference: optionalString(json['verificationReference']),
+      expiresAt: optionalString(json['expiresAt']),
+    );
+  }
+}
+
+class GeofenceValidationResult {
+  const GeofenceValidationResult({
+    required this.isWithinGeofence,
+    this.reason,
+    this.geofenceId,
+    this.nearestGeofenceId,
+    this.distanceMeters,
+    this.radiusMeters,
+  });
+
+  final bool isWithinGeofence;
+  final String? reason;
+  final String? geofenceId;
+  final String? nearestGeofenceId;
+  final double? distanceMeters;
+  final double? radiusMeters;
+
+  factory GeofenceValidationResult.fromJson(Map<String, Object?> json) {
+    return GeofenceValidationResult(
+      isWithinGeofence: json['isWithinGeofence'] == true,
+      reason: optionalString(json['reason']),
+      geofenceId: optionalString(json['geofenceId']),
+      nearestGeofenceId: optionalString(json['nearestGeofenceId']),
+      distanceMeters: nullableDouble(json['distanceMeters']),
+      radiusMeters: nullableDouble(json['radiusMeters']),
+    );
+  }
+}
+
+class AttendanceGeofenceResult {
+  const AttendanceGeofenceResult({
+    required this.id,
+    required this.distanceMeters,
+    required this.radiusMeters,
+  });
+
+  final String id;
+  final double distanceMeters;
+  final double radiusMeters;
+
+  factory AttendanceGeofenceResult.fromJson(Map<String, Object?> json) {
+    return AttendanceGeofenceResult(
+      id: stringValue(json['id']),
+      distanceMeters: doubleValue(json['distanceMeters']),
+      radiusMeters: doubleValue(json['radiusMeters']),
+    );
+  }
+}
+
+class AttendanceActionResult {
+  const AttendanceActionResult({
+    required this.attendanceSession,
+    required this.geofence,
+  });
+
+  final AttendanceSession attendanceSession;
+  final AttendanceGeofenceResult geofence;
+
+  factory AttendanceActionResult.fromJson(Map<String, Object?> json) {
+    return AttendanceActionResult(
+      attendanceSession: AttendanceSession.fromJson(
+        objectValue(json['attendanceSession']),
+      ),
+      geofence:
+          AttendanceGeofenceResult.fromJson(objectValue(json['geofence'])),
+    );
+  }
+}
+
 class ShiftInfo {
   const ShiftInfo({
     required this.id,

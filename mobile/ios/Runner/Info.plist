@@ -24,6 +24,10 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Aurelia uses the camera to perform face verification before clock-in.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Aurelia uses your location to confirm clock-in and clock-out occur inside an approved company geofence.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

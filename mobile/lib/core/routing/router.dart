@@ -8,6 +8,7 @@ import '../../features/admin/designations_screen.dart';
 import '../../features/admin/employees_screen.dart';
 import '../../features/admin/face_enrollment_screen.dart';
 import '../../features/auth/login_screen.dart';
+import '../../features/employee/attendance_clock_screen.dart';
 import '../../features/employee/attendance_history_screen.dart';
 import '../../features/employee/employee_dashboard_screen.dart';
 import '../../features/employee/leave_screen.dart';
@@ -107,18 +108,15 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
               GoRoute(
                 path: 'attendance/clock-in',
-                builder: (_, __) =>
-                    const EmployeeFe3GateScreen(title: 'Clock in'),
+                builder: (_, __) => const ClockInScreen(),
               ),
               GoRoute(
                 path: 'attendance/clock-out',
-                builder: (_, __) =>
-                    const EmployeeFe3GateScreen(title: 'Clock out'),
+                builder: (_, __) => const ClockOutScreen(),
               ),
               GoRoute(
                 path: 'face-verification',
-                builder: (_, __) =>
-                    const EmployeeFe3GateScreen(title: 'Face verification'),
+                builder: (_, __) => const FaceVerificationScreen(),
               ),
               GoRoute(
                 path: 'shifts',

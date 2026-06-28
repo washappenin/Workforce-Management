@@ -147,6 +147,24 @@ class EmployeeDashboardScreen extends ConsumerWidget {
                     style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 8),
                 const _ActionRow(
+                  icon: Icons.login,
+                  title: 'Clock in',
+                  subtitle: 'Face verification, GPS, and geofence check',
+                  route: '/employee/attendance/clock-in',
+                ),
+                const _ActionRow(
+                  icon: Icons.logout,
+                  title: 'Clock out',
+                  subtitle: 'GPS and geofence check',
+                  route: '/employee/attendance/clock-out',
+                ),
+                const _ActionRow(
+                  icon: Icons.face_retouching_natural_outlined,
+                  title: 'Face verification',
+                  subtitle: 'Run the staging mock verification only',
+                  route: '/employee/face-verification',
+                ),
+                const _ActionRow(
                   icon: Icons.history_outlined,
                   title: 'Attendance history',
                   subtitle: 'View prior clock sessions',
@@ -234,26 +252,6 @@ class EmployeeDashboardScreen extends ConsumerWidget {
             ),
           ],
         ],
-      ),
-    );
-  }
-}
-
-class EmployeeFe3GateScreen extends StatelessWidget {
-  const EmployeeFe3GateScreen({super.key, required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return EmployeePage(
-      title: title,
-      subtitle: 'Face and GPS gated attendance',
-      child: const EmptyState(
-        icon: Icons.face_retouching_natural_outlined,
-        title: 'Enabled in FE3',
-        message:
-            'Clock-in and clock-out require the face verification and GPS checkpoint. Attendance history is available now.',
       ),
     );
   }
