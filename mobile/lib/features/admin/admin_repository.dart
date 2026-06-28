@@ -98,6 +98,16 @@ final adminLeaveRequestsProvider = FutureProvider.autoDispose
       );
 });
 
+final adminOkrsProvider =
+    FutureProvider.autoDispose.family<List<AdminOkr>, String?>((ref, status) {
+  return ref.watch(adminRepositoryProvider).listAdminOkrs(status: status);
+});
+
+final adminOkrProvider =
+    FutureProvider.autoDispose.family<AdminOkr, String>((ref, id) {
+  return ref.watch(adminRepositoryProvider).getOkr(id);
+});
+
 class AdminRepository {
   const AdminRepository(this._api);
 
@@ -813,6 +823,104 @@ class AdminRepository {
       body: {'comment': _hasText(comment) ? comment!.trim() : null},
     );
     return AdminLeaveRequest.fromJson(_object(data, 'leaveRequest'));
+  }
+
+  Future<List<AdminOkr>> listAdminOkrs({
+    String? employeeId,
+    String? status,
+    String? from,
+    String? to,
+    String? companyId,
+  }) async {
+    final query = <String, Object?>{
+      if (_hasScope(companyId)) 'companyId': companyId,
+      if (_hasText(employeeId)) 'employeeId': employeeId,
+      if (_hasText(status)) 'status': status,
+      if (_hasText(from)) 'from': from,
+      if (_hasText(to)) 'to': to,
+    };
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/okrs',
+      query: query.isEmpty ? null : query,
+    );
+    return _list(data, 'okrs').map(AdminOkr.fromJson).toList(growable: false);
+  }
+
+  Future<AdminOkr> createOkr({
+    required String employeeId,
+    required String title,
+    String? description,
+    String? dueDate,
+    String? companyId,
+  }) async {
+    final body = <String, Object?>{
+      'employeeId': employeeId,
+      'title': title.trim(),
+      'description': _hasText(description) ? description!.trim() : null,
+      'dueDate': _hasText(dueDate) ? dueDate : null,
+    };
+    if (_hasScope(companyId)) body['companyId'] = companyId;
+    final data = await _api.post<Map<String, Object?>>(
+      '/api/okrs',
+      body: body,
+    );
+    return AdminOkr.fromJson(_object(data, 'okr'));
+  }
+
+  Future<AdminOkr> getOkr(
+    String okrId, {
+    String? companyId,
+  }) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/okrs/$okrId',
+      query: _scopeQuery(companyId),
+    );
+    return AdminOkr.fromJson(_object(data, 'okr'));
+  }
+
+  Future<AdminOkr> updateOkr(
+    String okrId, {
+    required String title,
+    required String? description,
+    required String? dueDate,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/okrs/$okrId',
+      query: _scopeQuery(companyId),
+      body: {
+        'title': title.trim(),
+        'description': _hasText(description) ? description!.trim() : null,
+        'dueDate': _hasText(dueDate) ? dueDate : null,
+      },
+    );
+    return AdminOkr.fromJson(_object(data, 'okr'));
+  }
+
+  Future<AdminOkr> updateOkrStatus(
+    String okrId, {
+    required String status,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/okrs/$okrId/status',
+      query: _scopeQuery(companyId),
+      body: {'status': status},
+    );
+    return AdminOkr.fromJson(_object(data, 'okr'));
+  }
+
+  Future<AdminOkr> managerApproveOkr(
+    String okrId, {
+    String? comment,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/okrs/$okrId/manager-approve',
+      query: _scopeQuery(companyId),
+      body: {'comment': _hasText(comment) ? comment!.trim() : null},
+    );
+    return AdminOkr.fromJson(_object(data, 'okr'));
   }
 }
 

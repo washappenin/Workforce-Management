@@ -511,9 +511,185 @@ class AdminLeaveRequest {
   }
 }
 
+class AdminOkrEmployeeRef {
+  const AdminOkrEmployeeRef({
+    required this.id,
+    required this.companyId,
+    required this.status,
+    this.managerId,
+  });
+
+  final String id;
+  final String companyId;
+  final String? managerId;
+  final String status;
+
+  factory AdminOkrEmployeeRef.fromJson(Map<String, Object?> json) {
+    return AdminOkrEmployeeRef(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      managerId: optionalString(json['managerId']),
+      status: stringValue(json['status'], fallback: 'UNKNOWN'),
+    );
+  }
+}
+
+class AdminOkrProgressUpdate {
+  const AdminOkrProgressUpdate({
+    required this.id,
+    required this.companyId,
+    required this.okrId,
+    required this.employeeId,
+    required this.progressPercent,
+    this.note,
+    this.createdAt,
+  });
+
+  final String id;
+  final String companyId;
+  final String okrId;
+  final String employeeId;
+  final int progressPercent;
+  final String? note;
+  final String? createdAt;
+
+  factory AdminOkrProgressUpdate.fromJson(Map<String, Object?> json) {
+    return AdminOkrProgressUpdate(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      okrId: stringValue(json['okrId']),
+      employeeId: stringValue(json['employeeId']),
+      progressPercent: intValue(json['progressPercent']),
+      note: optionalString(json['note']),
+      createdAt: optionalString(json['createdAt']),
+    );
+  }
+}
+
+class AdminOkrApproval {
+  const AdminOkrApproval({
+    required this.id,
+    required this.companyId,
+    required this.okrId,
+    required this.approverEmployeeId,
+    required this.status,
+    this.comment,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final String id;
+  final String companyId;
+  final String okrId;
+  final String approverEmployeeId;
+  final String status;
+  final String? comment;
+  final String? createdAt;
+  final String? updatedAt;
+
+  factory AdminOkrApproval.fromJson(Map<String, Object?> json) {
+    return AdminOkrApproval(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      okrId: stringValue(json['okrId']),
+      approverEmployeeId: stringValue(json['approverEmployeeId']),
+      status: stringValue(json['status'], fallback: 'PENDING'),
+      comment: optionalString(json['comment']),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+    );
+  }
+}
+
+class AdminOkr {
+  const AdminOkr({
+    required this.id,
+    required this.companyId,
+    required this.employeeId,
+    required this.assignedById,
+    required this.title,
+    required this.status,
+    required this.progressUpdates,
+    required this.approvals,
+    this.description,
+    this.dueDate,
+    this.createdAt,
+    this.updatedAt,
+    this.employee,
+    this.assignedBy,
+  });
+
+  final String id;
+  final String companyId;
+  final String employeeId;
+  final String assignedById;
+  final String title;
+  final String? description;
+  final String status;
+  final String? dueDate;
+  final String? createdAt;
+  final String? updatedAt;
+  final AdminOkrEmployeeRef? employee;
+  final AdminOkrEmployeeRef? assignedBy;
+  final List<AdminOkrProgressUpdate> progressUpdates;
+  final List<AdminOkrApproval> approvals;
+
+  int get progressPercent =>
+      progressUpdates.isEmpty ? 0 : progressUpdates.first.progressPercent;
+
+  bool get employeeApproved => approvals.any(
+        (approval) =>
+            approval.approverEmployeeId == employeeId &&
+            approval.status == 'APPROVED',
+      );
+
+  bool get managerApproved => approvals.any(
+        (approval) =>
+            approval.approverEmployeeId != employeeId &&
+            approval.status == 'APPROVED',
+      );
+
+  bool get canApprove => !managerApproved && status != 'ARCHIVED';
+
+  factory AdminOkr.fromJson(Map<String, Object?> json) {
+    final employee = _object(json['employee']);
+    final assignedBy = _object(json['assignedBy']);
+    return AdminOkr(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      employeeId: stringValue(json['employeeId']),
+      assignedById: stringValue(json['assignedById']),
+      title: stringValue(json['title'], fallback: 'Objective'),
+      description: optionalString(json['description']),
+      status: stringValue(json['status'], fallback: 'ASSIGNED'),
+      dueDate: optionalString(json['dueDate']),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+      employee:
+          employee == null ? null : AdminOkrEmployeeRef.fromJson(employee),
+      assignedBy:
+          assignedBy == null ? null : AdminOkrEmployeeRef.fromJson(assignedBy),
+      progressUpdates: listValue(json['progressUpdates'])
+          .map(AdminOkrProgressUpdate.fromJson)
+          .toList(growable: false),
+      approvals: listValue(json['approvals'])
+          .map(AdminOkrApproval.fromJson)
+          .toList(growable: false),
+    );
+  }
+}
+
 Map<String, Object?>? _object(Object? value) {
   if (value is Map) return Map<String, Object?>.from(value);
   return null;
+}
+
+List<Map<String, Object?>> listValue(Object? value) {
+  if (value is! List) return const [];
+  return value
+      .whereType<Map>()
+      .map((item) => Map<String, Object?>.from(item))
+      .toList(growable: false);
 }
 
 String stringValue(Object? value, {String fallback = ''}) {

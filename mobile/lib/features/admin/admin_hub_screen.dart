@@ -62,6 +62,13 @@ class AdminHubScreen extends StatelessWidget {
             subtitle: 'Configure leave types, balances, and approvals.',
             route: '/admin/leave',
           ),
+          SizedBox(height: 12),
+          _AdminHubTile(
+            icon: Icons.track_changes_outlined,
+            title: 'OKRs',
+            subtitle: 'Assign objectives and review completion approvals.',
+            route: '/admin/okrs',
+          ),
         ],
       ),
     );
