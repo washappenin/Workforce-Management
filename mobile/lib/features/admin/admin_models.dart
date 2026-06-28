@@ -291,6 +291,83 @@ class AdminAttendanceSession {
   }
 }
 
+class AdminShift {
+  const AdminShift({
+    required this.id,
+    required this.companyId,
+    required this.name,
+    required this.startTime,
+    required this.endTime,
+    required this.status,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final String id;
+  final String companyId;
+  final String name;
+  final String startTime;
+  final String endTime;
+  final String status;
+  final String? createdAt;
+  final String? updatedAt;
+
+  bool get isActive => status == 'ACTIVE';
+
+  factory AdminShift.fromJson(Map<String, Object?> json) {
+    return AdminShift(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      name: stringValue(json['name'], fallback: 'Shift'),
+      startTime: stringValue(json['startTime']),
+      endTime: stringValue(json['endTime']),
+      status: stringValue(json['status'], fallback: 'INACTIVE'),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+    );
+  }
+}
+
+class AdminShiftAssignment {
+  const AdminShiftAssignment({
+    required this.id,
+    required this.companyId,
+    required this.employeeId,
+    required this.shiftId,
+    required this.startsOn,
+    this.endsOn,
+    this.createdAt,
+    this.updatedAt,
+    this.shift,
+  });
+
+  final String id;
+  final String companyId;
+  final String employeeId;
+  final String shiftId;
+  final String startsOn;
+  final String? endsOn;
+  final String? createdAt;
+  final String? updatedAt;
+  final AdminShift? shift;
+
+  factory AdminShiftAssignment.fromJson(Map<String, Object?> json) {
+    return AdminShiftAssignment(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      employeeId: stringValue(json['employeeId']),
+      shiftId: stringValue(json['shiftId']),
+      startsOn: stringValue(json['startsOn']),
+      endsOn: optionalString(json['endsOn']),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+      shift: _object(json['shift']) == null
+          ? null
+          : AdminShift.fromJson(_object(json['shift'])!),
+    );
+  }
+}
+
 Map<String, Object?>? _object(Object? value) {
   if (value is Map) return Map<String, Object?>.from(value);
   return null;

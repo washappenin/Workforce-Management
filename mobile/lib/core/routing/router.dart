@@ -9,6 +9,7 @@ import '../../features/admin/designations_screen.dart';
 import '../../features/admin/employees_screen.dart';
 import '../../features/admin/face_enrollment_screen.dart';
 import '../../features/admin/geofences_screen.dart';
+import '../../features/admin/shifts_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/employee/attendance_clock_screen.dart';
 import '../../features/employee/attendance_history_screen.dart';
@@ -205,6 +206,16 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'attendance',
                 builder: (_, __) => const AdminAttendanceScreen(),
+              ),
+              GoRoute(
+                path: 'shifts',
+                builder: (_, __) => const AdminShiftsScreen(),
+              ),
+              GoRoute(
+                path: 'shifts/:shiftId',
+                builder: (_, state) => AdminShiftDetailScreen(
+                  shiftId: state.pathParameters['shiftId']!,
+                ),
               ),
             ],
           ),

@@ -48,6 +48,13 @@ class AdminHubScreen extends StatelessWidget {
             subtitle: 'Review company clock sessions and verification status.',
             route: '/admin/attendance',
           ),
+          SizedBox(height: 12),
+          _AdminHubTile(
+            icon: Icons.schedule_outlined,
+            title: 'Shifts',
+            subtitle: 'Create work schedules and assign employee coverage.',
+            route: '/admin/shifts',
+          ),
         ],
       ),
     );
@@ -71,6 +78,7 @@ class _AdminHubTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
+        key: ValueKey('admin.hub.$route'),
         borderRadius: BorderRadius.circular(16),
         onTap: () => context.go(route),
         child: Padding(

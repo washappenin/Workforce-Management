@@ -57,6 +57,20 @@ final adminAttendanceProvider = FutureProvider.autoDispose
   return ref.watch(adminRepositoryProvider).listAttendance(status: status);
 });
 
+final shiftsProvider = FutureProvider.autoDispose<List<AdminShift>>((ref) {
+  return ref.watch(adminRepositoryProvider).listShifts();
+});
+
+final shiftProvider =
+    FutureProvider.autoDispose.family<AdminShift, String>((ref, id) {
+  return ref.watch(adminRepositoryProvider).getShift(id);
+});
+
+final shiftAssignmentsProvider = FutureProvider.autoDispose
+    .family<List<AdminShiftAssignment>, String>((ref, shiftId) {
+  return ref.watch(adminRepositoryProvider).listShiftAssignments(shiftId);
+});
+
 class AdminRepository {
   const AdminRepository(this._api);
 
@@ -449,6 +463,138 @@ class AdminRepository {
     return _list(data, 'attendanceSessions')
         .map(AdminAttendanceSession.fromJson)
         .toList(growable: false);
+  }
+
+  Future<List<AdminShift>> listShifts({String? companyId}) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/shifts',
+      query: _scopeQuery(companyId),
+    );
+    return _list(data, 'shifts')
+        .map(AdminShift.fromJson)
+        .toList(growable: false);
+  }
+
+  Future<AdminShift> getShift(
+    String shiftId, {
+    String? companyId,
+  }) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/shifts/$shiftId',
+      query: _scopeQuery(companyId),
+    );
+    return AdminShift.fromJson(_object(data, 'shift'));
+  }
+
+  Future<AdminShift> createShift({
+    required String name,
+    required String startTime,
+    required String endTime,
+    String? companyId,
+  }) async {
+    final body = <String, Object?>{
+      'name': name.trim(),
+      'startTime': startTime.trim(),
+      'endTime': endTime.trim(),
+    };
+    if (_hasScope(companyId)) body['companyId'] = companyId;
+    final data = await _api.post<Map<String, Object?>>(
+      '/api/admin/shifts',
+      body: body,
+    );
+    return AdminShift.fromJson(_object(data, 'shift'));
+  }
+
+  Future<AdminShift> updateShift(
+    String shiftId, {
+    required String name,
+    required String startTime,
+    required String endTime,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/admin/shifts/$shiftId',
+      query: _scopeQuery(companyId),
+      body: {
+        'name': name.trim(),
+        'startTime': startTime.trim(),
+        'endTime': endTime.trim(),
+      },
+    );
+    return AdminShift.fromJson(_object(data, 'shift'));
+  }
+
+  Future<AdminShift> updateShiftStatus(
+    String shiftId, {
+    required String status,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/admin/shifts/$shiftId/status',
+      query: _scopeQuery(companyId),
+      body: {'status': status},
+    );
+    return AdminShift.fromJson(_object(data, 'shift'));
+  }
+
+  Future<AdminShiftAssignment> assignShift(
+    String shiftId, {
+    required String employeeId,
+    required String startsOn,
+    String? endsOn,
+    String? companyId,
+  }) async {
+    final body = <String, Object?>{
+      'employeeId': employeeId,
+      'startsOn': startsOn,
+      'endsOn': _hasText(endsOn) ? endsOn : null,
+    };
+    final data = await _api.post<Map<String, Object?>>(
+      '/api/admin/shifts/$shiftId/assign',
+      query: _scopeQuery(companyId),
+      body: body,
+    );
+    return AdminShiftAssignment.fromJson(_object(data, 'assignment'));
+  }
+
+  Future<List<AdminShiftAssignment>> listShiftAssignments(
+    String shiftId, {
+    String? companyId,
+  }) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/shifts/$shiftId/assignments',
+      query: _scopeQuery(companyId),
+    );
+    return _list(data, 'assignments')
+        .map(AdminShiftAssignment.fromJson)
+        .toList(growable: false);
+  }
+
+  Future<AdminShiftAssignment> updateShiftAssignment(
+    String assignmentId, {
+    required String startsOn,
+    String? endsOn,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/admin/shift-assignments/$assignmentId',
+      query: _scopeQuery(companyId),
+      body: {
+        'startsOn': startsOn,
+        'endsOn': _hasText(endsOn) ? endsOn : null,
+      },
+    );
+    return AdminShiftAssignment.fromJson(_object(data, 'assignment'));
+  }
+
+  Future<void> deleteShiftAssignment(
+    String assignmentId, {
+    String? companyId,
+  }) async {
+    await _api.delete<Map<String, Object?>>(
+      '/api/admin/shift-assignments/$assignmentId',
+      query: _scopeQuery(companyId),
+    );
   }
 }
 
