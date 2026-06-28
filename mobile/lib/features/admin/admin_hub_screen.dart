@@ -55,6 +55,13 @@ class AdminHubScreen extends StatelessWidget {
             subtitle: 'Create work schedules and assign employee coverage.',
             route: '/admin/shifts',
           ),
+          SizedBox(height: 12),
+          _AdminHubTile(
+            icon: Icons.beach_access_outlined,
+            title: 'Leave',
+            subtitle: 'Configure leave types, balances, and approvals.',
+            route: '/admin/leave',
+          ),
         ],
       ),
     );

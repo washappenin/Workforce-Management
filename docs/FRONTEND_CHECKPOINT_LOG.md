@@ -183,7 +183,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | FE2 | Employee self-service workflows | `PASSED` | Android staging QA passed for employee dashboard, attendance history, shifts, leave submit, OKR progress, OKR employee approval, reviews, notifications read-all, and FE3-gated clock route placeholders. |
 | FE3 | Face verification and GPS attendance | `PASSED` | Android staging QA passed for mock face verification, GPS/geofence precheck, clock-in, dashboard status, clock-out, and final closed attendance state. |
 | FE4 | Admin organization setup workflows | `PASSED` | Android staging QA passed for admin setup: departments, designations, employee create/edit/status/manager assignment, employee detail, and face enrollment metadata. |
-| FE5 | Admin operations workflows | `PARTIAL` | FE5A geofences/attendance and FE5B shifts/assignments passed Android staging QA; leave config/approvals, OKRs, reviews, broadcasts, and billing self-view remain. |
+| FE5 | Admin operations workflows | `PARTIAL` | FE5A geofences/attendance, FE5B shifts/assignments, and FE5C leave operations passed Android staging QA; OKRs, reviews, broadcasts, and billing self-view remain. |
 | FE6 | Manager team workflows | `NOT_STARTED` | Team attendance, leave approvals, OKRs, reviews, reports, and notifications need UI. |
 | FE7 | Super-admin platform workflows | `NOT_STARTED` | Companies, plans, subscriptions, payments, platform reports, and company rollups need UI. |
 | FE8 | Reports and dashboard data rendering | `PARTIAL` | Dashboards must render real summary data and report tabs must call exact implemented endpoints. |
@@ -622,7 +622,40 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
   - `flutter analyze`
   - `flutter test`
   - `flutter build apk --debug`
-- FE5 remains `PARTIAL` until leave configuration/approvals, OKRs, reviews, broadcasts, and billing self-view are implemented and tested.
+- At the FE5B checkpoint, FE5 remained `PARTIAL` because leave configuration/approvals, OKRs, reviews, broadcasts, and billing self-view still needed implementation.
+
+**2026-06-28 FE5C Android staging integration QA update:**
+
+- Implemented admin leave operations in Flutter:
+  - leave type list/create/edit/status
+  - leave entitlement list/create/edit
+  - admin leave request list with status filter
+  - approve/reject pending leave requests with optional review comments
+- Added admin route:
+  - `/admin/leave`
+- Added a `Leave` entry to the admin setup hub; the bottom navigation remains compact for phone use.
+- Wired only documented CP10/FE5C endpoints:
+  - `GET /api/admin/leave-types`
+  - `POST /api/admin/leave-types`
+  - `GET /api/admin/leave-types/:leaveTypeId`
+  - `PATCH /api/admin/leave-types/:leaveTypeId`
+  - `PATCH /api/admin/leave-types/:leaveTypeId/status`
+  - `GET /api/admin/leave-entitlements`
+  - `POST /api/admin/leave-entitlements`
+  - `GET /api/admin/leave-entitlements/:entitlementId`
+  - `PATCH /api/admin/leave-entitlements/:entitlementId`
+  - `GET /api/admin/leave-requests`
+  - `PATCH /api/leave/:leaveRequestId/approve`
+  - `PATCH /api/leave/:leaveRequestId/reject`
+- Added guarded staging integration test `mobile/integration_test/fe5c_admin_leave_staging_test.dart`.
+- Ran `flutter test integration_test\fe5c_admin_leave_staging_test.dart -d emulator-5554 --dart-define=QA_RUN_STAGING_FE5C=true` with company-admin and employee staging credentials loaded locally from ignored `scripts/staging-smoke/smoke.env`.
+- Final integration test passed against staging: company-admin login, leave type creation, employee leave balance assignment, real employee request submission, and admin approval.
+- Verification also passed:
+  - `dart format`
+  - `flutter analyze`
+  - `flutter test`
+  - `flutter build apk --debug`
+- FE5 remains `PARTIAL` until OKRs, reviews, broadcasts, and billing self-view are implemented and tested.
 
 ---
 

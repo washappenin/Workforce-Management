@@ -71,6 +71,33 @@ final shiftAssignmentsProvider = FutureProvider.autoDispose
   return ref.watch(adminRepositoryProvider).listShiftAssignments(shiftId);
 });
 
+final leaveTypesProvider =
+    FutureProvider.autoDispose<List<AdminLeaveType>>((ref) {
+  return ref.watch(adminRepositoryProvider).listLeaveTypes();
+});
+
+final leaveTypeProvider =
+    FutureProvider.autoDispose.family<AdminLeaveType, String>((ref, id) {
+  return ref.watch(adminRepositoryProvider).getLeaveType(id);
+});
+
+final leaveEntitlementsProvider =
+    FutureProvider.autoDispose<List<AdminLeaveEntitlement>>((ref) {
+  return ref.watch(adminRepositoryProvider).listLeaveEntitlements();
+});
+
+final leaveEntitlementProvider =
+    FutureProvider.autoDispose.family<AdminLeaveEntitlement, String>((ref, id) {
+  return ref.watch(adminRepositoryProvider).getLeaveEntitlement(id);
+});
+
+final adminLeaveRequestsProvider = FutureProvider.autoDispose
+    .family<List<AdminLeaveRequest>, String?>((ref, status) {
+  return ref.watch(adminRepositoryProvider).listAdminLeaveRequests(
+        status: status,
+      );
+});
+
 class AdminRepository {
   const AdminRepository(this._api);
 
@@ -595,6 +622,197 @@ class AdminRepository {
       '/api/admin/shift-assignments/$assignmentId',
       query: _scopeQuery(companyId),
     );
+  }
+
+  Future<List<AdminLeaveType>> listLeaveTypes({String? companyId}) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/leave-types',
+      query: _scopeQuery(companyId),
+    );
+    return _list(data, 'leaveTypes')
+        .map(AdminLeaveType.fromJson)
+        .toList(growable: false);
+  }
+
+  Future<AdminLeaveType> getLeaveType(
+    String leaveTypeId, {
+    String? companyId,
+  }) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/leave-types/$leaveTypeId',
+      query: _scopeQuery(companyId),
+    );
+    return AdminLeaveType.fromJson(_object(data, 'leaveType'));
+  }
+
+  Future<AdminLeaveType> createLeaveType({
+    required String name,
+    double? defaultAnnualAllowance,
+    String? companyId,
+  }) async {
+    final body = <String, Object?>{
+      'name': name.trim(),
+      'defaultAnnualAllowance': defaultAnnualAllowance,
+    };
+    if (_hasScope(companyId)) body['companyId'] = companyId;
+    final data = await _api.post<Map<String, Object?>>(
+      '/api/admin/leave-types',
+      body: body,
+    );
+    return AdminLeaveType.fromJson(_object(data, 'leaveType'));
+  }
+
+  Future<AdminLeaveType> updateLeaveType(
+    String leaveTypeId, {
+    required String name,
+    double? defaultAnnualAllowance,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/admin/leave-types/$leaveTypeId',
+      query: _scopeQuery(companyId),
+      body: {
+        'name': name.trim(),
+        'defaultAnnualAllowance': defaultAnnualAllowance,
+      },
+    );
+    return AdminLeaveType.fromJson(_object(data, 'leaveType'));
+  }
+
+  Future<AdminLeaveType> updateLeaveTypeStatus(
+    String leaveTypeId, {
+    required String status,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/admin/leave-types/$leaveTypeId/status',
+      query: _scopeQuery(companyId),
+      body: {'status': status},
+    );
+    return AdminLeaveType.fromJson(_object(data, 'leaveType'));
+  }
+
+  Future<List<AdminLeaveEntitlement>> listLeaveEntitlements({
+    String? employeeId,
+    String? leaveTypeId,
+    int? year,
+    String? companyId,
+  }) async {
+    final query = <String, Object?>{
+      if (_hasScope(companyId)) 'companyId': companyId,
+      if (_hasText(employeeId)) 'employeeId': employeeId,
+      if (_hasText(leaveTypeId)) 'leaveTypeId': leaveTypeId,
+      if (year != null) 'year': year,
+    };
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/leave-entitlements',
+      query: query.isEmpty ? null : query,
+    );
+    return _list(data, 'entitlements')
+        .map(AdminLeaveEntitlement.fromJson)
+        .toList(growable: false);
+  }
+
+  Future<AdminLeaveEntitlement> getLeaveEntitlement(
+    String entitlementId, {
+    String? companyId,
+  }) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/leave-entitlements/$entitlementId',
+      query: _scopeQuery(companyId),
+    );
+    return AdminLeaveEntitlement.fromJson(_object(data, 'entitlement'));
+  }
+
+  Future<AdminLeaveEntitlement> upsertLeaveEntitlement({
+    required String employeeId,
+    required String leaveTypeId,
+    required int year,
+    required double totalDays,
+    double usedDays = 0,
+    String? companyId,
+  }) async {
+    final body = <String, Object?>{
+      'employeeId': employeeId,
+      'leaveTypeId': leaveTypeId,
+      'year': year,
+      'totalDays': totalDays,
+      'usedDays': usedDays,
+    };
+    if (_hasScope(companyId)) body['companyId'] = companyId;
+    final data = await _api.post<Map<String, Object?>>(
+      '/api/admin/leave-entitlements',
+      body: body,
+    );
+    return AdminLeaveEntitlement.fromJson(_object(data, 'entitlement'));
+  }
+
+  Future<AdminLeaveEntitlement> updateLeaveEntitlement(
+    String entitlementId, {
+    required double totalDays,
+    required double usedDays,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/admin/leave-entitlements/$entitlementId',
+      query: _scopeQuery(companyId),
+      body: {
+        'totalDays': totalDays,
+        'usedDays': usedDays,
+      },
+    );
+    return AdminLeaveEntitlement.fromJson(_object(data, 'entitlement'));
+  }
+
+  Future<List<AdminLeaveRequest>> listAdminLeaveRequests({
+    String? employeeId,
+    String? leaveTypeId,
+    String? status,
+    String? from,
+    String? to,
+    String? companyId,
+  }) async {
+    final query = <String, Object?>{
+      if (_hasScope(companyId)) 'companyId': companyId,
+      if (_hasText(employeeId)) 'employeeId': employeeId,
+      if (_hasText(leaveTypeId)) 'leaveTypeId': leaveTypeId,
+      if (_hasText(status)) 'status': status,
+      if (_hasText(from)) 'from': from,
+      if (_hasText(to)) 'to': to,
+    };
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/leave-requests',
+      query: query.isEmpty ? null : query,
+    );
+    return _list(data, 'leaveRequests')
+        .map(AdminLeaveRequest.fromJson)
+        .toList(growable: false);
+  }
+
+  Future<AdminLeaveRequest> approveLeaveRequest(
+    String leaveRequestId, {
+    String? comment,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/leave/$leaveRequestId/approve',
+      query: _scopeQuery(companyId),
+      body: {'comment': _hasText(comment) ? comment!.trim() : null},
+    );
+    return AdminLeaveRequest.fromJson(_object(data, 'leaveRequest'));
+  }
+
+  Future<AdminLeaveRequest> rejectLeaveRequest(
+    String leaveRequestId, {
+    String? comment,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/leave/$leaveRequestId/reject',
+      query: _scopeQuery(companyId),
+      body: {'comment': _hasText(comment) ? comment!.trim() : null},
+    );
+    return AdminLeaveRequest.fromJson(_object(data, 'leaveRequest'));
   }
 }
 

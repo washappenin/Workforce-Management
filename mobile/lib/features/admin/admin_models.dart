@@ -368,6 +368,149 @@ class AdminShiftAssignment {
   }
 }
 
+class AdminLeaveType {
+  const AdminLeaveType({
+    required this.id,
+    required this.companyId,
+    required this.name,
+    required this.status,
+    this.defaultAnnualAllowance,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final String id;
+  final String companyId;
+  final String name;
+  final String status;
+  final double? defaultAnnualAllowance;
+  final String? createdAt;
+  final String? updatedAt;
+
+  bool get isActive => status == 'ACTIVE';
+
+  factory AdminLeaveType.fromJson(Map<String, Object?> json) {
+    return AdminLeaveType(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      name: stringValue(json['name'], fallback: 'Leave type'),
+      status: stringValue(json['status'], fallback: 'INACTIVE'),
+      defaultAnnualAllowance: nullableDouble(json['defaultAnnualAllowance']),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+    );
+  }
+}
+
+class AdminLeaveEntitlement {
+  const AdminLeaveEntitlement({
+    required this.id,
+    required this.companyId,
+    required this.employeeId,
+    required this.leaveTypeId,
+    required this.year,
+    required this.totalDays,
+    required this.usedDays,
+    required this.remainingDays,
+    this.createdAt,
+    this.updatedAt,
+    this.leaveType,
+  });
+
+  final String id;
+  final String companyId;
+  final String employeeId;
+  final String leaveTypeId;
+  final int year;
+  final double totalDays;
+  final double usedDays;
+  final double remainingDays;
+  final String? createdAt;
+  final String? updatedAt;
+  final AdminLeaveType? leaveType;
+
+  String get leaveTypeName => leaveType?.name ?? 'Leave';
+
+  factory AdminLeaveEntitlement.fromJson(Map<String, Object?> json) {
+    return AdminLeaveEntitlement(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      employeeId: stringValue(json['employeeId']),
+      leaveTypeId: stringValue(json['leaveTypeId']),
+      year: intValue(json['year']),
+      totalDays: doubleValue(json['totalDays']),
+      usedDays: doubleValue(json['usedDays']),
+      remainingDays: doubleValue(json['remainingDays']),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+      leaveType: _object(json['leaveType']) == null
+          ? null
+          : AdminLeaveType.fromJson(_object(json['leaveType'])!),
+    );
+  }
+}
+
+class AdminLeaveRequest {
+  const AdminLeaveRequest({
+    required this.id,
+    required this.companyId,
+    required this.employeeId,
+    required this.leaveTypeId,
+    required this.startDate,
+    required this.endDate,
+    required this.requestedDays,
+    required this.status,
+    this.reason,
+    this.reviewedById,
+    this.reviewedAt,
+    this.reviewComment,
+    this.createdAt,
+    this.updatedAt,
+    this.leaveType,
+  });
+
+  final String id;
+  final String companyId;
+  final String employeeId;
+  final String leaveTypeId;
+  final String startDate;
+  final String endDate;
+  final double requestedDays;
+  final String status;
+  final String? reason;
+  final String? reviewedById;
+  final String? reviewedAt;
+  final String? reviewComment;
+  final String? createdAt;
+  final String? updatedAt;
+  final AdminLeaveType? leaveType;
+
+  bool get isPending => status == 'PENDING';
+  String get leaveTypeName => leaveType?.name ?? 'Leave';
+
+  factory AdminLeaveRequest.fromJson(Map<String, Object?> json) {
+    return AdminLeaveRequest(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      employeeId: stringValue(json['employeeId']),
+      leaveTypeId: stringValue(json['leaveTypeId']),
+      startDate: stringValue(json['startDate']),
+      endDate: stringValue(json['endDate']),
+      requestedDays: doubleValue(json['requestedDays']),
+      status: stringValue(json['status'], fallback: 'PENDING'),
+      reason: optionalString(json['reason']),
+      reviewedById: optionalString(json['reviewedById']),
+      reviewedAt: optionalString(json['reviewedAt']),
+      reviewComment: optionalString(json['reviewComment']),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+      leaveType: _object(json['leaveType']) == null
+          ? null
+          : AdminLeaveType.fromJson(_object(json['leaveType'])!),
+    );
+  }
+}
+
 Map<String, Object?>? _object(Object? value) {
   if (value is Map) return Map<String, Object?>.from(value);
   return null;
@@ -392,9 +535,13 @@ int intValue(Object? value, {int fallback = 0}) {
 }
 
 double doubleValue(Object? value, {double fallback = 0}) {
+  return nullableDouble(value) ?? fallback;
+}
+
+double? nullableDouble(Object? value) {
   if (value is num) return value.toDouble();
-  if (value is String) return double.tryParse(value) ?? fallback;
-  return fallback;
+  if (value is String) return double.tryParse(value);
+  return null;
 }
 
 bool boolValue(Object? value, {bool fallback = false}) {
