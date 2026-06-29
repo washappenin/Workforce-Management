@@ -11,6 +11,7 @@ import '../../features/admin/face_enrollment_screen.dart';
 import '../../features/admin/geofences_screen.dart';
 import '../../features/admin/admin_leave_screen.dart';
 import '../../features/admin/admin_okrs_screen.dart';
+import '../../features/admin/admin_reviews_screen.dart';
 import '../../features/admin/shifts_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/employee/attendance_clock_screen.dart';
@@ -232,6 +233,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                 builder: (_, state) => AdminOkrDetailScreen(
                   okrId: state.pathParameters['okrId']!,
                 ),
+              ),
+              GoRoute(
+                path: 'reviews',
+                builder: (_, __) => const AdminReviewsScreen(),
               ),
             ],
           ),

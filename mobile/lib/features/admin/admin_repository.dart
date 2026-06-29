@@ -108,6 +108,26 @@ final adminOkrProvider =
   return ref.watch(adminRepositoryProvider).getOkr(id);
 });
 
+final adminReviewCyclesProvider =
+    FutureProvider.autoDispose<List<AdminReviewCycle>>((ref) {
+  return ref.watch(adminRepositoryProvider).listReviewCycles();
+});
+
+final adminReviewCycleProvider =
+    FutureProvider.autoDispose.family<AdminReviewCycle, String>((ref, id) {
+  return ref.watch(adminRepositoryProvider).getReviewCycle(id);
+});
+
+final adminReviewsProvider = FutureProvider.autoDispose
+    .family<List<AdminPerformanceReview>, String?>((ref, status) {
+  return ref.watch(adminRepositoryProvider).listAdminReviews(status: status);
+});
+
+final adminReviewProvider = FutureProvider.autoDispose
+    .family<AdminPerformanceReview, String>((ref, id) {
+  return ref.watch(adminRepositoryProvider).getReview(id);
+});
+
 class AdminRepository {
   const AdminRepository(this._api);
 
@@ -921,6 +941,163 @@ class AdminRepository {
       body: {'comment': _hasText(comment) ? comment!.trim() : null},
     );
     return AdminOkr.fromJson(_object(data, 'okr'));
+  }
+
+  Future<List<AdminReviewCycle>> listReviewCycles({String? companyId}) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/review-cycles',
+      query: _scopeQuery(companyId),
+    );
+    return _list(data, 'reviewCycles')
+        .map(AdminReviewCycle.fromJson)
+        .toList(growable: false);
+  }
+
+  Future<AdminReviewCycle> getReviewCycle(
+    String reviewCycleId, {
+    String? companyId,
+  }) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/review-cycles/$reviewCycleId',
+      query: _scopeQuery(companyId),
+    );
+    return AdminReviewCycle.fromJson(_object(data, 'reviewCycle'));
+  }
+
+  Future<AdminReviewCycle> createReviewCycle({
+    required String name,
+    required String startDate,
+    required String endDate,
+    String? companyId,
+  }) async {
+    final body = <String, Object?>{
+      'name': name.trim(),
+      'startDate': startDate,
+      'endDate': endDate,
+    };
+    if (_hasScope(companyId)) body['companyId'] = companyId;
+    final data = await _api.post<Map<String, Object?>>(
+      '/api/admin/review-cycles',
+      body: body,
+    );
+    return AdminReviewCycle.fromJson(_object(data, 'reviewCycle'));
+  }
+
+  Future<AdminReviewCycle> updateReviewCycle(
+    String reviewCycleId, {
+    required String name,
+    required String startDate,
+    required String endDate,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/admin/review-cycles/$reviewCycleId',
+      query: _scopeQuery(companyId),
+      body: {
+        'name': name.trim(),
+        'startDate': startDate,
+        'endDate': endDate,
+      },
+    );
+    return AdminReviewCycle.fromJson(_object(data, 'reviewCycle'));
+  }
+
+  Future<AdminReviewCycle> updateReviewCycleStatus(
+    String reviewCycleId, {
+    required String status,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/admin/review-cycles/$reviewCycleId/status',
+      query: _scopeQuery(companyId),
+      body: {'status': status},
+    );
+    return AdminReviewCycle.fromJson(_object(data, 'reviewCycle'));
+  }
+
+  Future<List<AdminPerformanceReview>> listAdminReviews({
+    String? employeeId,
+    String? reviewCycleId,
+    String? status,
+    String? from,
+    String? to,
+    String? companyId,
+  }) async {
+    final query = <String, Object?>{
+      if (_hasScope(companyId)) 'companyId': companyId,
+      if (_hasText(employeeId)) 'employeeId': employeeId,
+      if (_hasText(reviewCycleId)) 'reviewCycleId': reviewCycleId,
+      if (_hasText(status)) 'status': status,
+      if (_hasText(from)) 'from': from,
+      if (_hasText(to)) 'to': to,
+    };
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/reviews',
+      query: query.isEmpty ? null : query,
+    );
+    return _list(data, 'reviews')
+        .map(AdminPerformanceReview.fromJson)
+        .toList(growable: false);
+  }
+
+  Future<AdminPerformanceReview> getReview(
+    String reviewId, {
+    String? companyId,
+  }) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/reviews/$reviewId',
+      query: _scopeQuery(companyId),
+    );
+    return AdminPerformanceReview.fromJson(_object(data, 'review'));
+  }
+
+  Future<AdminPerformanceReview> submitManagerReview({
+    required String employeeId,
+    required String reviewCycleId,
+    required String summary,
+    double? rating,
+    String? companyId,
+  }) async {
+    final data = await _api.post<Map<String, Object?>>(
+      '/api/reviews/$employeeId/manager-review',
+      query: _scopeQuery(companyId),
+      body: {
+        'reviewCycleId': reviewCycleId,
+        'summary': summary.trim(),
+        'rating': rating,
+      },
+    );
+    return AdminPerformanceReview.fromJson(_object(data, 'review'));
+  }
+
+  Future<AdminPerformanceReview> updateReview(
+    String reviewId, {
+    required String summary,
+    double? rating,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/reviews/$reviewId',
+      query: _scopeQuery(companyId),
+      body: {
+        'summary': summary.trim(),
+        'rating': rating,
+      },
+    );
+    return AdminPerformanceReview.fromJson(_object(data, 'review'));
+  }
+
+  Future<AdminPerformanceReview> updateReviewStatus(
+    String reviewId, {
+    required String status,
+    String? companyId,
+  }) async {
+    final data = await _api.patch<Map<String, Object?>>(
+      '/api/reviews/$reviewId/status',
+      query: _scopeQuery(companyId),
+      body: {'status': status},
+    );
+    return AdminPerformanceReview.fromJson(_object(data, 'review'));
   }
 }
 

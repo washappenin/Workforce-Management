@@ -679,6 +679,128 @@ class AdminOkr {
   }
 }
 
+class AdminReviewCycle {
+  const AdminReviewCycle({
+    required this.id,
+    required this.companyId,
+    required this.name,
+    required this.startDate,
+    required this.endDate,
+    required this.status,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final String id;
+  final String companyId;
+  final String name;
+  final String startDate;
+  final String endDate;
+  final String status;
+  final String? createdAt;
+  final String? updatedAt;
+
+  bool get isActive => status == 'ACTIVE';
+
+  factory AdminReviewCycle.fromJson(Map<String, Object?> json) {
+    return AdminReviewCycle(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      name: stringValue(json['name'], fallback: 'Review cycle'),
+      startDate: stringValue(json['startDate']),
+      endDate: stringValue(json['endDate']),
+      status: stringValue(json['status'], fallback: 'DRAFT'),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+    );
+  }
+}
+
+class AdminReviewEmployeeRef {
+  const AdminReviewEmployeeRef({
+    required this.id,
+    required this.companyId,
+    required this.status,
+    this.managerId,
+  });
+
+  final String id;
+  final String companyId;
+  final String? managerId;
+  final String status;
+
+  factory AdminReviewEmployeeRef.fromJson(Map<String, Object?> json) {
+    return AdminReviewEmployeeRef(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      managerId: optionalString(json['managerId']),
+      status: stringValue(json['status'], fallback: 'UNKNOWN'),
+    );
+  }
+}
+
+class AdminPerformanceReview {
+  const AdminPerformanceReview({
+    required this.id,
+    required this.companyId,
+    required this.reviewCycleId,
+    required this.employeeId,
+    required this.managerId,
+    required this.summary,
+    required this.status,
+    this.rating,
+    this.submittedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.reviewCycle,
+    this.employee,
+    this.manager,
+  });
+
+  final String id;
+  final String companyId;
+  final String reviewCycleId;
+  final String employeeId;
+  final String managerId;
+  final String summary;
+  final double? rating;
+  final String status;
+  final String? submittedAt;
+  final String? createdAt;
+  final String? updatedAt;
+  final AdminReviewCycle? reviewCycle;
+  final AdminReviewEmployeeRef? employee;
+  final AdminReviewEmployeeRef? manager;
+
+  String get title => reviewCycle?.name ?? 'Performance review';
+  bool get isEditable => status != 'ACKNOWLEDGED' && status != 'ARCHIVED';
+
+  factory AdminPerformanceReview.fromJson(Map<String, Object?> json) {
+    final reviewCycle = _object(json['reviewCycle']);
+    final employee = _object(json['employee']);
+    final manager = _object(json['manager']);
+    return AdminPerformanceReview(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      reviewCycleId: stringValue(json['reviewCycleId']),
+      employeeId: stringValue(json['employeeId']),
+      managerId: stringValue(json['managerId']),
+      summary: stringValue(json['summary']),
+      rating: nullableDouble(json['rating']),
+      status: stringValue(json['status'], fallback: 'SUBMITTED'),
+      submittedAt: optionalString(json['submittedAt']),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+      reviewCycle:
+          reviewCycle == null ? null : AdminReviewCycle.fromJson(reviewCycle),
+      employee:
+          employee == null ? null : AdminReviewEmployeeRef.fromJson(employee),
+      manager:
+          manager == null ? null : AdminReviewEmployeeRef.fromJson(manager),
+    );
+  }
+}
+
 Map<String, Object?>? _object(Object? value) {
   if (value is Map) return Map<String, Object?>.from(value);
   return null;

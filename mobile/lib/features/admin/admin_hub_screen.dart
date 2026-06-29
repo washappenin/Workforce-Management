@@ -69,6 +69,13 @@ class AdminHubScreen extends StatelessWidget {
             subtitle: 'Assign objectives and review completion approvals.',
             route: '/admin/okrs',
           ),
+          SizedBox(height: 12),
+          _AdminHubTile(
+            icon: Icons.rate_review_outlined,
+            title: 'Reviews',
+            subtitle: 'Manage review cycles and submit performance reviews.',
+            route: '/admin/reviews',
+          ),
         ],
       ),
     );
