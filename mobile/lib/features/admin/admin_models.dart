@@ -801,6 +801,60 @@ class AdminPerformanceReview {
   }
 }
 
+class AdminNotificationRecipient {
+  const AdminNotificationRecipient({
+    required this.employeeId,
+    required this.userId,
+    required this.roles,
+  });
+
+  final String employeeId;
+  final String userId;
+  final List<String> roles;
+
+  factory AdminNotificationRecipient.fromJson(Map<String, Object?> json) {
+    return AdminNotificationRecipient(
+      employeeId: stringValue(json['employeeId']),
+      userId: stringValue(json['userId']),
+      roles: (json['roles'] as List? ?? const [])
+          .map((role) => role.toString())
+          .toList(growable: false),
+    );
+  }
+}
+
+class AdminNotificationBroadcastResult {
+  const AdminNotificationBroadcastResult({
+    required this.companyId,
+    required this.type,
+    required this.notificationCount,
+    required this.recipients,
+    this.targetRole,
+  });
+
+  final String companyId;
+  final String type;
+  final String? targetRole;
+  final int notificationCount;
+  final List<AdminNotificationRecipient> recipients;
+
+  int get recipientCount => recipients.length;
+
+  factory AdminNotificationBroadcastResult.fromJson(
+    Map<String, Object?> json,
+  ) {
+    return AdminNotificationBroadcastResult(
+      companyId: stringValue(json['companyId']),
+      type: stringValue(json['type'], fallback: 'SYSTEM'),
+      targetRole: optionalString(json['targetRole']),
+      notificationCount: intValue(json['notificationCount']),
+      recipients: listValue(json['recipients'])
+          .map(AdminNotificationRecipient.fromJson)
+          .toList(growable: false),
+    );
+  }
+}
+
 Map<String, Object?>? _object(Object? value) {
   if (value is Map) return Map<String, Object?>.from(value);
   return null;

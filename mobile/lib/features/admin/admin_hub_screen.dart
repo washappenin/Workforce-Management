@@ -76,6 +76,13 @@ class AdminHubScreen extends StatelessWidget {
             subtitle: 'Manage review cycles and submit performance reviews.',
             route: '/admin/reviews',
           ),
+          SizedBox(height: 12),
+          _AdminHubTile(
+            icon: Icons.campaign_outlined,
+            title: 'Broadcasts',
+            subtitle: 'Send in-app announcements to active recipients.',
+            route: '/admin/notifications/broadcast',
+          ),
         ],
       ),
     );

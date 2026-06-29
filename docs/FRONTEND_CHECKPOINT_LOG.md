@@ -183,7 +183,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | FE2 | Employee self-service workflows | `PASSED` | Android staging QA passed for employee dashboard, attendance history, shifts, leave submit, OKR progress, OKR employee approval, reviews, notifications read-all, and FE3-gated clock route placeholders. |
 | FE3 | Face verification and GPS attendance | `PASSED` | Android staging QA passed for mock face verification, GPS/geofence precheck, clock-in, dashboard status, clock-out, and final closed attendance state. |
 | FE4 | Admin organization setup workflows | `PASSED` | Android staging QA passed for admin setup: departments, designations, employee create/edit/status/manager assignment, employee detail, and face enrollment metadata. |
-| FE5 | Admin operations workflows | `PARTIAL` | FE5A geofences/attendance, FE5B shifts/assignments, FE5C leave, and FE5D OKRs passed Android staging QA; FE5E reviews are implemented and API-verified, with Android UI QA still pending; broadcasts and billing self-view remain. |
+| FE5 | Admin operations workflows | `PARTIAL` | FE5A geofences/attendance, FE5B shifts/assignments, FE5C leave, and FE5D OKRs passed Android staging QA; FE5E reviews and FE5F broadcasts are implemented and API-verified, with Android UI QA still pending; billing self-view remains. |
 | FE6 | Manager team workflows | `NOT_STARTED` | Team attendance, leave approvals, OKRs, reviews, reports, and notifications need UI. |
 | FE7 | Super-admin platform workflows | `NOT_STARTED` | Companies, plans, subscriptions, payments, platform reports, and company rollups need UI. |
 | FE8 | Reports and dashboard data rendering | `PARTIAL` | Dashboards must render real summary data and report tabs must call exact implemented endpoints. |
@@ -686,7 +686,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
   - `flutter analyze`
   - `flutter test`
   - `flutter build apk --debug`
-- FE5 remains `PARTIAL` until FE5E Android UI QA, broadcasts, and billing self-view are completed.
+- FE5 remains `PARTIAL` until FE5E/FE5F Android UI QA and billing self-view are completed.
 
 **2026-06-29 FE5E implementation and staging API verification update:**
 
@@ -720,6 +720,28 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 - Android UI integration caveat:
   - The FE5E UI test builds and reaches the real staging workflow, but the local emulator runner remains unstable around modal bottom-sheet/keyboard interactions and did not produce a clean pass in this session.
   - Do not mark FE5E `PASSED` until `fe5e_admin_reviews_staging_test.dart` completes cleanly on emulator/device.
+
+**2026-06-29 FE5F implementation and staging API verification update:**
+
+- Implemented admin notification broadcast operations in Flutter:
+  - broadcast composer for title/message/type
+  - optional role filter
+  - optional specific active employee recipients
+  - broadcast result summary with notification and recipient counts
+- Added admin route:
+  - `/admin/notifications/broadcast`
+- Added a `Broadcasts` entry to the admin setup hub; the bottom navigation remains compact for phone use.
+- Wired only documented CP13/FE5F endpoint:
+  - `POST /api/admin/notifications/broadcast`
+- Added guarded staging integration test `mobile/integration_test/fe5f_admin_broadcasts_staging_test.dart`.
+- Verification passed:
+  - `dart format`
+  - `flutter analyze`
+  - `flutter test`
+  - direct staging CP13 API probe with company-admin and employee credentials loaded from ignored `scripts/staging-smoke/smoke.env`: targeted employee broadcast created one notification and the employee inbox returned it as `UNREAD`.
+- Android UI integration caveat:
+  - The FE5F UI test builds, but the local emulator runner timed out before returning a clean pass in this session.
+  - Do not mark FE5F `PASSED` until `fe5f_admin_broadcasts_staging_test.dart` completes cleanly on emulator/device.
 
 ---
 

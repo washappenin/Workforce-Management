@@ -1099,6 +1099,30 @@ class AdminRepository {
     );
     return AdminPerformanceReview.fromJson(_object(data, 'review'));
   }
+
+  Future<AdminNotificationBroadcastResult> broadcastNotification({
+    required String title,
+    required String message,
+    required String type,
+    String? targetRole,
+    List<String>? employeeIds,
+    String? companyId,
+  }) async {
+    final body = <String, Object?>{
+      'title': title.trim(),
+      'message': message.trim(),
+      'type': type,
+      if (_hasText(targetRole)) 'targetRole': targetRole,
+      if (employeeIds != null && employeeIds.isNotEmpty)
+        'employeeIds': employeeIds,
+      if (_hasScope(companyId)) 'companyId': companyId,
+    };
+    final data = await _api.post<Map<String, Object?>>(
+      '/api/admin/notifications/broadcast',
+      body: body,
+    );
+    return AdminNotificationBroadcastResult.fromJson(data);
+  }
 }
 
 Map<String, Object?>? _scopeQuery(String? companyId) {
