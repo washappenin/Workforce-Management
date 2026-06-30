@@ -184,7 +184,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | FE3 | Face verification and GPS attendance | `PASSED` | Android staging QA passed for mock face verification, GPS/geofence precheck, clock-in, dashboard status, clock-out, and final closed attendance state. |
 | FE4 | Admin organization setup workflows | `PASSED` | Android staging QA passed for admin setup: departments, designations, employee create/edit/status/manager assignment, employee detail, and face enrollment metadata. |
 | FE5 | Admin operations workflows | `PASSED` | Android staging QA passed for geofences/attendance, shifts/assignments, leave, OKRs, reviews, broadcasts, and billing self-view. |
-| FE6 | Manager team workflows | `NOT_STARTED` | Team attendance, leave approvals, OKRs, reviews, reports, and notifications need UI. |
+| FE6 | Manager team workflows | `PASSED` | Android staging QA passed for manager dashboard, team attendance, leave approvals, OKRs, performance reviews, reports, and notifications. |
 | FE7 | Super-admin platform workflows | `NOT_STARTED` | Companies, plans, subscriptions, payments, platform reports, and company rollups need UI. |
 | FE8 | Reports and dashboard data rendering | `PARTIAL` | Dashboards must render real summary data and report tabs must call exact implemented endpoints. |
 | FE9 | End-to-end frontend QA and launch gate | `NOT_STARTED` | Each role needs browser smoke testing against staging. |
@@ -785,6 +785,59 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 **Pass condition:**
 
 - Manager can handle direct-report leave, OKRs, reviews, and reports without accessing admin-only endpoints.
+
+**2026-06-30 FE6 Android staging integration QA update:**
+
+- Implemented manager workflows in Flutter:
+  - manager dashboard and workflow hub
+  - team attendance summary
+  - team leave request list with approve/reject actions
+  - team OKR list, assignment, metadata update, status update, and manager approval
+  - team performance review list, submission, update, and status update
+  - team reports across dashboard, attendance, leave, OKRs, and performance
+  - manager notifications remain on the shared self-inbox route
+- Added manager routes:
+  - `/manager/dashboard`
+  - `/manager/attendance`
+  - `/manager/leave`
+  - `/manager/okrs`
+  - `/manager/okrs/:okrId`
+  - `/manager/reviews`
+  - `/manager/reviews/:reviewId`
+  - `/manager/reports`
+  - `/manager/notifications`
+- Wired only documented FE6 endpoints:
+  - `GET /api/reports/team/dashboard`
+  - `GET /api/reports/team/attendance`
+  - `GET /api/reports/team/leave`
+  - `GET /api/reports/team/okrs`
+  - `GET /api/reports/team/performance`
+  - `GET /api/leave/team`
+  - `PATCH /api/leave/:leaveRequestId/approve`
+  - `PATCH /api/leave/:leaveRequestId/reject`
+  - `GET /api/okrs/team`
+  - `POST /api/okrs`
+  - `GET /api/okrs/:okrId`
+  - `PATCH /api/okrs/:okrId`
+  - `PATCH /api/okrs/:okrId/status`
+  - `PATCH /api/okrs/:okrId/manager-approve`
+  - `GET /api/reviews/team`
+  - `POST /api/reviews/:employeeId/manager-review`
+  - `GET /api/reviews/:reviewId`
+  - `PATCH /api/reviews/:reviewId`
+  - `PATCH /api/reviews/:reviewId/status`
+  - `GET /api/notifications/me`
+  - `GET /api/notifications/me/unread-count`
+- Added guarded staging integration test `mobile/integration_test/fe6_manager_staging_test.dart`.
+- Verification passed:
+  - `dart format`
+  - `flutter analyze`
+  - `flutter test`
+  - `flutter build apk --debug`
+  - direct staging FE6 API probe with manager credentials loaded from ignored `scripts/staging-smoke/smoke.env`: 2 direct reports, 5 attendance sessions, 6 leave requests, 5 OKRs, and 10 reviews returned without manager touching admin endpoints.
+  - `flutter test integration_test\fe6_manager_staging_test.dart -d emulator-5554 --dart-define=QA_RUN_STAGING_FE6=true`
+- Contract note:
+  - The backend does not expose a dedicated manager direct-report picker or manager-visible review-cycle list. The UI derives employee and cycle choices from existing team data, with explicit ID entry as the fallback required by the current API contract.
 
 ---
 

@@ -23,6 +23,12 @@ import '../../features/employee/leave_screen.dart';
 import '../../features/employee/okrs_screen.dart';
 import '../../features/employee/reviews_screen.dart';
 import '../../features/employee/shifts_screen.dart';
+import '../../features/manager/manager_attendance_screen.dart';
+import '../../features/manager/manager_dashboard_screen.dart';
+import '../../features/manager/manager_leave_screen.dart';
+import '../../features/manager/manager_okrs_screen.dart';
+import '../../features/manager/manager_reports_screen.dart';
+import '../../features/manager/manager_reviews_screen.dart';
 import '../../features/notifications/notifications_screen.dart';
 import '../../features/placeholders/role_dashboards.dart';
 import '../../features/shell/app_shell.dart';
@@ -150,8 +156,44 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/manager',
-            builder: (_, __) => const ManagerHome(),
+            builder: (_, __) => const ManagerDashboardScreen(),
             routes: [
+              GoRoute(
+                path: 'dashboard',
+                builder: (_, __) => const ManagerDashboardScreen(),
+              ),
+              GoRoute(
+                path: 'attendance',
+                builder: (_, __) => const ManagerAttendanceScreen(),
+              ),
+              GoRoute(
+                path: 'leave',
+                builder: (_, __) => const ManagerLeaveScreen(),
+              ),
+              GoRoute(
+                path: 'okrs',
+                builder: (_, __) => const ManagerOkrsScreen(),
+              ),
+              GoRoute(
+                path: 'okrs/:okrId',
+                builder: (_, state) => ManagerOkrDetailScreen(
+                  okrId: state.pathParameters['okrId']!,
+                ),
+              ),
+              GoRoute(
+                path: 'reviews',
+                builder: (_, __) => const ManagerReviewsScreen(),
+              ),
+              GoRoute(
+                path: 'reviews/:reviewId',
+                builder: (_, state) => ManagerReviewDetailScreen(
+                  reviewId: state.pathParameters['reviewId']!,
+                ),
+              ),
+              GoRoute(
+                path: 'reports',
+                builder: (_, __) => const ManagerReportsScreen(),
+              ),
               GoRoute(
                 path: 'notifications',
                 builder: (_, __) => const NotificationsScreen(),

@@ -44,11 +44,21 @@ List<NavDestinationSpec> destinationsFor(AppRole role) {
         NavDestinationSpec(
             label: 'Team', icon: Icons.groups_outlined, route: '/manager'),
         NavDestinationSpec(
-            label: 'Inbox',
-            icon: Icons.notifications_outlined,
-            route: '/manager/notifications'),
+            label: 'Leave',
+            icon: Icons.beach_access_outlined,
+            route: '/manager/leave'),
         NavDestinationSpec(
-            label: 'Account', icon: Icons.person_outline, route: '/account'),
+            label: 'OKRs',
+            icon: Icons.track_changes_outlined,
+            route: '/manager/okrs'),
+        NavDestinationSpec(
+            label: 'Reviews',
+            icon: Icons.rate_review_outlined,
+            route: '/manager/reviews'),
+        NavDestinationSpec(
+            label: 'Reports',
+            icon: Icons.bar_chart_outlined,
+            route: '/manager/reports'),
       ];
     case AppRole.companyAdmin:
     case AppRole.hrAdmin:
