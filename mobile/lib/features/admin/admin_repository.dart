@@ -128,6 +128,16 @@ final adminReviewProvider = FutureProvider.autoDispose
   return ref.watch(adminRepositoryProvider).getReview(id);
 });
 
+final adminSubscriptionProvider =
+    FutureProvider.autoDispose<AdminCompanySubscription?>((ref) {
+  return ref.watch(adminRepositoryProvider).getAdminSubscription();
+});
+
+final adminPaymentRecordsProvider =
+    FutureProvider.autoDispose<List<AdminPaymentRecord>>((ref) {
+  return ref.watch(adminRepositoryProvider).listAdminPaymentRecords();
+});
+
 class AdminRepository {
   const AdminRepository(this._api);
 
@@ -1122,6 +1132,35 @@ class AdminRepository {
       body: body,
     );
     return AdminNotificationBroadcastResult.fromJson(data);
+  }
+
+  Future<AdminCompanySubscription?> getAdminSubscription({
+    String? companyId,
+  }) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/subscription',
+      query: _scopeQuery(companyId),
+    );
+    final value = data['subscription'];
+    if (value == null) return null;
+    if (value is Map) {
+      return AdminCompanySubscription.fromJson(
+        Map<String, Object?>.from(value),
+      );
+    }
+    return AdminCompanySubscription.fromJson(data);
+  }
+
+  Future<List<AdminPaymentRecord>> listAdminPaymentRecords({
+    String? companyId,
+  }) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/payment-records',
+      query: _scopeQuery(companyId),
+    );
+    return _list(data, 'paymentRecords')
+        .map(AdminPaymentRecord.fromJson)
+        .toList(growable: false);
   }
 }
 

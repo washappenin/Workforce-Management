@@ -83,6 +83,13 @@ class AdminHubScreen extends StatelessWidget {
             subtitle: 'Send in-app announcements to active recipients.',
             route: '/admin/notifications/broadcast',
           ),
+          SizedBox(height: 12),
+          _AdminHubTile(
+            icon: Icons.receipt_long_outlined,
+            title: 'Billing',
+            subtitle: 'View subscription status and payment history.',
+            route: '/admin/subscription',
+          ),
         ],
       ),
     );

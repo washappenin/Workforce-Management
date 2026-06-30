@@ -855,6 +855,129 @@ class AdminNotificationBroadcastResult {
   }
 }
 
+class AdminSubscriptionPlan {
+  const AdminSubscriptionPlan({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.pricePerEmployee,
+    required this.currency,
+    required this.isActive,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final String id;
+  final String name;
+  final String type;
+  final double pricePerEmployee;
+  final String currency;
+  final bool isActive;
+  final String? createdAt;
+  final String? updatedAt;
+
+  factory AdminSubscriptionPlan.fromJson(Map<String, Object?> json) {
+    return AdminSubscriptionPlan(
+      id: stringValue(json['id']),
+      name: stringValue(json['name'], fallback: 'Plan'),
+      type: stringValue(json['type'], fallback: 'BASIC'),
+      pricePerEmployee: doubleValue(json['pricePerEmployee']),
+      currency: stringValue(json['currency'], fallback: 'USD'),
+      isActive: boolValue(json['isActive'], fallback: true),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+    );
+  }
+}
+
+class AdminCompanySubscription {
+  const AdminCompanySubscription({
+    required this.id,
+    required this.companyId,
+    required this.planId,
+    required this.status,
+    required this.startsAt,
+    this.endsAt,
+    this.createdAt,
+    this.updatedAt,
+    this.plan,
+  });
+
+  final String id;
+  final String companyId;
+  final String planId;
+  final String status;
+  final String startsAt;
+  final String? endsAt;
+  final String? createdAt;
+  final String? updatedAt;
+  final AdminSubscriptionPlan? plan;
+
+  bool get isCurrent => status == 'ACTIVE' || status == 'TRIALING';
+
+  factory AdminCompanySubscription.fromJson(Map<String, Object?> json) {
+    final plan = _object(json['plan']);
+    return AdminCompanySubscription(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      planId: stringValue(json['planId']),
+      status: stringValue(json['status'], fallback: 'EXPIRED'),
+      startsAt: stringValue(json['startsAt']),
+      endsAt: optionalString(json['endsAt']),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+      plan: plan == null ? null : AdminSubscriptionPlan.fromJson(plan),
+    );
+  }
+}
+
+class AdminPaymentRecord {
+  const AdminPaymentRecord({
+    required this.id,
+    required this.companyId,
+    required this.amount,
+    required this.currency,
+    required this.status,
+    this.subscriptionId,
+    this.provider,
+    this.paidAt,
+    this.createdAt,
+    this.updatedAt,
+    this.subscription,
+  });
+
+  final String id;
+  final String companyId;
+  final String? subscriptionId;
+  final double amount;
+  final String currency;
+  final String status;
+  final String? provider;
+  final String? paidAt;
+  final String? createdAt;
+  final String? updatedAt;
+  final AdminCompanySubscription? subscription;
+
+  factory AdminPaymentRecord.fromJson(Map<String, Object?> json) {
+    final subscription = _object(json['subscription']);
+    return AdminPaymentRecord(
+      id: stringValue(json['id']),
+      companyId: stringValue(json['companyId']),
+      subscriptionId: optionalString(json['subscriptionId']),
+      amount: doubleValue(json['amount']),
+      currency: stringValue(json['currency'], fallback: 'USD'),
+      status: stringValue(json['status'], fallback: 'PENDING'),
+      provider: optionalString(json['provider']),
+      paidAt: optionalString(json['paidAt']),
+      createdAt: optionalString(json['createdAt']),
+      updatedAt: optionalString(json['updatedAt']),
+      subscription: subscription == null
+          ? null
+          : AdminCompanySubscription.fromJson(subscription),
+    );
+  }
+}
+
 Map<String, Object?>? _object(Object? value) {
   if (value is Map) return Map<String, Object?>.from(value);
   return null;

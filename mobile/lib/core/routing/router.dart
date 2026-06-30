@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/admin/admin_hub_screen.dart';
 import '../../features/admin/admin_attendance_screen.dart';
+import '../../features/admin/admin_billing_screen.dart';
 import '../../features/admin/admin_notifications_screen.dart';
 import '../../features/admin/departments_screen.dart';
 import '../../features/admin/designations_screen.dart';
@@ -242,6 +243,14 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'notifications/broadcast',
                 builder: (_, __) => const AdminNotificationsScreen(),
+              ),
+              GoRoute(
+                path: 'subscription',
+                builder: (_, __) => const AdminBillingScreen(),
+              ),
+              GoRoute(
+                path: 'payment-records',
+                builder: (_, __) => const AdminBillingScreen(initialTab: 1),
               ),
             ],
           ),
