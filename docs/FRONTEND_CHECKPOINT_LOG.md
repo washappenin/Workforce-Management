@@ -186,7 +186,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | FE5 | Admin operations workflows | `PASSED` | Android staging QA passed for geofences/attendance, shifts/assignments, leave, OKRs, reviews, broadcasts, and billing self-view. |
 | FE6 | Manager team workflows | `PASSED` | Android staging QA passed for manager dashboard, team attendance, leave approvals, OKRs, performance reviews, reports, and notifications. |
 | FE7 | Super-admin platform workflows | `PASSED` | Android staging QA passed for company onboarding/status, plan create/update/status, subscription assignment/status, manual payments, platform dashboard, and company rollups. |
-| FE8 | Reports and dashboard data rendering | `PARTIAL` | Dashboards must render real summary data and report tabs must call exact implemented endpoints. |
+| FE8 | Reports and dashboard data rendering | `PASSED` | Android staging QA passed for admin, manager, employee, and super-admin report/dashboard endpoints with admin report UI rendering. |
 | FE9 | End-to-end frontend QA and launch gate | `NOT_STARTED` | Each role needs browser smoke testing against staging. |
 
 ---
@@ -931,6 +931,41 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 
 - All report tabs load or show legitimate empty states for the current role.
 - No report page returns a frontend or backend `404` due to wrong routes.
+
+**2026-06-30 FE8 Android staging integration QA update:**
+
+- Implemented admin report rendering in Flutter:
+  - real admin dashboard summary on the admin hub using `GET /api/admin/reports/dashboard`
+  - dedicated `/admin/reports` screen for dashboard, attendance, leave, OKRs, and performance summaries
+  - per-section empty text for absent buckets instead of blank or fake chart data
+- Preserved existing employee, manager, and super-admin report/dashboard surfaces:
+  - employee dashboard uses `GET /api/reports/me/dashboard`
+  - manager reports use all five `GET /api/reports/team/*` endpoints
+  - super-admin reports use `GET /api/super-admin/reports/dashboard` and `/companies`
+- Added admin route:
+  - `/admin/reports`
+- Wired only documented FE8/CP14 endpoints:
+  - `GET /api/admin/reports/dashboard`
+  - `GET /api/admin/reports/attendance`
+  - `GET /api/admin/reports/leave`
+  - `GET /api/admin/reports/okrs`
+  - `GET /api/admin/reports/performance`
+  - `GET /api/reports/team/dashboard`
+  - `GET /api/reports/team/attendance`
+  - `GET /api/reports/team/leave`
+  - `GET /api/reports/team/okrs`
+  - `GET /api/reports/team/performance`
+  - `GET /api/reports/me/dashboard`
+  - `GET /api/super-admin/reports/dashboard`
+  - `GET /api/super-admin/reports/companies`
+- Added guarded staging integration test `mobile/integration_test/fe8_reports_staging_test.dart`.
+- Verification passed:
+  - `dart format`
+  - `flutter analyze`
+  - `flutter test`
+  - `flutter build apk --debug`
+  - direct staging FE8 report probe with role credentials loaded from ignored `scripts/staging-smoke/smoke.env`: all admin, manager, employee, and super-admin report endpoints returned successfully.
+  - `flutter test integration_test\fe8_reports_staging_test.dart -d emulator-5554 --dart-define=QA_RUN_STAGING_FE8=true`
 
 ---
 

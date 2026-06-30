@@ -138,6 +138,30 @@ final adminPaymentRecordsProvider =
   return ref.watch(adminRepositoryProvider).listAdminPaymentRecords();
 });
 
+final adminDashboardReportProvider =
+    FutureProvider.autoDispose<AdminDashboardReport>((ref) {
+  return ref.watch(adminRepositoryProvider).getDashboardReport();
+});
+
+final adminReportsBundleProvider =
+    FutureProvider.autoDispose<AdminReportsBundle>((ref) async {
+  final repo = ref.watch(adminRepositoryProvider);
+  final results = await Future.wait<Object>([
+    repo.getDashboardReport(),
+    repo.getAttendanceReport(),
+    repo.getLeaveReport(),
+    repo.getOkrReport(),
+    repo.getPerformanceReport(),
+  ]);
+  return AdminReportsBundle(
+    dashboard: results[0] as AdminDashboardReport,
+    attendance: results[1] as AdminAttendanceReport,
+    leave: results[2] as AdminLeaveReport,
+    okrs: results[3] as AdminOkrReport,
+    performance: results[4] as AdminPerformanceReport,
+  );
+});
+
 class AdminRepository {
   const AdminRepository(this._api);
 
@@ -1161,6 +1185,96 @@ class AdminRepository {
     return _list(data, 'paymentRecords')
         .map(AdminPaymentRecord.fromJson)
         .toList(growable: false);
+  }
+
+  Future<AdminDashboardReport> getDashboardReport({String? companyId}) async {
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/reports/dashboard',
+      query: _scopeQuery(companyId),
+    );
+    return AdminDashboardReport.fromJson(_object(data, 'dashboard'));
+  }
+
+  Future<AdminAttendanceReport> getAttendanceReport({
+    String? employeeId,
+    String? departmentId,
+    String? from,
+    String? to,
+    String? companyId,
+  }) async {
+    final query = <String, Object?>{
+      if (_hasScope(companyId)) 'companyId': companyId,
+      if (_hasText(employeeId)) 'employeeId': employeeId,
+      if (_hasText(departmentId)) 'departmentId': departmentId,
+      if (_hasText(from)) 'from': from,
+      if (_hasText(to)) 'to': to,
+    };
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/reports/attendance',
+      query: query.isEmpty ? null : query,
+    );
+    return AdminAttendanceReport.fromJson(_object(data, 'report'));
+  }
+
+  Future<AdminLeaveReport> getLeaveReport({
+    int? year,
+    String? employeeId,
+    String? departmentId,
+    String? status,
+    String? companyId,
+  }) async {
+    final query = <String, Object?>{
+      if (_hasScope(companyId)) 'companyId': companyId,
+      if (year != null) 'year': year,
+      if (_hasText(employeeId)) 'employeeId': employeeId,
+      if (_hasText(departmentId)) 'departmentId': departmentId,
+      if (_hasText(status)) 'status': status,
+    };
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/reports/leave',
+      query: query.isEmpty ? null : query,
+    );
+    return AdminLeaveReport.fromJson(_object(data, 'report'));
+  }
+
+  Future<AdminOkrReport> getOkrReport({
+    String? employeeId,
+    String? departmentId,
+    String? status,
+    String? companyId,
+  }) async {
+    final query = <String, Object?>{
+      if (_hasScope(companyId)) 'companyId': companyId,
+      if (_hasText(employeeId)) 'employeeId': employeeId,
+      if (_hasText(departmentId)) 'departmentId': departmentId,
+      if (_hasText(status)) 'status': status,
+    };
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/reports/okrs',
+      query: query.isEmpty ? null : query,
+    );
+    return AdminOkrReport.fromJson(_object(data, 'report'));
+  }
+
+  Future<AdminPerformanceReport> getPerformanceReport({
+    String? reviewCycleId,
+    String? employeeId,
+    String? departmentId,
+    String? status,
+    String? companyId,
+  }) async {
+    final query = <String, Object?>{
+      if (_hasScope(companyId)) 'companyId': companyId,
+      if (_hasText(reviewCycleId)) 'reviewCycleId': reviewCycleId,
+      if (_hasText(employeeId)) 'employeeId': employeeId,
+      if (_hasText(departmentId)) 'departmentId': departmentId,
+      if (_hasText(status)) 'status': status,
+    };
+    final data = await _api.get<Map<String, Object?>>(
+      '/api/admin/reports/performance',
+      query: query.isEmpty ? null : query,
+    );
+    return AdminPerformanceReport.fromJson(_object(data, 'report'));
   }
 }
 

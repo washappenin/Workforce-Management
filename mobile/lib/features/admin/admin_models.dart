@@ -978,9 +978,286 @@ class AdminPaymentRecord {
   }
 }
 
+class AdminDashboardReport {
+  const AdminDashboardReport({
+    required this.companyId,
+    required this.totalEmployees,
+    required this.activeEmployees,
+    required this.inactiveEmployees,
+    required this.departmentsTotal,
+    required this.todayClockIns,
+    required this.openSessions,
+    required this.pendingLeaveRequests,
+    required this.activeOkrs,
+    required this.pendingReviews,
+    required this.unreadCount,
+  });
+
+  final String companyId;
+  final int totalEmployees;
+  final int activeEmployees;
+  final int inactiveEmployees;
+  final int departmentsTotal;
+  final int todayClockIns;
+  final int openSessions;
+  final int pendingLeaveRequests;
+  final int activeOkrs;
+  final int pendingReviews;
+  final int unreadCount;
+
+  factory AdminDashboardReport.fromJson(Map<String, Object?> json) {
+    final employees = objectValue(json['employees']);
+    final departments = objectValue(json['departments']);
+    final attendance = objectValue(json['attendance']);
+    final leave = objectValue(json['leave']);
+    final okrs = objectValue(json['okrs']);
+    final performance = objectValue(json['performance']);
+    final notifications = objectValue(json['notifications']);
+
+    return AdminDashboardReport(
+      companyId: stringValue(json['companyId']),
+      totalEmployees: intValue(employees['total']),
+      activeEmployees: intValue(employees['active']),
+      inactiveEmployees: intValue(employees['inactive']),
+      departmentsTotal: intValue(departments['total']),
+      todayClockIns: intValue(attendance['todayClockIns']),
+      openSessions: intValue(attendance['openSessions']),
+      pendingLeaveRequests: intValue(leave['pendingRequests']),
+      activeOkrs: intValue(okrs['active']),
+      pendingReviews: intValue(performance['pendingReviews']),
+      unreadCount: intValue(notifications['unreadCount']),
+    );
+  }
+}
+
+class AdminClockInsByDay {
+  const AdminClockInsByDay({required this.date, required this.count});
+
+  final String date;
+  final int count;
+
+  factory AdminClockInsByDay.fromJson(Map<String, Object?> json) {
+    return AdminClockInsByDay(
+      date: stringValue(json['date']),
+      count: intValue(json['count']),
+    );
+  }
+}
+
+class AdminAttendanceReport {
+  const AdminAttendanceReport({
+    required this.totalSessions,
+    required this.openSessions,
+    required this.closedSessions,
+    required this.clockInsByDay,
+  });
+
+  final int totalSessions;
+  final int openSessions;
+  final int closedSessions;
+  final List<AdminClockInsByDay> clockInsByDay;
+
+  factory AdminAttendanceReport.fromJson(Map<String, Object?> json) {
+    return AdminAttendanceReport(
+      totalSessions: intValue(json['totalSessions']),
+      openSessions: intValue(json['openSessions']),
+      closedSessions: intValue(json['closedSessions']),
+      clockInsByDay: listValue(json['clockInsByDay'])
+          .map(AdminClockInsByDay.fromJson)
+          .toList(growable: false),
+    );
+  }
+}
+
+class AdminLeaveUsageByType {
+  const AdminLeaveUsageByType({
+    required this.leaveTypeId,
+    required this.leaveTypeName,
+    required this.usedDays,
+    required this.totalDays,
+  });
+
+  final String leaveTypeId;
+  final String leaveTypeName;
+  final double usedDays;
+  final double totalDays;
+
+  factory AdminLeaveUsageByType.fromJson(Map<String, Object?> json) {
+    return AdminLeaveUsageByType(
+      leaveTypeId: stringValue(json['leaveTypeId']),
+      leaveTypeName: stringValue(json['leaveTypeName'], fallback: 'Leave'),
+      usedDays: doubleValue(json['usedDays']),
+      totalDays: doubleValue(json['totalDays']),
+    );
+  }
+}
+
+class AdminLowRemainingLeave {
+  const AdminLowRemainingLeave({
+    required this.employeeId,
+    required this.leaveTypeId,
+    required this.leaveTypeName,
+    required this.remainingDays,
+  });
+
+  final String employeeId;
+  final String leaveTypeId;
+  final String leaveTypeName;
+  final double remainingDays;
+
+  factory AdminLowRemainingLeave.fromJson(Map<String, Object?> json) {
+    return AdminLowRemainingLeave(
+      employeeId: stringValue(json['employeeId']),
+      leaveTypeId: stringValue(json['leaveTypeId']),
+      leaveTypeName: stringValue(json['leaveTypeName'], fallback: 'Leave'),
+      remainingDays: doubleValue(json['remainingDays']),
+    );
+  }
+}
+
+class AdminLeaveReport {
+  const AdminLeaveReport({
+    required this.totalRequests,
+    required this.pendingRequests,
+    required this.approvedRequests,
+    required this.rejectedRequests,
+    required this.leaveUsageByType,
+    required this.lowRemainingLeave,
+  });
+
+  final int totalRequests;
+  final int pendingRequests;
+  final int approvedRequests;
+  final int rejectedRequests;
+  final List<AdminLeaveUsageByType> leaveUsageByType;
+  final List<AdminLowRemainingLeave> lowRemainingLeave;
+
+  factory AdminLeaveReport.fromJson(Map<String, Object?> json) {
+    return AdminLeaveReport(
+      totalRequests: intValue(json['totalRequests']),
+      pendingRequests: intValue(json['pendingRequests']),
+      approvedRequests: intValue(json['approvedRequests']),
+      rejectedRequests: intValue(json['rejectedRequests']),
+      leaveUsageByType: listValue(json['leaveUsageByType'])
+          .map(AdminLeaveUsageByType.fromJson)
+          .toList(growable: false),
+      lowRemainingLeave: listValue(json['lowRemainingLeave'])
+          .map(AdminLowRemainingLeave.fromJson)
+          .toList(growable: false),
+    );
+  }
+}
+
+class AdminOkrReport {
+  const AdminOkrReport({
+    required this.totalOkrs,
+    required this.statusCounts,
+    required this.activeCount,
+    required this.completedCount,
+    required this.overdueCount,
+    this.averageProgressPercent,
+  });
+
+  final int totalOkrs;
+  final Map<String, int> statusCounts;
+  final int activeCount;
+  final int completedCount;
+  final int overdueCount;
+  final double? averageProgressPercent;
+
+  factory AdminOkrReport.fromJson(Map<String, Object?> json) {
+    return AdminOkrReport(
+      totalOkrs: intValue(json['totalOkrs']),
+      statusCounts: intMapValue(json['statusCounts']),
+      activeCount: intValue(json['activeCount']),
+      completedCount: intValue(json['completedCount']),
+      overdueCount: intValue(json['overdueCount']),
+      averageProgressPercent: nullableDouble(json['averageProgressPercent']),
+    );
+  }
+}
+
+class AdminReviewCycleCount {
+  const AdminReviewCycleCount({
+    required this.reviewCycleId,
+    required this.reviewCycleName,
+    required this.count,
+  });
+
+  final String reviewCycleId;
+  final String reviewCycleName;
+  final int count;
+
+  factory AdminReviewCycleCount.fromJson(Map<String, Object?> json) {
+    return AdminReviewCycleCount(
+      reviewCycleId: stringValue(json['reviewCycleId']),
+      reviewCycleName: stringValue(
+        json['reviewCycleName'],
+        fallback: 'Review cycle',
+      ),
+      count: intValue(json['count']),
+    );
+  }
+}
+
+class AdminPerformanceReport {
+  const AdminPerformanceReport({
+    required this.totalReviews,
+    required this.statusCounts,
+    required this.pendingReviews,
+    required this.submittedReviews,
+    required this.finalizedReviews,
+    required this.reviewsByCycle,
+    this.averageRating,
+  });
+
+  final int totalReviews;
+  final Map<String, int> statusCounts;
+  final int pendingReviews;
+  final int submittedReviews;
+  final int finalizedReviews;
+  final double? averageRating;
+  final List<AdminReviewCycleCount> reviewsByCycle;
+
+  factory AdminPerformanceReport.fromJson(Map<String, Object?> json) {
+    return AdminPerformanceReport(
+      totalReviews: intValue(json['totalReviews']),
+      statusCounts: intMapValue(json['statusCounts']),
+      pendingReviews: intValue(json['pendingReviews']),
+      submittedReviews: intValue(json['submittedReviews']),
+      finalizedReviews: intValue(json['finalizedReviews']),
+      averageRating: nullableDouble(json['averageRating']),
+      reviewsByCycle: listValue(json['reviewsByCycle'])
+          .map(AdminReviewCycleCount.fromJson)
+          .toList(growable: false),
+    );
+  }
+}
+
+class AdminReportsBundle {
+  const AdminReportsBundle({
+    required this.dashboard,
+    required this.attendance,
+    required this.leave,
+    required this.okrs,
+    required this.performance,
+  });
+
+  final AdminDashboardReport dashboard;
+  final AdminAttendanceReport attendance;
+  final AdminLeaveReport leave;
+  final AdminOkrReport okrs;
+  final AdminPerformanceReport performance;
+}
+
 Map<String, Object?>? _object(Object? value) {
   if (value is Map) return Map<String, Object?>.from(value);
   return null;
+}
+
+Map<String, Object?> objectValue(Object? value) {
+  if (value is Map) return Map<String, Object?>.from(value);
+  return const {};
 }
 
 List<Map<String, Object?>> listValue(Object? value) {
@@ -989,6 +1266,15 @@ List<Map<String, Object?>> listValue(Object? value) {
       .whereType<Map>()
       .map((item) => Map<String, Object?>.from(item))
       .toList(growable: false);
+}
+
+Map<String, int> intMapValue(Object? value) {
+  if (value is! Map) return const {};
+  final result = <String, int>{};
+  for (final entry in value.entries) {
+    result[entry.key.toString()] = intValue(entry.value);
+  }
+  return result;
 }
 
 String stringValue(Object? value, {String fallback = ''}) {
