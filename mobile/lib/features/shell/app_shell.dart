@@ -87,7 +87,21 @@ List<NavDestinationSpec> destinationsFor(AppRole role) {
             icon: Icons.business_outlined,
             route: '/super-admin'),
         NavDestinationSpec(
-            label: 'Account', icon: Icons.person_outline, route: '/account'),
+            label: 'Companies',
+            icon: Icons.apartment_outlined,
+            route: '/super-admin/companies'),
+        NavDestinationSpec(
+            label: 'Plans',
+            icon: Icons.workspace_premium_outlined,
+            route: '/super-admin/plans'),
+        NavDestinationSpec(
+            label: 'Billing',
+            icon: Icons.fact_check_outlined,
+            route: '/super-admin/subscriptions'),
+        NavDestinationSpec(
+            label: 'Reports',
+            icon: Icons.bar_chart_outlined,
+            route: '/super-admin/reports'),
       ];
     case AppRole.unknown:
       return const [

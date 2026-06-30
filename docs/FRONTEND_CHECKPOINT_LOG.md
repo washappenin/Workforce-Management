@@ -185,7 +185,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | FE4 | Admin organization setup workflows | `PASSED` | Android staging QA passed for admin setup: departments, designations, employee create/edit/status/manager assignment, employee detail, and face enrollment metadata. |
 | FE5 | Admin operations workflows | `PASSED` | Android staging QA passed for geofences/attendance, shifts/assignments, leave, OKRs, reviews, broadcasts, and billing self-view. |
 | FE6 | Manager team workflows | `PASSED` | Android staging QA passed for manager dashboard, team attendance, leave approvals, OKRs, performance reviews, reports, and notifications. |
-| FE7 | Super-admin platform workflows | `NOT_STARTED` | Companies, plans, subscriptions, payments, platform reports, and company rollups need UI. |
+| FE7 | Super-admin platform workflows | `PASSED` | Android staging QA passed for company onboarding/status, plan create/update/status, subscription assignment/status, manual payments, platform dashboard, and company rollups. |
 | FE8 | Reports and dashboard data rendering | `PARTIAL` | Dashboards must render real summary data and report tabs must call exact implemented endpoints. |
 | FE9 | End-to-end frontend QA and launch gate | `NOT_STARTED` | Each role needs browser smoke testing against staging. |
 
@@ -859,6 +859,54 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 **Pass condition:**
 
 - Super admin can onboard a company, configure subscription data, record manual payments, and view platform reports.
+
+**2026-06-30 FE7 Android staging integration QA update:**
+
+- Implemented super-admin platform workflows in Flutter:
+  - platform dashboard and workflow hub
+  - company list/create/detail/edit/status
+  - company detail context for current/latest subscription and company payment records
+  - subscription plan list/create/edit/status
+  - company subscription assignment and subscription status updates
+  - manual payment record list/create with provider reference visibility
+  - platform reports and company rollups
+- Added super-admin routes:
+  - `/super-admin/dashboard`
+  - `/super-admin/companies`
+  - `/super-admin/companies/:companyId`
+  - `/super-admin/plans`
+  - `/super-admin/subscriptions`
+  - `/super-admin/payment-records`
+  - `/super-admin/reports`
+- Wired only documented FE7 endpoints:
+  - `GET /api/super-admin/reports/dashboard`
+  - `GET /api/super-admin/reports/companies`
+  - `GET /api/super-admin/companies`
+  - `POST /api/super-admin/companies`
+  - `GET /api/super-admin/companies/:companyId`
+  - `PATCH /api/super-admin/companies/:companyId`
+  - `PATCH /api/super-admin/companies/:companyId/status`
+  - `GET /api/super-admin/plans`
+  - `POST /api/super-admin/plans`
+  - `PATCH /api/super-admin/plans/:planId`
+  - `PATCH /api/super-admin/plans/:planId/status`
+  - `POST /api/super-admin/companies/:companyId/subscription`
+  - `GET /api/super-admin/companies/:companyId/subscription`
+  - `GET /api/super-admin/subscriptions`
+  - `PATCH /api/super-admin/subscriptions/:subscriptionId/status`
+  - `GET /api/super-admin/payment-records`
+  - `POST /api/super-admin/payment-records`
+  - `GET /api/super-admin/companies/:companyId/payment-records`
+- Added guarded staging integration test `mobile/integration_test/fe7_super_admin_staging_test.dart`.
+- Verification passed:
+  - `dart format`
+  - `flutter analyze`
+  - `flutter test`
+  - `flutter build apk --debug`
+  - direct staging FE7 read probe with super-admin credentials loaded from ignored `scripts/staging-smoke/smoke.env`: dashboard, companies, plans, subscriptions, payment records, and company rollups returned successfully.
+  - `flutter test integration_test\fe7_super_admin_staging_test.dart -d emulator-5554 --dart-define=QA_RUN_STAGING_FE7=true`
+- Contract note:
+  - Super-admin company context is implemented where the backend requires explicit company scope: company detail, company subscription assignment/current view, and company payment records. Existing company-admin `/admin/*` screens remain role-gated to company admin/HR until a separate product decision opens scoped admin-console access for super-admin users.
 
 ---
 

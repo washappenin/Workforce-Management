@@ -32,6 +32,12 @@ import '../../features/manager/manager_reviews_screen.dart';
 import '../../features/notifications/notifications_screen.dart';
 import '../../features/placeholders/role_dashboards.dart';
 import '../../features/shell/app_shell.dart';
+import '../../features/super_admin/super_admin_companies_screen.dart';
+import '../../features/super_admin/super_admin_dashboard_screen.dart';
+import '../../features/super_admin/super_admin_payments_screen.dart';
+import '../../features/super_admin/super_admin_plans_screen.dart';
+import '../../features/super_admin/super_admin_reports_screen.dart';
+import '../../features/super_admin/super_admin_subscriptions_screen.dart';
 import '../../shared/widgets/states.dart';
 import '../auth/auth_controller.dart';
 import '../auth/models.dart';
@@ -298,7 +304,39 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/super-admin',
-            builder: (_, __) => const SuperAdminHome(),
+            builder: (_, __) => const SuperAdminDashboardScreen(),
+            routes: [
+              GoRoute(
+                path: 'dashboard',
+                builder: (_, __) => const SuperAdminDashboardScreen(),
+              ),
+              GoRoute(
+                path: 'companies',
+                builder: (_, __) => const SuperAdminCompaniesScreen(),
+              ),
+              GoRoute(
+                path: 'companies/:companyId',
+                builder: (_, state) => SuperAdminCompanyDetailScreen(
+                  companyId: state.pathParameters['companyId']!,
+                ),
+              ),
+              GoRoute(
+                path: 'plans',
+                builder: (_, __) => const SuperAdminPlansScreen(),
+              ),
+              GoRoute(
+                path: 'subscriptions',
+                builder: (_, __) => const SuperAdminSubscriptionsScreen(),
+              ),
+              GoRoute(
+                path: 'payment-records',
+                builder: (_, __) => const SuperAdminPaymentsScreen(),
+              ),
+              GoRoute(
+                path: 'reports',
+                builder: (_, __) => const SuperAdminReportsScreen(),
+              ),
+            ],
           ),
           GoRoute(path: '/account', builder: (_, __) => const AccountScreen()),
         ],
