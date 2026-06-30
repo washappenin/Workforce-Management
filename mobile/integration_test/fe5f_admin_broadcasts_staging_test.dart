@@ -70,7 +70,7 @@ void main() {
     await _pressButtonKey(tester, 'admin.broadcast.send');
     await _pumpUntil(tester, find.text('1 notifications sent.'),
         timeout: const Duration(seconds: 35));
-    await _pumpUntil(tester, find.text('Broadcast sent'),
+    await _scrollUntil(tester, find.text('Broadcast sent'),
         timeout: const Duration(seconds: 20));
 
     await _expectEmployeeNotification(
@@ -172,11 +172,27 @@ Future<void> _enterFieldByKey(
   String value,
 ) async {
   final finder = find.byKey(ValueKey(key));
-  await _scrollUntil(tester, finder);
-  await tester.ensureVisible(finder.last);
-  await _boundedPump(tester);
-  await tester.enterText(finder.last, value);
-  await tester.pump();
+  final end = DateTime.now().add(const Duration(seconds: 20));
+  while (DateTime.now().isBefore(end)) {
+    await tester.pump(const Duration(milliseconds: 250));
+    if (finder.evaluate().isNotEmpty) {
+      await tester.ensureVisible(finder.first);
+      await _boundedPump(tester);
+      final editable = find.descendant(
+        of: finder.first,
+        matching: find.byType(EditableText),
+      );
+      await _pumpUntil(tester, editable);
+      await tester.enterText(editable.first, value);
+      await tester.pump();
+      return;
+    }
+    final scrollables = find.byType(Scrollable);
+    if (scrollables.evaluate().isNotEmpty) {
+      await tester.drag(scrollables.last, const Offset(0, -260));
+    }
+  }
+  throw TestFailure('Timed out scrolling for $finder');
 }
 
 Future<void> _tapTextContaining(WidgetTester tester, String text) async {
@@ -201,7 +217,10 @@ Future<void> _scrollUntil(
   while (DateTime.now().isBefore(end)) {
     await tester.pump(const Duration(milliseconds: 250));
     if (finder.evaluate().isNotEmpty) return;
-    await tester.drag(find.byType(Scrollable).first, const Offset(0, -260));
+    final scrollables = find.byType(Scrollable);
+    if (scrollables.evaluate().isNotEmpty) {
+      await tester.drag(scrollables.first, const Offset(0, -260));
+    }
   }
   throw TestFailure('Timed out scrolling for $finder');
 }
