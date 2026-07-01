@@ -4,10 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../auth/token_storage.dart';
+import '../config/app_config.dart';
 import '../errors/failures.dart';
 
-const String kApiBaseUrl =
-    'https://workforce-management-production.up.railway.app';
+const String kApiBaseUrl = AppConfig.apiBaseUrl;
 
 /// Broadcast stream fired when the API returns 401 so the auth layer can
 /// clear the session and the router can redirect to /login.

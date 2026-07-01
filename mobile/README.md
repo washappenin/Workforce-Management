@@ -8,7 +8,8 @@ Production mobile client for the Workforce Management platform on iOS and Androi
 
 ## Status
 
-This is the FE0 / FE1 scaffold from `docs/FRONTEND_CHECKPOINT_LOG.md`:
+This Flutter app is the primary FE0-FE9 mobile client from
+`docs/FRONTEND_CHECKPOINT_LOG.md`:
 
 - Project structure, theme, and routing
 - Android and iOS platform project folders
@@ -21,9 +22,9 @@ This is the FE0 / FE1 scaffold from `docs/FRONTEND_CHECKPOINT_LOG.md`:
 - Mobile app shell with bottom navigation
 - Notification unread count via `GET /api/notifications/me/unread-count`
 - Shared loading, empty, access-denied, not-found, validation, connection, and expired-session states
+- Employee self-service, face/GPS attendance, admin setup/operations, manager workflows, super-admin workflows, reports, and launch-gate staging QA
 
-No FE2+ workflows. No fake data. No invented endpoints. No self-registration.
-No biometric or GPS capture in this checkpoint.
+No fake data. No invented endpoints. No self-registration.
 
 ## Prerequisites
 
@@ -38,8 +39,39 @@ cd mobile
 flutter pub get
 flutter analyze
 flutter test
-flutter run
+flutter run \
+  --dart-define=APP_ENV=staging \
+  --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
 ```
+
+`APP_ENV` defaults to `staging` and `API_BASE_URL` defaults to the current
+Railway staging API, so local smoke runs still work without defines. Release
+and CI builds should pass both values explicitly.
+
+## Build
+
+```bash
+flutter build apk --debug \
+  --dart-define=APP_ENV=staging \
+  --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
+```
+
+For production, pass the production API URL:
+
+```bash
+flutter build appbundle --release \
+  --dart-define=APP_ENV=production \
+  --dart-define=API_BASE_URL=https://api.example.com
+```
+
+## CI
+
+The repository includes `.github/workflows/mobile-ci.yml`, which runs:
+
+- `dart format --set-exit-if-changed lib test integration_test`
+- `flutter analyze`
+- `flutter test`
+- `flutter build apk --debug`
 
 ## Architecture
 
@@ -55,6 +87,7 @@ mobile/
       api/        Dio client, interceptors, API failures
       auth/       AuthController, session models, secure storage
       routing/    go_router and auth-aware redirects
+      config/     APP_ENV and API_BASE_URL dart-define config
       theme/      Aurelia royal-minimal theme
       errors/     Typed failures
     features/
