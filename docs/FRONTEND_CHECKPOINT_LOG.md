@@ -23,7 +23,7 @@ The backend is already complete through CP19. Frontend work must consume the exi
 - **Secondary/reference client:** Lovable web at `https://exact-render-route.lovable.app`.
 - **Backend base URL:** `https://workforce-management-production.up.railway.app`
 - **Observed complete/partial work:** Flutter FE0-FE9 are implemented and verified against staging on Android emulator, including auth, role navigation, employee self-service, face/GPS attendance flow, admin setup/operations, manager workflows, super-admin workflows, reports, and launch-gate QA.
-- **Observed missing work:** no FE0-FE9 launch-blocking frontend workflow gaps remain. Future hardening remains for app-store release packaging, production biometric/liveness provider choices, push notifications, and any dedicated web-admin product split. Track that work in `docs/MOBILE_RELEASE_READINESS.md`.
+- **Observed missing work:** no FE0-FE9 launch-blocking frontend workflow gaps remain. Future hardening remains for role-specific mobile flavors, app-store release packaging, production biometric/liveness provider choices, push notifications, and any dedicated web-admin product split. Track flavor planning in `docs/MOBILE_FLAVOR_ARCHITECTURE.md` and release hardening in `docs/MOBILE_RELEASE_READINESS.md`.
 - **Known issue pattern:** frontend route `404`s are usually missing Lovable page routes; backend `404`s are usually wrong endpoint paths such as generic report URLs not present in `API_CONTRACT.md`.
 
 ## Tooling Decision Log

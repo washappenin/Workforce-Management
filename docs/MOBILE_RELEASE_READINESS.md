@@ -5,6 +5,9 @@
 The Flutter client under `mobile/` is the primary iOS/Android app. FE0-FE9 have
 passed staging QA on Android emulator with the Railway staging API.
 
+Role-specific app flavor planning lives in
+`docs/MOBILE_FLAVOR_ARCHITECTURE.md`.
+
 Current defaults:
 
 - `APP_ENV=staging`
@@ -122,3 +125,4 @@ Before app-store submission:
 - Production API hostname.
 - Whether admin-heavy workflows remain in mobile or split into a dedicated web
   admin console later.
+- Whether `platform` ships as a mobile flavor, web-only, or both.
