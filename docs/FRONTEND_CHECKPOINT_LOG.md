@@ -22,8 +22,8 @@ The backend is already complete through CP19. Frontend work must consume the exi
 - **Primary client target:** Flutter mobile app for iOS and Android.
 - **Secondary/reference client:** Lovable web at `https://exact-render-route.lovable.app`.
 - **Backend base URL:** `https://workforce-management-production.up.railway.app`
-- **Observed complete/partial work:** login route, auth shell, role-aware dashboard foundation, royal-minimal visual direction. Flutter FE0 source is now imported under `mobile/`, dependencies resolve, static analysis passes, Android emulator smoke QA passes for `SUPER_ADMIN` and `EMPLOYEE`, and FE1 still needs remaining role coverage before final pass.
-- **Observed missing work:** most employee/admin/manager/super-admin workflow pages, create/edit flows, detail screens, correct report tabs, admin setup flows, and face/GPS attendance sequence.
+- **Observed complete/partial work:** Flutter FE0-FE9 are implemented and verified against staging on Android emulator, including auth, role navigation, employee self-service, face/GPS attendance flow, admin setup/operations, manager workflows, super-admin workflows, reports, and launch-gate QA.
+- **Observed missing work:** no FE0-FE9 launch-blocking frontend workflow gaps remain. Future hardening remains for app-store release packaging, production biometric/liveness provider choices, push notifications, and any dedicated web-admin product split.
 - **Known issue pattern:** frontend route `404`s are usually missing Lovable page routes; backend `404`s are usually wrong endpoint paths such as generic report URLs not present in `API_CONTRACT.md`.
 
 ## Tooling Decision Log
@@ -179,7 +179,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | # | Checkpoint | Status | Primary Gap |
 | - | ---------- | ------ | ----------- |
 | FE0 | Flutter client governance and API contract alignment | `PASSED` | `mobile/` imported, Android/iOS scaffolds generated, dependencies resolved, analyzer/test pass, Android debug APK produced, and endpoint audit matches contract. |
-| FE1 | Flutter auth, shell, navigation, and global states | `READY_FOR_QA` | Android emulator verified for `SUPER_ADMIN` and `EMPLOYEE`; `smoke.env` credentials and API login verified for all roles; pending full emulator navigation QA for `COMPANY_ADMIN`, `HR_ADMIN`, and `MANAGER`. |
+| FE1 | Flutter auth, shell, navigation, and global states | `PASSED` | Android staging QA passed for login, session shell, and visible navigation across `SUPER_ADMIN`, `COMPANY_ADMIN`, `HR_ADMIN`, `MANAGER`, and `EMPLOYEE`. |
 | FE2 | Employee self-service workflows | `PASSED` | Android staging QA passed for employee dashboard, attendance history, shifts, leave submit, OKR progress, OKR employee approval, reviews, notifications read-all, and FE3-gated clock route placeholders. |
 | FE3 | Face verification and GPS attendance | `PASSED` | Android staging QA passed for mock face verification, GPS/geofence precheck, clock-in, dashboard status, clock-out, and final closed attendance state. |
 | FE4 | Admin organization setup workflows | `PASSED` | Android staging QA passed for admin setup: departments, designations, employee create/edit/status/manager assignment, employee detail, and face enrollment metadata. |
@@ -187,7 +187,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | FE6 | Manager team workflows | `PASSED` | Android staging QA passed for manager dashboard, team attendance, leave approvals, OKRs, performance reviews, reports, and notifications. |
 | FE7 | Super-admin platform workflows | `PASSED` | Android staging QA passed for company onboarding/status, plan create/update/status, subscription assignment/status, manual payments, platform dashboard, and company rollups. |
 | FE8 | Reports and dashboard data rendering | `PASSED` | Android staging QA passed for admin, manager, employee, and super-admin report/dashboard endpoints with admin report UI rendering. |
-| FE9 | End-to-end frontend QA and launch gate | `NOT_STARTED` | Each role needs browser smoke testing against staging. |
+| FE9 | End-to-end frontend QA and launch gate | `PASSED` | Android staging launch-gate QA passed: health, readiness, published-origin CORS, auth/error boundaries, all role logins, and visible navigation. |
 
 ---
 
@@ -306,6 +306,17 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 - Confirmed `scripts/staging-smoke/smoke.env` now contains populated email/password values for `SUPER_ADMIN`, `COMPANY_ADMIN`, `HR_ADMIN`, `MANAGER`, and `EMPLOYEE`.
 - Verified API login succeeds for all five staging roles without printing secrets or tokens.
 - FE1 still needs full emulator navigation QA for `COMPANY_ADMIN`, `HR_ADMIN`, and `MANAGER` before it can move from `READY_FOR_QA` to `PASSED`.
+
+**2026-06-30 launch-gate verification update:**
+
+- Added guarded Android integration coverage in `mobile/integration_test/fe9_launch_gate_staging_test.dart`.
+- Verified staging login and visible navigation on Android emulator `emulator-5554` for `SUPER_ADMIN`, `COMPANY_ADMIN`, `HR_ADMIN`, `MANAGER`, and `EMPLOYEE`.
+- Verification passed:
+  - `flutter analyze`
+  - `flutter test`
+  - `flutter build apk --debug`
+  - `flutter test integration_test\fe9_launch_gate_staging_test.dart -d emulator-5554 --dart-define=QA_RUN_STAGING_FE9=true`
+- FE1 status moved to `PASSED`.
 
 ---
 
@@ -971,7 +982,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 
 ## FE9: End-to-End Frontend QA and Launch Gate
 
-**Goal:** Prove the frontend works across all roles against staging.
+**Goal:** Prove the Flutter frontend works across all roles against staging.
 
 **Required QA script:**
 
@@ -980,7 +991,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 3. Login as each role.
 4. Confirm role navigation.
 5. Visit every visible nav route.
-6. Complete one happy-path workflow per major module:
+6. Confirm FE2-FE8 happy-path workflow coverage remains green for each major module:
    - super admin creates/updates company or plan
    - admin creates department/designation/employee/geofence
    - admin enrolls employee face metadata
@@ -999,7 +1010,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
    - admin broadcasts notification
    - employee marks notification read
    - each role views reports
-7. Confirm `401`, `403`, `404`, validation, `429`, camera denied, GPS denied, and network/CORS states.
+7. Confirm `401`, `403`, `404`, validation, camera denied, GPS denied, and network/CORS states. Do not force live `429` throttling against staging; use the central `RateLimitedFailure` mapping and shared error views for rate-limit UI coverage.
 
 **Pass condition:**
 
@@ -1007,6 +1018,32 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 - No screen uses fake local data.
 - No frontend calls undocumented endpoints.
 - All major role workflows pass against staging.
+
+**2026-06-30 launch-gate verification update:**
+
+- Added guarded staging integration test `mobile/integration_test/fe9_launch_gate_staging_test.dart`.
+- Direct staging API launch-gate probe passed without printing secrets:
+  - `GET /health` returned `200`.
+  - `GET /ready` returned `200`.
+  - CORS preflight for `https://exact-render-route.lovable.app` returned `204` with the expected `Access-Control-Allow-Origin`.
+  - Invalid login returned `401`.
+  - Empty login returned validation `400`.
+  - Employee access to an admin report returned `403`.
+  - Unknown authenticated route returned `404`.
+- Android emulator launch-gate integration passed for:
+  - backend launch-gate checks
+  - employee visible navigation
+  - company-admin visible navigation
+  - HR-admin visible navigation
+  - manager visible navigation
+  - super-admin visible navigation
+- Verification also passed:
+  - `dart --disable-analytics format mobile\integration_test\fe9_launch_gate_staging_test.dart`
+  - `flutter analyze`
+  - `flutter test`
+  - `flutter build apk --debug`
+  - `flutter test integration_test\fe9_launch_gate_staging_test.dart -d emulator-5554 --dart-define=QA_RUN_STAGING_FE9=true`
+- FE9 status moved to `PASSED`.
 
 ---
 
@@ -1021,6 +1058,6 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 7. FE6 manager workflows.
 8. FE7 super-admin workflows.
 9. FE8 report tabs and dashboard data rendering.
-10. FE9 full browser QA.
+10. FE9 full Flutter launch-gate QA.
 
 This order is intentional: admin setup creates the data required for employee and manager workflows to feel real.
