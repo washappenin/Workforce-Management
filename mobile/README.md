@@ -40,7 +40,7 @@ cd mobile
 flutter pub get
 flutter analyze
 flutter test
-flutter run \
+flutter run --flavor employee -t lib/main_employee.dart \
   --dart-define=APP_ENV=staging \
   --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
 ```
@@ -52,7 +52,7 @@ and CI builds should pass both values explicitly.
 ## Build
 
 ```bash
-flutter build apk --debug \
+flutter build apk --debug --flavor employee -t lib/main_employee.dart \
   --dart-define=APP_ENV=staging \
   --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
 ```
@@ -60,22 +60,21 @@ flutter build apk --debug \
 For production, pass the production API URL:
 
 ```bash
-flutter build appbundle --release \
+flutter build appbundle --release --flavor employee -t lib/main_employee.dart \
   --dart-define=APP_ENV=production \
   --dart-define=API_BASE_URL=https://api.example.com
 ```
 
-Role-specific Dart entrypoints are available before native Android/iOS flavors:
+Role-specific Android flavors:
 
 ```bash
-flutter build apk --debug -t lib/main_employee.dart
-flutter build apk --debug -t lib/main_manager.dart
-flutter build apk --debug -t lib/main_admin.dart
-flutter build apk --debug -t lib/main_platform.dart
+flutter build apk --debug --flavor employee -t lib/main_employee.dart
+flutter build apk --debug --flavor manager -t lib/main_manager.dart
+flutter build apk --debug --flavor admin -t lib/main_admin.dart
+flutter build apk --debug --flavor platform -t lib/main_platform.dart
 ```
 
-Native `--flavor employee|manager|admin|platform` support is tracked in
-`docs/MOBILE_FLAVOR_ARCHITECTURE.md`.
+iOS schemes remain tracked in `docs/MOBILE_FLAVOR_ARCHITECTURE.md`.
 
 ## CI
 
@@ -84,11 +83,10 @@ The repository includes `.github/workflows/mobile-ci.yml`, which runs:
 - `dart format --set-exit-if-changed lib test integration_test`
 - `flutter analyze`
 - `flutter test`
-- `flutter build apk --debug`
-- `flutter build apk --debug -t lib/main_employee.dart`
-- `flutter build apk --debug -t lib/main_manager.dart`
-- `flutter build apk --debug -t lib/main_admin.dart`
-- `flutter build apk --debug -t lib/main_platform.dart`
+- `flutter build apk --debug --flavor employee -t lib/main_employee.dart`
+- `flutter build apk --debug --flavor manager -t lib/main_manager.dart`
+- `flutter build apk --debug --flavor admin -t lib/main_admin.dart`
+- `flutter build apk --debug --flavor platform -t lib/main_platform.dart`
 
 ## Architecture
 

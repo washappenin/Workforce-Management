@@ -20,20 +20,41 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.aurelia.workforce.aurelia_mobile"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        applicationId = "com.aurelia.workforce"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+    flavorDimensions += "app"
+
+    productFlavors {
+        create("employee") {
+            dimension = "app"
+            applicationId = "com.aurelia.workforce.employee"
+            resValue("string", "app_name", "Aurelia Employee")
+        }
+        create("manager") {
+            dimension = "app"
+            applicationId = "com.aurelia.workforce.manager"
+            resValue("string", "app_name", "Aurelia Manager")
+        }
+        create("admin") {
+            dimension = "app"
+            applicationId = "com.aurelia.workforce.admin"
+            resValue("string", "app_name", "Aurelia Admin")
+        }
+        create("platform") {
+            dimension = "app"
+            applicationId = "com.aurelia.workforce.platform"
+            resValue("string", "app_name", "Aurelia Platform")
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // Store release signing is configured after Play Console setup.
             signingConfig = signingConfigs.getByName("debug")
         }
     }

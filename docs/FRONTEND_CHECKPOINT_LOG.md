@@ -22,8 +22,8 @@ The backend is already complete through CP19. Frontend work must consume the exi
 - **Primary client target:** Flutter mobile app for iOS and Android.
 - **Secondary/reference client:** Lovable web at `https://exact-render-route.lovable.app`.
 - **Backend base URL:** `https://workforce-management-production.up.railway.app`
-- **Observed complete/partial work:** Flutter FE0-FE9 are implemented and verified against staging on Android emulator, including auth, role navigation, employee self-service, face/GPS attendance flow, admin setup/operations, manager workflows, super-admin workflows, reports, and launch-gate QA. FE10 has the Dart flavor layer, role-specific entrypoints, flavor-aware routing/shell, wrong-app handling, tests, and CI entrypoint builds.
-- **Observed missing work:** no FE0-FE9 launch-blocking frontend workflow gaps remain. FE10 still needs native Android product flavors and iOS schemes. Future hardening remains for app-store release packaging, production biometric/liveness provider choices, push notifications, and any dedicated web-admin product split. Track flavor planning in `docs/MOBILE_FLAVOR_ARCHITECTURE.md` and release hardening in `docs/MOBILE_RELEASE_READINESS.md`.
+- **Observed complete/partial work:** Flutter FE0-FE9 are implemented and verified against staging on Android emulator, including auth, role navigation, employee self-service, face/GPS attendance flow, admin setup/operations, manager workflows, super-admin workflows, reports, and launch-gate QA. FE10 has the Dart flavor layer, role-specific entrypoints, flavor-aware routing/shell, wrong-app handling, Android product flavors, tests, and CI Android flavor builds.
+- **Observed missing work:** no FE0-FE9 launch-blocking frontend workflow gaps remain. FE10 still needs iOS schemes. Future hardening remains for app-store release packaging, final app icons, production biometric/liveness provider choices, push notifications, and any dedicated web-admin product split. Track flavor planning in `docs/MOBILE_FLAVOR_ARCHITECTURE.md` and release hardening in `docs/MOBILE_RELEASE_READINESS.md`.
 - **Known issue pattern:** frontend route `404`s are usually missing Lovable page routes; backend `404`s are usually wrong endpoint paths such as generic report URLs not present in `API_CONTRACT.md`.
 
 ## Tooling Decision Log
@@ -188,7 +188,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | FE7 | Super-admin platform workflows | `PASSED` | Android staging QA passed for company onboarding/status, plan create/update/status, subscription assignment/status, manual payments, platform dashboard, and company rollups. |
 | FE8 | Reports and dashboard data rendering | `PASSED` | Android staging QA passed for admin, manager, employee, and super-admin report/dashboard endpoints with admin report UI rendering. |
 | FE9 | End-to-end frontend QA and launch gate | `PASSED` | Android staging launch-gate QA passed: health, readiness, published-origin CORS, auth/error boundaries, all role logins, and visible navigation. |
-| FE10 | Mobile flavor split | `PARTIAL` | Dart flavor layer is implemented and verified; native Android product flavors and iOS schemes remain. |
+| FE10 | Mobile flavor split | `PARTIAL` | Dart flavor layer and Android product flavors are implemented and verified; iOS schemes remain. |
 
 ---
 
@@ -1096,6 +1096,24 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
   - `flutter build apk --debug -t lib/main_admin.dart`
   - `flutter build apk --debug -t lib/main_platform.dart`
 - FE10 remains `PARTIAL` until native Android product flavors and iOS schemes are implemented.
+
+**2026-07-02 Android product flavor update:**
+
+- Added Android product flavors in `mobile/android/app/build.gradle.kts`:
+  - `employee` -> `com.aurelia.workforce.employee` / Aurelia Employee
+  - `manager` -> `com.aurelia.workforce.manager` / Aurelia Manager
+  - `admin` -> `com.aurelia.workforce.admin` / Aurelia Admin
+  - `platform` -> `com.aurelia.workforce.platform` / Aurelia Platform
+- Updated Android manifest label to use flavor-provided `@string/app_name`.
+- Updated CI to build all four Android flavors with their matching Dart entrypoints.
+- Verification passed:
+  - `flutter analyze`
+  - `flutter test`
+  - `flutter build apk --debug --flavor employee -t lib/main_employee.dart`
+  - `flutter build apk --debug --flavor manager -t lib/main_manager.dart`
+  - `flutter build apk --debug --flavor admin -t lib/main_admin.dart`
+  - `flutter build apk --debug --flavor platform -t lib/main_platform.dart`
+- FE10 remains `PARTIAL` until iOS schemes/bundle IDs are implemented and verified on macOS.
 
 ---
 

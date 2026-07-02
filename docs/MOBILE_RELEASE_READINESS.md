@@ -8,6 +8,9 @@ passed staging QA on Android emulator with the Railway staging API.
 Role-specific app flavor planning lives in
 `docs/MOBILE_FLAVOR_ARCHITECTURE.md`.
 
+Android product flavors are configured for Employee, Manager, Admin, and
+Platform. iOS schemes and release signing remain pending.
+
 Current defaults:
 
 - `APP_ENV=staging`
@@ -105,7 +108,8 @@ ownership rules:
 Before app-store submission:
 
 - Replace placeholder app name, bundle IDs, icons, and launch screens.
-- Configure Android signing and Play Console app bundle upload.
+- Replace shared placeholder launcher icon with final per-app icons.
+- Configure Android signing and Play Console app bundle upload for each flavor.
 - Configure iOS signing, provisioning, capabilities, and TestFlight.
 - Confirm production backend URL, CORS policy for web surfaces, and mobile network
   security policy.

@@ -42,36 +42,34 @@ jobs:
       - name: Test
         run: flutter test
 
-      - name: Build Android debug APK
+      - name: Build Employee Android flavor
         run: >
           flutter build apk --debug
-          --dart-define=APP_ENV=staging
-          --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
-
-      - name: Build Employee Dart entrypoint
-        run: >
-          flutter build apk --debug
+          --flavor employee
           -t lib/main_employee.dart
           --dart-define=APP_ENV=staging
           --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
 
-      - name: Build Manager Dart entrypoint
+      - name: Build Manager Android flavor
         run: >
           flutter build apk --debug
+          --flavor manager
           -t lib/main_manager.dart
           --dart-define=APP_ENV=staging
           --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
 
-      - name: Build Admin Dart entrypoint
+      - name: Build Admin Android flavor
         run: >
           flutter build apk --debug
+          --flavor admin
           -t lib/main_admin.dart
           --dart-define=APP_ENV=staging
           --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
 
-      - name: Build Platform Dart entrypoint
+      - name: Build Platform Android flavor
         run: >
           flutter build apk --debug
+          --flavor platform
           -t lib/main_platform.dart
           --dart-define=APP_ENV=staging
           --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app

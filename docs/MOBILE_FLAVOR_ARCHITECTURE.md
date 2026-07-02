@@ -62,8 +62,8 @@ The existing architecture is already close to flavor-ready:
 
 Main limitation:
 
-- Native Android and iOS are still one installed product until product flavors,
-  schemes, bundle IDs, app names, and icons are added.
+- Native Android product flavors are defined. iOS schemes, final icons, release
+  signing, and store metadata remain pending.
 
 ## Target Product Shape
 
@@ -321,20 +321,9 @@ flutter build ipa \
 
 ## CI Changes
 
-Current CI builds the unified debug APK plus each role-specific Dart entrypoint.
+Current CI builds each role-specific Android product flavor.
 
-Current Dart-entrypoint CI checks:
-
-```bash
-flutter build apk --debug
-flutter build apk --debug -t lib/main_employee.dart
-flutter build apk --debug -t lib/main_manager.dart
-flutter build apk --debug -t lib/main_admin.dart
-flutter build apk --debug -t lib/main_platform.dart
-```
-
-After native product flavors are added, CI should switch the role-specific
-builds to:
+Current Android flavor CI checks:
 
 ```bash
 flutter build apk --debug --flavor employee -t lib/main_employee.dart
@@ -409,14 +398,23 @@ Status: complete on 2026-07-01 at the Dart layer.
 
 - Add Android `productFlavors`.
 - Add per-flavor app names.
-- Add per-flavor placeholder icons if final icons are not ready.
+- Reuse the current launcher icon until final per-app icons are ready.
 - Build all four debug APKs.
 
 Pass condition:
 
 - All Android flavor debug builds pass.
 
-Status: pending.
+Status: complete on 2026-07-02.
+
+Android application IDs:
+
+| Flavor | Application ID | App Name |
+| ------ | -------------- | -------- |
+| `employee` | `com.aurelia.workforce.employee` | Aurelia Employee |
+| `manager` | `com.aurelia.workforce.manager` | Aurelia Manager |
+| `admin` | `com.aurelia.workforce.admin` | Aurelia Admin |
+| `platform` | `com.aurelia.workforce.platform` | Aurelia Platform |
 
 ### Phase 4: iOS Schemes
 
@@ -440,8 +438,8 @@ Pass condition:
 
 - CI blocks regressions across every app target.
 
-Status: partial. CI builds all Dart entrypoints; native `--flavor` builds remain
-pending until Phase 3.
+Status: partial. CI builds all Android flavors; iOS flavor builds remain pending
+until Phase 4.
 
 ## Product Decisions Needed Before Store Release
 
