@@ -8,7 +8,7 @@ Production mobile client for the Workforce Management platform on iOS and Androi
 
 ## Status
 
-This Flutter app is the primary FE0-FE9 mobile client from
+This Flutter app is the primary FE0-FE10 mobile client from
 `docs/FRONTEND_CHECKPOINT_LOG.md`:
 
 - Project structure, theme, and routing
@@ -23,6 +23,7 @@ This Flutter app is the primary FE0-FE9 mobile client from
 - Notification unread count via `GET /api/notifications/me/unread-count`
 - Shared loading, empty, access-denied, not-found, validation, connection, and expired-session states
 - Employee self-service, face/GPS attendance, admin setup/operations, manager workflows, super-admin workflows, reports, and launch-gate staging QA
+- FE10 Dart flavor entrypoints for Employee, Manager, Admin, and Platform apps
 
 No fake data. No invented endpoints. No self-registration.
 
@@ -64,6 +65,18 @@ flutter build appbundle --release \
   --dart-define=API_BASE_URL=https://api.example.com
 ```
 
+Role-specific Dart entrypoints are available before native Android/iOS flavors:
+
+```bash
+flutter build apk --debug -t lib/main_employee.dart
+flutter build apk --debug -t lib/main_manager.dart
+flutter build apk --debug -t lib/main_admin.dart
+flutter build apk --debug -t lib/main_platform.dart
+```
+
+Native `--flavor employee|manager|admin|platform` support is tracked in
+`docs/MOBILE_FLAVOR_ARCHITECTURE.md`.
+
 ## CI
 
 The repository includes `.github/workflows/mobile-ci.yml`, which runs:
@@ -72,6 +85,10 @@ The repository includes `.github/workflows/mobile-ci.yml`, which runs:
 - `flutter analyze`
 - `flutter test`
 - `flutter build apk --debug`
+- `flutter build apk --debug -t lib/main_employee.dart`
+- `flutter build apk --debug -t lib/main_manager.dart`
+- `flutter build apk --debug -t lib/main_admin.dart`
+- `flutter build apk --debug -t lib/main_platform.dart`
 
 ## Architecture
 
@@ -82,6 +99,10 @@ mobile/
   ios/
   lib/
     main.dart
+    main_employee.dart
+    main_manager.dart
+    main_admin.dart
+    main_platform.dart
     app.dart
     core/
       api/        Dio client, interceptors, API failures

@@ -18,6 +18,10 @@ Current mobile structure:
 mobile/
   lib/
     main.dart
+    main_employee.dart
+    main_manager.dart
+    main_admin.dart
+    main_platform.dart
     app.dart
     core/
       api/
@@ -40,8 +44,12 @@ mobile/
 
 The existing architecture is already close to flavor-ready:
 
-- `mobile/lib/main.dart` boots one `AureliaApp`.
-- `mobile/lib/app.dart` owns the `MaterialApp.router` wrapper.
+- `mobile/lib/main.dart` boots the unified development/QA app.
+- `mobile/lib/main_employee.dart`, `main_manager.dart`, `main_admin.dart`, and
+  `main_platform.dart` boot role-specific Dart targets.
+- `mobile/lib/app.dart` owns the `MaterialApp.router` wrapper and
+  `runAureliaApp(flavorConfig: ...)` bootstrap.
+- `mobile/lib/core/config/app_flavor.dart` owns active flavor configuration.
 - `mobile/lib/core/config/app_config.dart` already supports `APP_ENV` and
   `API_BASE_URL` through `--dart-define`.
 - `mobile/lib/core/routing/router.dart` owns one global `GoRouter`, all role
@@ -54,9 +62,8 @@ The existing architecture is already close to flavor-ready:
 
 Main limitation:
 
-- The app is one installed product. It shows different routes after login, but
-  every role is still packaged behind the same app name, icon, bundle ID, and
-  shell.
+- Native Android and iOS are still one installed product until product flavors,
+  schemes, bundle IDs, app names, and icons are added.
 
 ## Target Product Shape
 
@@ -89,7 +96,7 @@ Long-term optional split:
 
 ## Proposed Dart Structure
 
-Add app-level bootstrap and flavor configuration:
+App-level bootstrap and flavor configuration:
 
 ```text
 mobile/lib/
@@ -146,7 +153,7 @@ mutable state. That keeps widget tests and integration tests easy to override.
 
 ## Entrypoints
 
-Each entrypoint should bootstrap the same app with a different flavor provider:
+Each entrypoint bootstraps the same app with a different flavor provider:
 
 ```dart
 void main() {
@@ -162,8 +169,8 @@ Target files:
 - `mobile/lib/main_admin.dart`
 - `mobile/lib/main_platform.dart`
 
-Keep `mobile/lib/main.dart` as a development aggregator during the migration or
-point it to the employee app once the split is complete.
+Keep `mobile/lib/main.dart` as a development and FE2-FE9 QA aggregator during
+the migration. Native flavor builds should use the role-specific entrypoints.
 
 ## Routing Changes
 
@@ -174,11 +181,11 @@ Current:
 - One `_roleAllowed(AppRole, String path)`.
 - One route tree containing all role routes.
 
-Target:
+Implemented Dart target:
 
 - Keep one route catalog so paths and screens are not duplicated.
-- Add flavor-aware redirects.
-- Restrict authenticated users to the active app's allowed role set.
+- Flavor-aware redirects.
+- Authenticated users are restricted to the active app's allowed role set.
 
 Rules:
 
@@ -205,10 +212,10 @@ Current:
 - `AppShell` reads `user.primaryRole`.
 - `destinationsFor(AppRole)` returns bottom navigation.
 
-Target:
+Implemented Dart target:
 
 - Shell should read active `FlavorConfig`.
-- Navigation should be flavor-first, role-confirmed.
+- Navigation is flavor-first, role-confirmed.
 - Role can still be used inside `admin` because `COMPANY_ADMIN` and `HR_ADMIN`
   share the same installed app but may have slightly different permissions.
 
@@ -314,9 +321,20 @@ flutter build ipa \
 
 ## CI Changes
 
-Current CI builds one debug APK.
+Current CI builds the unified debug APK plus each role-specific Dart entrypoint.
 
-Target CI should build every flavor:
+Current Dart-entrypoint CI checks:
+
+```bash
+flutter build apk --debug
+flutter build apk --debug -t lib/main_employee.dart
+flutter build apk --debug -t lib/main_manager.dart
+flutter build apk --debug -t lib/main_admin.dart
+flutter build apk --debug -t lib/main_platform.dart
+```
+
+After native product flavors are added, CI should switch the role-specific
+builds to:
 
 ```bash
 flutter build apk --debug --flavor employee -t lib/main_employee.dart
@@ -370,6 +388,8 @@ Pass condition:
 - `flutter analyze`, `flutter test`, and `flutter build apk --debug` still pass.
 - Entrypoint widget tests prove the right flavor config is active.
 
+Status: complete on 2026-07-01.
+
 ### Phase 2: Flavor-Aware Routing And Shell
 
 - Refactor router redirects to use active flavor.
@@ -383,6 +403,8 @@ Pass condition:
 - Wrong-role users see wrong-app screen.
 - Visible navigation matches each app.
 
+Status: complete on 2026-07-01 at the Dart layer.
+
 ### Phase 3: Android Product Flavors
 
 - Add Android `productFlavors`.
@@ -394,6 +416,8 @@ Pass condition:
 
 - All Android flavor debug builds pass.
 
+Status: pending.
+
 ### Phase 4: iOS Schemes
 
 - Add iOS schemes and build configurations.
@@ -404,6 +428,8 @@ Pass condition:
 
 - All iOS flavor builds pass on a Mac runner or local Mac.
 
+Status: pending.
+
 ### Phase 5: CI And Release Gate
 
 - Update GitHub Actions to build all Android flavors.
@@ -413,6 +439,9 @@ Pass condition:
 Pass condition:
 
 - CI blocks regressions across every app target.
+
+Status: partial. CI builds all Dart entrypoints; native `--flavor` builds remain
+pending until Phase 3.
 
 ## Product Decisions Needed Before Store Release
 

@@ -47,3 +47,31 @@ jobs:
           flutter build apk --debug
           --dart-define=APP_ENV=staging
           --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
+
+      - name: Build Employee Dart entrypoint
+        run: >
+          flutter build apk --debug
+          -t lib/main_employee.dart
+          --dart-define=APP_ENV=staging
+          --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
+
+      - name: Build Manager Dart entrypoint
+        run: >
+          flutter build apk --debug
+          -t lib/main_manager.dart
+          --dart-define=APP_ENV=staging
+          --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
+
+      - name: Build Admin Dart entrypoint
+        run: >
+          flutter build apk --debug
+          -t lib/main_admin.dart
+          --dart-define=APP_ENV=staging
+          --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
+
+      - name: Build Platform Dart entrypoint
+        run: >
+          flutter build apk --debug
+          -t lib/main_platform.dart
+          --dart-define=APP_ENV=staging
+          --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app

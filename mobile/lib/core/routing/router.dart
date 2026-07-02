@@ -17,6 +17,7 @@ import '../../features/admin/admin_okrs_screen.dart';
 import '../../features/admin/admin_reviews_screen.dart';
 import '../../features/admin/shifts_screen.dart';
 import '../../features/auth/login_screen.dart';
+import '../../features/auth/wrong_app_screen.dart';
 import '../../features/employee/attendance_clock_screen.dart';
 import '../../features/employee/attendance_history_screen.dart';
 import '../../features/employee/employee_dashboard_screen.dart';
@@ -42,8 +43,18 @@ import '../../features/super_admin/super_admin_subscriptions_screen.dart';
 import '../../shared/widgets/states.dart';
 import '../auth/auth_controller.dart';
 import '../auth/models.dart';
+import '../config/app_flavor.dart';
 
-String landingFor(AppRole role) {
+String landingFor(
+  AppRole role, {
+  FlavorConfig flavor = workforceFlavorConfig,
+}) {
+  if (!flavor.allowsRole(role)) {
+    return '/wrong-app';
+  }
+  if (flavor.isRoleRestricted) {
+    return flavor.initialAuthedRoute;
+  }
   switch (role) {
     case AppRole.superAdmin:
       return '/super-admin';
@@ -59,15 +70,24 @@ String landingFor(AppRole role) {
   }
 }
 
-bool _roleAllowed(AppRole role, String path) {
+bool routeAllowedFor(
+  AppRole role,
+  String path, {
+  FlavorConfig flavor = workforceFlavorConfig,
+}) {
+  if (!flavor.allowsRole(role)) return false;
   if (path.startsWith('/account')) return true;
-  if (path.startsWith('/super-admin')) return role == AppRole.superAdmin;
-  if (path.startsWith('/admin')) {
-    return role == AppRole.companyAdmin || role == AppRole.hrAdmin;
-  }
-  if (path.startsWith('/manager')) return role == AppRole.manager;
-  if (path.startsWith('/employee')) return role == AppRole.employee;
-  return true;
+  final roleAllowed = switch (role) {
+    AppRole.superAdmin => path.startsWith('/super-admin'),
+    AppRole.companyAdmin || AppRole.hrAdmin => path.startsWith('/admin'),
+    AppRole.manager => path.startsWith('/manager'),
+    AppRole.employee => path.startsWith('/employee'),
+    AppRole.unknown => false,
+  };
+  if (!roleAllowed) return false;
+  if (!flavor.isRoleRestricted) return true;
+  return path == flavor.initialAuthedRoute ||
+      path.startsWith('${flavor.initialAuthedRoute}/');
 }
 
 /// Re-evaluate router redirects whenever auth state changes.
@@ -79,6 +99,7 @@ class _AuthRefresh extends ChangeNotifier {
 
 final routerProvider = Provider<GoRouter>((ref) {
   final refresh = _AuthRefresh(ref);
+  final flavor = ref.watch(flavorConfigProvider);
   ref.onDispose(refresh.dispose);
 
   return GoRouter(
@@ -88,6 +109,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       final auth = ref.read(authControllerProvider);
       final loc = state.uri.path;
       final atLogin = loc == '/login';
+      final atWrongApp = loc == '/wrong-app';
 
       if (auth is AuthInitial || auth is AuthLoading) {
         return null;
@@ -96,10 +118,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         return atLogin ? null : '/login';
       }
       if (auth is AuthAuthenticated) {
-        if (atLogin || loc == '/') {
-          return landingFor(auth.user.primaryRole);
+        final role = auth.user.primaryRole;
+        if (!flavor.allowsRole(role)) {
+          return atWrongApp ? null : '/wrong-app';
         }
-        if (!_roleAllowed(auth.user.primaryRole, loc)) {
+        if (atLogin || atWrongApp || loc == '/') {
+          return landingFor(role, flavor: flavor);
+        }
+        if (!routeAllowedFor(role, loc, flavor: flavor)) {
           return '/denied';
         }
       }
@@ -108,6 +134,10 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(path: '/', builder: (_, __) => const _Splash()),
       GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
+      GoRoute(
+        path: '/wrong-app',
+        builder: (_, __) => const WrongAppScreen(),
+      ),
       GoRoute(
         path: '/denied',
         builder: (_, __) => const Scaffold(body: AccessDeniedState()),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/auth/auth_controller.dart';
+import '../../core/config/app_flavor.dart';
 import '../../core/errors/failures.dart';
 import '../../core/theme/aurelia_theme.dart';
 import '../../shared/widgets/states.dart';
@@ -58,6 +59,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = ref.watch(authControllerProvider);
+    final flavor = ref.watch(flavorConfigProvider);
     final expired = auth is AuthUnauthenticated && auth.expired;
 
     return Scaffold(
@@ -72,12 +74,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 children: [
                   if (expired) const ExpiredSessionBanner(),
                   const SizedBox(height: 8),
-                  Text('Aurelia',
+                  Text(flavor.appName,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.displayLarge),
                   const SizedBox(height: 4),
                   Text(
-                    'Workforce management',
+                    flavor.loginSubtitle,
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme

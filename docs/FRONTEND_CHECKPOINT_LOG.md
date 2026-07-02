@@ -22,8 +22,8 @@ The backend is already complete through CP19. Frontend work must consume the exi
 - **Primary client target:** Flutter mobile app for iOS and Android.
 - **Secondary/reference client:** Lovable web at `https://exact-render-route.lovable.app`.
 - **Backend base URL:** `https://workforce-management-production.up.railway.app`
-- **Observed complete/partial work:** Flutter FE0-FE9 are implemented and verified against staging on Android emulator, including auth, role navigation, employee self-service, face/GPS attendance flow, admin setup/operations, manager workflows, super-admin workflows, reports, and launch-gate QA.
-- **Observed missing work:** no FE0-FE9 launch-blocking frontend workflow gaps remain. Future hardening remains for role-specific mobile flavors, app-store release packaging, production biometric/liveness provider choices, push notifications, and any dedicated web-admin product split. Track flavor planning in `docs/MOBILE_FLAVOR_ARCHITECTURE.md` and release hardening in `docs/MOBILE_RELEASE_READINESS.md`.
+- **Observed complete/partial work:** Flutter FE0-FE9 are implemented and verified against staging on Android emulator, including auth, role navigation, employee self-service, face/GPS attendance flow, admin setup/operations, manager workflows, super-admin workflows, reports, and launch-gate QA. FE10 has the Dart flavor layer, role-specific entrypoints, flavor-aware routing/shell, wrong-app handling, tests, and CI entrypoint builds.
+- **Observed missing work:** no FE0-FE9 launch-blocking frontend workflow gaps remain. FE10 still needs native Android product flavors and iOS schemes. Future hardening remains for app-store release packaging, production biometric/liveness provider choices, push notifications, and any dedicated web-admin product split. Track flavor planning in `docs/MOBILE_FLAVOR_ARCHITECTURE.md` and release hardening in `docs/MOBILE_RELEASE_READINESS.md`.
 - **Known issue pattern:** frontend route `404`s are usually missing Lovable page routes; backend `404`s are usually wrong endpoint paths such as generic report URLs not present in `API_CONTRACT.md`.
 
 ## Tooling Decision Log
@@ -188,6 +188,7 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 | FE7 | Super-admin platform workflows | `PASSED` | Android staging QA passed for company onboarding/status, plan create/update/status, subscription assignment/status, manual payments, platform dashboard, and company rollups. |
 | FE8 | Reports and dashboard data rendering | `PASSED` | Android staging QA passed for admin, manager, employee, and super-admin report/dashboard endpoints with admin report UI rendering. |
 | FE9 | End-to-end frontend QA and launch gate | `PASSED` | Android staging launch-gate QA passed: health, readiness, published-origin CORS, auth/error boundaries, all role logins, and visible navigation. |
+| FE10 | Mobile flavor split | `PARTIAL` | Dart flavor layer is implemented and verified; native Android product flavors and iOS schemes remain. |
 
 ---
 
@@ -1047,6 +1048,57 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 
 ---
 
+## FE10: Mobile Flavor Split
+
+**Goal:** Split the single role-aware Flutter app into role-specific app targets while preserving one shared codebase.
+
+**Required app targets:**
+
+| App | Dart Entry Point | Allowed Roles | Initial Route |
+| --- | ---------------- | ------------- | ------------- |
+| Aurelia Employee | `lib/main_employee.dart` | `EMPLOYEE` | `/employee` |
+| Aurelia Manager | `lib/main_manager.dart` | `MANAGER` | `/manager` |
+| Aurelia Admin | `lib/main_admin.dart` | `COMPANY_ADMIN`, `HR_ADMIN` | `/admin` |
+| Aurelia Platform | `lib/main_platform.dart` | `SUPER_ADMIN` | `/super-admin` |
+
+**Pass condition:**
+
+- Shared core/auth/API/theme remains single-source.
+- Each role-specific entrypoint builds.
+- Correct-role users land in the correct app shell.
+- Wrong-role users see a recoverable wrong-app state.
+- Android product flavors define separate application IDs and app names.
+- iOS schemes define separate bundle IDs and display names.
+- CI builds all app targets.
+
+**2026-07-01 Dart flavor layer update:**
+
+- Added `mobile/lib/core/config/app_flavor.dart` with role-specific flavor configs.
+- Added `runAureliaApp(flavorConfig: ...)` bootstrap.
+- Added Dart entrypoints:
+  - `mobile/lib/main_employee.dart`
+  - `mobile/lib/main_manager.dart`
+  - `mobile/lib/main_admin.dart`
+  - `mobile/lib/main_platform.dart`
+- Refactored router redirects to use active flavor, including `/wrong-app`.
+- Refactored shell navigation/title to use active flavor.
+- Updated login screen to display the active flavor title/subtitle.
+- Added wrong-app screen with sign-out recovery.
+- Added unit/widget coverage for flavor mapping, landing routes, route gating, navigation scoping, and app title override.
+- Updated CI to build the default app and all four Dart entrypoints.
+- Verification passed:
+  - `dart --disable-analytics format mobile\lib mobile\test`
+  - `flutter analyze`
+  - `flutter test`
+  - `flutter build apk --debug`
+  - `flutter build apk --debug -t lib/main_employee.dart`
+  - `flutter build apk --debug -t lib/main_manager.dart`
+  - `flutter build apk --debug -t lib/main_admin.dart`
+  - `flutter build apk --debug -t lib/main_platform.dart`
+- FE10 remains `PARTIAL` until native Android product flavors and iOS schemes are implemented.
+
+---
+
 ## Immediate Build Order
 
 1. FE0 Flutter foundation: project structure, typed API client, route map, secure token storage, and endpoint audit.
@@ -1059,5 +1111,6 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
 8. FE7 super-admin workflows.
 9. FE8 report tabs and dashboard data rendering.
 10. FE9 full Flutter launch-gate QA.
+11. FE10 mobile flavor split.
 
 This order is intentional: admin setup creates the data required for employee and manager workflows to feel real.

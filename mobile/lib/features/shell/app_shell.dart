@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/auth/auth_controller.dart';
 import '../../core/auth/models.dart';
+import '../../core/config/app_flavor.dart';
 import '../../core/theme/aurelia_theme.dart';
 import '../notifications/notifications_controller.dart';
 
@@ -111,6 +112,25 @@ List<NavDestinationSpec> destinationsFor(AppRole role) {
   }
 }
 
+List<NavDestinationSpec> destinationsForFlavor(
+  FlavorConfig flavor,
+  AppRole role,
+) {
+  if (!flavor.isRoleRestricted) return destinationsFor(role);
+  switch (flavor.flavor) {
+    case AureliaFlavor.employee:
+      return destinationsFor(AppRole.employee);
+    case AureliaFlavor.manager:
+      return destinationsFor(AppRole.manager);
+    case AureliaFlavor.admin:
+      return destinationsFor(AppRole.companyAdmin);
+    case AureliaFlavor.platform:
+      return destinationsFor(AppRole.superAdmin);
+    case AureliaFlavor.workforce:
+      return destinationsFor(role);
+  }
+}
+
 class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.child});
   final Widget child;
@@ -122,7 +142,8 @@ class AppShell extends ConsumerWidget {
       return const Scaffold(body: SizedBox.shrink());
     }
     final user = auth.user;
-    final destinations = destinationsFor(user.primaryRole);
+    final flavor = ref.watch(flavorConfigProvider);
+    final destinations = destinationsForFlavor(flavor, user.primaryRole);
     final unreadAsync = ref.watch(unreadCountProvider);
 
     final location = GoRouterState.of(context).uri.path;
@@ -139,7 +160,7 @@ class AppShell extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Aurelia'),
+        title: Text(flavor.appName),
         actions: [
           unreadAsync.maybeWhen(
             data: (count) {

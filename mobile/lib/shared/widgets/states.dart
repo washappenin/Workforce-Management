@@ -50,11 +50,13 @@ class ErrorStateView extends StatelessWidget {
     required this.title,
     required this.message,
     this.onRetry,
+    this.actionLabel = 'Try again',
     this.icon = Icons.error_outline,
   });
   final String title;
   final String message;
   final VoidCallback? onRetry;
+  final String actionLabel;
   final IconData icon;
 
   @override
@@ -65,7 +67,7 @@ class ErrorStateView extends StatelessWidget {
       message: message,
       action: onRetry == null
           ? null
-          : OutlinedButton(onPressed: onRetry, child: const Text('Try again')),
+          : OutlinedButton(onPressed: onRetry, child: Text(actionLabel)),
     );
   }
 }
