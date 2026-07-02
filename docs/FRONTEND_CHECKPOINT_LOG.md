@@ -1126,6 +1126,8 @@ FE0 is now passed at source/analyzer/test/Android-debug-build level. FE1 remains
   - `admin`
   - `platform`
 - Added manual macOS GitHub Actions workflow: `.github/workflows/mobile-ios-flavors.yml`.
+- Added Mac handoff doc: `docs/MAC_IOS_FLAVOR_VERIFICATION.md`.
+- Added local Mac verification script: `mobile/scripts/verify_ios_flavors.sh`.
 - Local verification passed on Windows:
   - iOS scheme XML parse check
   - iOS flavor xcconfig presence check

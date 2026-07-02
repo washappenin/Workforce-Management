@@ -441,11 +441,10 @@ iOS bundle identifiers:
 Validation command on macOS:
 
 ```bash
-flutter build ios --debug --no-codesign --flavor employee -t lib/main_employee.dart
-flutter build ios --debug --no-codesign --flavor manager -t lib/main_manager.dart
-flutter build ios --debug --no-codesign --flavor admin -t lib/main_admin.dart
-flutter build ios --debug --no-codesign --flavor platform -t lib/main_platform.dart
+bash scripts/verify_ios_flavors.sh
 ```
+
+Detailed Mac handoff context: `docs/MAC_IOS_FLAVOR_VERIFICATION.md`.
 
 ### Phase 5: CI And Release Gate
 
@@ -458,7 +457,8 @@ Pass condition:
 - CI blocks regressions across every app target.
 
 Status: partial. CI builds all Android flavors automatically. A manual macOS
-workflow is available for no-signing iOS flavor builds.
+workflow and `mobile/scripts/verify_ios_flavors.sh` are available for no-signing
+iOS flavor builds.
 
 ## Product Decisions Needed Before Store Release
 

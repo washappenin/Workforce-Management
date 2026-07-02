@@ -87,6 +87,11 @@ flutter build ios --debug --no-codesign --flavor platform -t lib/main_platform.d
 
 These commands require macOS and Xcode. Use the manual
 `Mobile iOS Flavor Builds` GitHub Actions workflow for no-signing CI validation.
+For the Mac handoff, use `docs/MAC_IOS_FLAVOR_VERIFICATION.md` or run:
+
+```bash
+bash scripts/verify_ios_flavors.sh
+```
 
 ## CI
 
