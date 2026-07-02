@@ -62,8 +62,9 @@ The existing architecture is already close to flavor-ready:
 
 Main limitation:
 
-- Native Android product flavors are defined. iOS schemes, final icons, release
-  signing, and store metadata remain pending.
+- Native Android product flavors and iOS schemes/build configurations are
+  defined. iOS still needs macOS/Xcode build verification, final icons, release
+  signing, and store metadata.
 
 ## Target Product Shape
 
@@ -426,7 +427,25 @@ Pass condition:
 
 - All iOS flavor builds pass on a Mac runner or local Mac.
 
-Status: pending.
+Status: scaffolded on 2026-07-02; pending macOS/Xcode build verification.
+
+iOS bundle identifiers:
+
+| Scheme | Bundle ID | Display Name |
+| ------ | --------- | ------------ |
+| `employee` | `com.aurelia.workforce.employee` | Aurelia Employee |
+| `manager` | `com.aurelia.workforce.manager` | Aurelia Manager |
+| `admin` | `com.aurelia.workforce.admin` | Aurelia Admin |
+| `platform` | `com.aurelia.workforce.platform` | Aurelia Platform |
+
+Validation command on macOS:
+
+```bash
+flutter build ios --debug --no-codesign --flavor employee -t lib/main_employee.dart
+flutter build ios --debug --no-codesign --flavor manager -t lib/main_manager.dart
+flutter build ios --debug --no-codesign --flavor admin -t lib/main_admin.dart
+flutter build ios --debug --no-codesign --flavor platform -t lib/main_platform.dart
+```
 
 ### Phase 5: CI And Release Gate
 
@@ -438,8 +457,8 @@ Pass condition:
 
 - CI blocks regressions across every app target.
 
-Status: partial. CI builds all Android flavors; iOS flavor builds remain pending
-until Phase 4.
+Status: partial. CI builds all Android flavors automatically. A manual macOS
+workflow is available for no-signing iOS flavor builds.
 
 ## Product Decisions Needed Before Store Release
 

@@ -76,6 +76,18 @@ flutter build apk --debug --flavor platform -t lib/main_platform.dart
 
 iOS schemes remain tracked in `docs/MOBILE_FLAVOR_ARCHITECTURE.md`.
 
+Role-specific iOS schemes are also scaffolded:
+
+```bash
+flutter build ios --debug --no-codesign --flavor employee -t lib/main_employee.dart
+flutter build ios --debug --no-codesign --flavor manager -t lib/main_manager.dart
+flutter build ios --debug --no-codesign --flavor admin -t lib/main_admin.dart
+flutter build ios --debug --no-codesign --flavor platform -t lib/main_platform.dart
+```
+
+These commands require macOS and Xcode. Use the manual
+`Mobile iOS Flavor Builds` GitHub Actions workflow for no-signing CI validation.
+
 ## CI
 
 The repository includes `.github/workflows/mobile-ci.yml`, which runs:

@@ -1,0 +1,5 @@
+#include "Release.xcconfig"
+APP_DISPLAY_NAME=Aurelia Platform
+APP_BUNDLE_ID=com.aurelia.workforce.platform
+APP_FLAVOR=platform
+FLUTTER_TARGET=lib/main_platform.dart

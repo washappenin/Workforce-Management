@@ -1,0 +1,57 @@
+name: Mobile iOS Flavor Builds
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ios:
+    name: Build iOS flavors without code signing
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: mobile
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Employee iOS flavor
+        run: >
+          flutter build ios --debug --no-codesign
+          --flavor employee
+          -t lib/main_employee.dart
+          --dart-define=APP_ENV=staging
+          --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
+
+      - name: Build Manager iOS flavor
+        run: >
+          flutter build ios --debug --no-codesign
+          --flavor manager
+          -t lib/main_manager.dart
+          --dart-define=APP_ENV=staging
+          --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
+
+      - name: Build Admin iOS flavor
+        run: >
+          flutter build ios --debug --no-codesign
+          --flavor admin
+          -t lib/main_admin.dart
+          --dart-define=APP_ENV=staging
+          --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app
+
+      - name: Build Platform iOS flavor
+        run: >
+          flutter build ios --debug --no-codesign
+          --flavor platform
+          -t lib/main_platform.dart
+          --dart-define=APP_ENV=staging
+          --dart-define=API_BASE_URL=https://workforce-management-production.up.railway.app

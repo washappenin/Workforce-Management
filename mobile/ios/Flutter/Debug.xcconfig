@@ -1,1 +1,4 @@
 #include "Generated.xcconfig"
+APP_DISPLAY_NAME=Aurelia Mobile
+APP_BUNDLE_ID=com.aurelia.workforce.aureliaMobile
+APP_FLAVOR=workforce

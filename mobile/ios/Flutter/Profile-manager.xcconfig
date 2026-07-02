@@ -1,0 +1,5 @@
+#include "Release.xcconfig"
+APP_DISPLAY_NAME=Aurelia Manager
+APP_BUNDLE_ID=com.aurelia.workforce.manager
+APP_FLAVOR=manager
+FLUTTER_TARGET=lib/main_manager.dart
